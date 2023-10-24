@@ -1,16 +1,24 @@
-import {create} from "zustand";
+import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { IUser } from "../types";
 
 const userStore = (set: any) => ({
   userProfile: null,
   userSolvedProblems: null,
   userAttemptedProblems: null,
 
-  setUser: (user: any) => set({ userProfile: user }),
-  removeUser: () => set({ userProfile: null }),
-  setUserSolvedProblems: (problems: any) =>  set({ userSolvedProblems: problems }),
+  setUser: (user: IUser) => set({ userProfile: user }),
+  removeUser: () =>
+    set({
+      userProfile: null,
+      userSolvedProblems: null,
+      userAttemptedProblems: null,
+    }),
+  setUserSolvedProblems: (problems: Map<number, Set<string>>) =>
+    set({ userSolvedProblems: problems }),
   removeUserSolvedProblems: () => set({ userSolvedProblems: null }),
-  setUserAttemptedProblems: (problems: any) => set({ userAttemptedProblems: problems }),
+  setUserAttemptedProblems: (problems: Map<number, Set<string>>) =>
+    set({ userAttemptedProblems: problems }),
   removeUserAttemptedProblems: () => set({ userAttemptedProblems: null }),
 });
 

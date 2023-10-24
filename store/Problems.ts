@@ -2,36 +2,119 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { CODEFORCES_API } from "../pages/index";
 import { IProblem, IProblemStatistics,IContest } from "../types";
+
 interface IProblems{
   problems: IProblem[];
   problemStatistics: IProblemStatistics[];
 };
+
 interface IProblemsResponseData {
   result: {
     problems: IProblem[];
     problemStatistics: IProblemStatistics[];
   };
 };
+
 interface IContestsResponseData {
   result: IContest[];
 }
+
+interface IContestRenew {
+  contestName: string,
+  round: string;
+  contestType: string;
+  isEducationalContest: boolean;
+};
+
+
+const getContestRenewData = (item: IContest): IContestRenew => {
+  const contestName: string = item.name;
+  const contestNameLength: number = contestName.length;
+  const words: string[] = [];
+  let prevIdx: number = 0;
+  let currIdx: number = 0;
+
+  while (prevIdx < contestNameLength) {
+    while (
+      currIdx < contestNameLength &&
+      contestName[currIdx] !== " " &&
+      contestName[currIdx] !== "(" &&
+      contestName[currIdx] !== ")" &&
+      contestName[currIdx] !== ","
+    ) {
+      currIdx++;
+    }
+
+    const word: string = contestName.slice(prevIdx, currIdx);
+    words.push(word);
+    currIdx++;
+    prevIdx = currIdx;
+  }
+
+  const contest: IContestRenew = {
+    contestName: contestName,
+    round: "",
+    contestType: "",
+    isEducationalContest: false,
+  };
+
+  if (words[0] === "Educational") {
+    contest.isEducationalContest = true;
+    contest.contestType = "Div. 2";
+  }
+
+  const wordsCount: number = words.length;
+  for (let wordsIdx: number = 0; wordsIdx < wordsCount; wordsIdx++) {
+    if (!contest.round && words[wordsIdx] === "Round") {
+      contest.round = words[wordsIdx + 1];
+    }
+    if (!contest.contestType && words[wordsIdx] === "Div.") {
+      contest.contestType = "Div. " + words[wordsIdx + 1];
+
+      if (wordsIdx + 2 < wordsCount && words[wordsIdx + 2] === "+") {
+        contest.contestType += " + Div. " + words[wordsIdx + 4];
+      }
+    }
+  }
+  return contest;
+};
 
 
 
 const problemsStore = (set: any) => ({
   allProblems: null,
+  hasProblemsFiltered: false,
   filteredProblems: [],
-  contestIdToName: {},
+  problemsStatusSpacedOtherContestId: [], // 0:unsolved, 1:attempted , 2: solved
+  allSortedProblemsByNameAsc: null,
+  allSortedProblemsByDifficultyAsc: null,
+  allSortedProblemsBySolvedCountAsc: null,
+  allSortedProblemsByNameDsc: null,
+  allSortedProblemsByDifficultyDsc: null,
+  allSortedProblemsBySolvedCountDsc: null,
+  contestData: null,
+  similarRoundDiv1Div2Contests: null,
+  hasFetchingProblems: true,
 
-  setAllProblems: (problems: any) => set({ allProblems: problems }),
-  removeAllProblems: () => set({ allProblems: null }),
-  setFilteredProblems: (problems: any) => set({ filteredProblems: problems }),
-  removeFilteredProblems: () => set({ filteredProblems: [] }),
+  setAllProblems: (problems: IProblems) => set({ allProblems: problems }),
+  setHasProblemsFiltered: (value: boolean) =>
+    set({ hasProblemsFiltered: value }),
+  setFilteredProblems: (problems: number[]) =>
+    set({ hasProblemsFiltered: true, filteredProblems: problems }),
+  removeFiltering: async () =>
+    set({
+      hasProblemsFiltered: false,
+      filteredProblems: [],
+      problemsStatusSpacedOtherContestId: [],
+    }),
+  resetProblemsStatus: (length: number) =>
+    set({ problemsStatusSpacedOtherContestId: Array(length).fill("Unsolved") }),
 
   fetchAllProblemsAndContest: async () => {
-    const problemsUrl:string = `${CODEFORCES_API}/problemset.problems`;
-    const contestUrl:string = `${CODEFORCES_API}/contest.list`;
+    const problemsUrl: string = `${CODEFORCES_API}/problemset.problems`;
+    const contestUrl: string = `${CODEFORCES_API}/contest.list`;
 
+    set({hasFetchingProblems:true})
     try {
       const [problemsResponse, contestResponse] = await Promise.all([
         fetch(problemsUrl),
@@ -49,27 +132,113 @@ const problemsStore = (set: any) => ({
       const problemsData: IProblemsResponseData = await problemsResponse.json();
       const problemsResult: IProblems = problemsData.result;
 
-      const contestDataById: { [key: number]: string } = {};
-      const contestData:IContestsResponseData = await contestResponse.json();
-      contestData.result.forEach((item: IContest) => {
-        const id:number = item.id;
-        contestDataById[id] = item.name;
+      const problemsCount: number = problemsResult.problems.length;
+      const problemsStatusSpacedOtherContestId: string[] = new Array(problemsCount);
+      const problemsSortedIndicesByNameAsc: number[] = new Array(problemsCount);
+      const problemsSortedIndicesByDifficultyAsc: number[] = new Array(
+        problemsCount
+      );
+      const problemsSortedIndicesBySolvedByAsc: number[] = new Array(
+        problemsCount
+      );
+      for (let i = 0; i < problemsCount; i++) {
+        problemsSortedIndicesByNameAsc[i] = i;
+        problemsSortedIndicesByDifficultyAsc[i] = i;
+        problemsSortedIndicesBySolvedByAsc[i] = i;
+        problemsStatusSpacedOtherContestId[i] = "Unsolved";
+      }
+
+      // Extract the Contest Information
+      const contestData: Map<number, IContestRenew> = new Map();
+      const similarRoundDiv1Div2Contests: Map<string, number[]> = new Map();
+      const contestsDataResult: IContestsResponseData =
+        await contestResponse.json();
+
+      contestsDataResult.result.forEach((item: IContest) => {
+        const contestID: number = item.id;
+        const contestRenewData:IContestRenew = getContestRenewData(item);
+        const contestRound: string = contestRenewData.round;
+        const contestType: string = contestRenewData.contestType;
+        const isEducationalContest:boolean = contestRenewData.isEducationalContest
+        contestData.set(contestID, contestRenewData);
+        if (!isEducationalContest && ["Div. 1", "Div. 2"].includes(contestType)) {
+            const currentIDs = similarRoundDiv1Div2Contests.get(contestRound) || [];
+            currentIDs.push(contestID)
+            similarRoundDiv1Div2Contests.set(contestRound, currentIDs);
+          }
       });
+
 
       set({
         allProblems: problemsResult,
-        contestIdToName: contestDataById,
+        contestData: contestData,
+        similarRoundDiv1Div2Contests:similarRoundDiv1Div2Contests,
+        problemsStatusSpacedOtherContestId: problemsStatusSpacedOtherContestId
       });
-    } catch (error) {
-      console.error("Error fetching problems data from Codeforces!:", error);
-    }
-  },
-});
 
-const useProblemsStore = create(
-  persist(problemsStore, {
-    name: "problems",
+      //  ---- Pre Sorting the Data ----
+      
+      problemsSortedIndicesByNameAsc.sort((a, b) => {
+        const nameA = problemsResult.problems[a]?.name ?? "";
+        const nameB = problemsResult.problems[b]?.name ?? "";
+        return nameA.localeCompare(nameB);
+      });
+      
+      problemsSortedIndicesByDifficultyAsc.sort((a, b) => {
+        const ratingA = problemsResult.problems[a]?.rating ?? 0;
+        const ratingB = problemsResult.problems[b]?.rating ?? 0;
+        return ratingA - ratingB;
+      });
+      
+      problemsSortedIndicesBySolvedByAsc.sort((a, b) => {
+        const solvedByA = problemsResult.problemStatistics[a]?.solvedCount || 0;
+        const solvedByB = problemsResult.problemStatistics[b]?.solvedCount || 0;
+        return solvedByA - solvedByB;
+      });
+      
+      const problemsSortedIndicesByNameDsc: number[] = new Array(problemsCount);
+      const problemsSortedIndicesByDifficultyDsc: number[] = new Array(
+        problemsCount
+        );
+        const problemsSortedIndicesBySolvedByDsc: number[] = new Array(
+          problemsCount
+          );
+          for (let i = 0; i < problemsCount; i++) {
+            const reverseIndex = problemsCount - 1 - i;
+            problemsSortedIndicesByNameDsc[i] =
+            problemsSortedIndicesByNameAsc[reverseIndex];
+            problemsSortedIndicesByDifficultyDsc[i] =
+            problemsSortedIndicesByDifficultyAsc[reverseIndex];
+            problemsSortedIndicesBySolvedByDsc[i] =
+            problemsSortedIndicesBySolvedByAsc[reverseIndex];
+          }
+          
+          set({
+            allSortedProblemsByNameAsc: problemsSortedIndicesByNameAsc,
+            allSortedProblemsByDifficultyAsc: problemsSortedIndicesByDifficultyAsc,
+            allSortedProblemsBySolvedCountAsc: problemsSortedIndicesBySolvedByAsc,
+            allSortedProblemsByNameDsc: problemsSortedIndicesByNameDsc,
+            allSortedProblemsByDifficultyDsc: problemsSortedIndicesByDifficultyDsc,
+            allSortedProblemsBySolvedCountDsc: problemsSortedIndicesBySolvedByDsc,
+          });
+        } catch (error) {
+          set({ hasFetchingProblems: false });
+          console.error(
+            "Error fetching problems tempData from Codeforces!:",
+            error
+            );
+          }
+
+      set({ hasFetchingProblems: false });
+
+        },
+      });
+      
+    const useProblemsStore = create(
+        persist(problemsStore, {
+          name: "problems",
   })
+  
 );
 
 export default useProblemsStore;
