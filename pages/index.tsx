@@ -9,8 +9,6 @@ import useUserStore from "../store/User";
 
 const Home = () => {
   const {
-    allProblems,
-    filteredProblems,
     removeFiltering,
     fetchAllProblemsAndContest,
   }: any = useProblemsStore();
@@ -25,7 +23,6 @@ const Home = () => {
   const sortingOrdersArr : [string, string, string] = ["", "ASC", "DSC"]
   
   useEffect(() => {
-    console.log("Use Effect of index")
     const fetchData = async () => {
       await removeFiltering();
       await fetchAllProblemsAndContest();

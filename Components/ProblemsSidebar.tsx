@@ -74,7 +74,6 @@ const ProblemsSidebar = ({
   const isInitialMount = useRef(true);
   useEffect(() => {
     if (!isInitialMount.current){
-      console.log("use Effect of problemSidebar page change");
       setPageInputValue(pageNumber);
     }
     if (isInitialMount.current) {

@@ -71,7 +71,9 @@ const getContestRenewData = (item: IContest): IContestRenew => {
     if (!contest.contestType && words[wordsIdx] === "Div.") {
       contest.contestType = "Div. " + words[wordsIdx + 1];
 
-      if (wordsIdx + 2 < wordsCount && words[wordsIdx + 2] === "+") {
+      if (wordsIdx + 4 < wordsCount 
+        && words[wordsIdx + 2] === "+" 
+        && words[wordsIdx + 3] === "Div.") {
         contest.contestType += " + Div. " + words[wordsIdx + 4];
       }
     }

@@ -134,7 +134,6 @@ const FilterSidebar = ({
     const problemContestType:string = contestData.get(problemContestID)?.contestType;
     const isProblemContestEducational: boolean = 
       contestData.get(problemContestID)?.isEducationalContest
-    // TypeError: contestData.get is not a function
     const problemContestRound: string = contestData.get(problemContestID)?.round;
     const problemSolvedCount: number =
       allProblems.problemStatistics[index]?.solvedCount;
@@ -171,7 +170,6 @@ const FilterSidebar = ({
         isDidThroughOtherContest = isAttempted;
       }
 
-      // Set the status of problem : Unsolved("U") / Attempted("A") / Solved("S") + OtherContestID if any;
       problemsStatusSpacedOtherContestId[index] = isSolved ? "Solved" : isAttempted ? "Attempted" : "Unsolved";
       if (isDidThroughOtherContest) {
         problemsStatusSpacedOtherContestId[index] += " " + sameProblemOtherContestId;
@@ -210,7 +208,7 @@ const FilterSidebar = ({
       (allContestTypes[contestType] === "Educational" && isProblemContestEducational) ||
       problemContestType === allContestTypes[contestType] ;
 
-      if (!userProfile && allStatus[currStatus] !== "All") {
+      if (allStatus[currStatus] !== "All" && !userProfile) {
       hasSatisfy &&= false;
     }
 
@@ -442,7 +440,6 @@ const FilterSidebar = ({
   const isInitialMount1 = useRef(true);
   useEffect(() => {
     if (!isInitialMount1.current) {
-      console.log("use Effect filter Sidebar userProfile Change")
       handleNewFilter();
     }
     if (isInitialMount1.current) {
@@ -454,7 +451,6 @@ const FilterSidebar = ({
   const isInitialMount2 = useRef(true);
   useEffect(() => {
     const fetchData = async () => {
-      console.log("use Effect of filtersidebar page change")
       await handleFilter(false);
     };
     if (!isInitialMount2.current){

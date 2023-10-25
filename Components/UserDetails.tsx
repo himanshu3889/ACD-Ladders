@@ -1,9 +1,11 @@
 import React from "react";
 import useUserStore from "../store/User";
 import Link from "next/link";
+import useProblemsStore from "../store/Problems";
 
 export default function UserDetails() {
   const { userProfile, removeUser, userSolvedProblems }: any = useUserStore();
+  const { removeFiltering }: any = useProblemsStore();
 
   const getTextColorStyleByRank = (rank: string) => {
     return rank === "pupil"
@@ -74,8 +76,12 @@ export default function UserDetails() {
         </div>
       </div>
       <div className="cursor-pointer opacity-0 group-hover:opacity-100 text-gray-300 hover:text-gray-100">
-        <i className="fa-solid fa-xmark text-xl"
-        onClick={removeUser}
+        <i
+          className="fa-solid fa-xmark text-xl"
+          onClick={() => {
+            removeFiltering();
+            removeUser();
+          }}
         ></i>
       </div>
     </div>
