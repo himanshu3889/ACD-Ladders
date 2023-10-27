@@ -230,7 +230,7 @@ const ProblemsSidebar = ({
                 {problemsTableColumns.map((item: string, index: number) => (
                   <th
                     key={index}
-                    className="lg:py-2 py-1 px-2 text-left"
+                    className="py-2 px-2 text-left whitespace-nowrap"
                     style={{
                       width:
                         item === "No."
@@ -260,7 +260,7 @@ const ProblemsSidebar = ({
                           <i
                             className={`cursor-pointer ${
                               sortingParam !== item
-                                ? "fa-solid fa-up-long opacity-0 group-hover:opacity-100 group-hover:text-gray-300"
+                                ? "fa-solid fa-up-long md:opacity-0 opacity-30 md:group-hover:opacity-100 group-hover:text-gray-300"
                                 : sortingOrdersArr[sortingOrder] === "ASC"
                                 ? "text-yellow-200 fa-solid fa-up-long fa-beat"
                                 : sortingOrdersArr[sortingOrder] === "DSC"
