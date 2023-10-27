@@ -30,7 +30,7 @@ const UserForm = () => {
     }
 
     if (userID.length === 0) {
-      resetProblemsStatus(allProblems.length);
+      resetProblemsStatus(allProblems?.length || 0);
       removeUser();
       return;
     }
@@ -91,7 +91,7 @@ const UserForm = () => {
       setUser(userInfo);
     } catch (error) {
       setUserError()
-      resetProblemsStatus(allProblems.length);
+      resetProblemsStatus(allProblems?.length || 0);
       removeUser();
       setHasFetchingUser(false);
       console.error("Error fetching user data:", error);
@@ -103,11 +103,11 @@ const UserForm = () => {
 
   return (
     <div className="p-0.5">
-      <div className="-space-x-2 mx-auto w-max relative">
+      <div className="-space-x-2 mx-auto sm:w-max relative">
         <input
           className={`${
             hasFetchingProblems && "cursor-wait"
-          } peer bg-yellow-300 h-10 md:h-12 pl-4 text-lg font-semibold focus:bg-yellow-400 outline-none caret-blue-700`}
+          } peer bg-yellow-300 h-10 w-1/2 sm:w-auto md:h-12 p-4 text-lg font-semibold focus:bg-yellow-400 outline-none caret-blue-700`}
           type="text"
           name="userNameSearch"
           id="userNameSearch"
@@ -126,7 +126,7 @@ const UserForm = () => {
         <button
           className={`${
             hasFetchingUser && "cursor-progress"
-          } bg-blue-700 hover:bg-blue-800 text-white font-semibold text-lg h-10 md:h-12 px-10`}
+          } bg-blue-700 hover:bg-blue-800 text-white font-semibold text-lg h-10 md:h-12 px-4 sm:px-10`}
           onClick={handleUserForm}
         >
           <i

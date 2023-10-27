@@ -13,15 +13,15 @@ const Navbar = () => {
     <header className="w-full overflow-auto bg-gray-700 body-font mb-0.5 shadow-sm border-1.5 border-white">
       <div className="mx-1 flex justify-between items-center py-2 px-4">
         <div className="flex items-center justify-center">
-          <div className="md:border-r md:border-gray-500 pr-2 mx-2 md:mx-4 md:pr-4 flex flex-shrink-0 title-font font-medium items-center text-gray-900 md:mb-0">
+          <div className="md:border-r md:border-gray-500 pr-2 mx-4 md:mx-2 flex flex-shrink-0 title-font font-medium items-center text-gray-900 md:mb-0">
             <Image
               className="p-2 rounded-full"
               src={AppLogo}
               alt="logo"
-              width={45} 
-              height={45} 
+              width={45}
+              height={45}
               style={{
-                borderWidth: "2px", 
+                borderWidth: "2px",
                 borderColor: "white",
               }}
             />
@@ -32,7 +32,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div className="flex flex-row-reverse items-center justify-between">
+        <div className="flex md:flex-row-reverse items-center justify-between">
           <UserForm />
           {userError !== null && <ErrorAlert message={userError} />}
           {userProfile && <UserDetails />}

@@ -48,7 +48,7 @@ export default function UserDetails() {
 
   return (
     <div className="flex flex-row group">
-      <div className="each flex rounded shadow w-max mx-2 bg-gray-50 relative">
+      <div className="each flex rounded shadow w-max md:mr-2 ml-2 bg-gray-50 relative">
         <div className="sec self-center p-0.5 pr-1">
           <Link href={`https://codeforces.com/profile/${userProfile?.handle}`}>
             <a target="_blank">
@@ -74,7 +74,7 @@ export default function UserDetails() {
             </span>
           </div>
         </div>
-      <div className="absolute top-0 right-0 cursor-pointer opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 px-1">
+      <div className="md:absolute top-0 right-0 cursor-pointer md:opacity-0 md:group-hover:opacity-100 text-red-400 hover:text-red-600 px-1">
         <i
           className="fa-solid fa-xmark text-xl"
           onClick={() => {

@@ -219,7 +219,7 @@ const ProblemsSidebar = ({
   ];
 
   return (
-    <div className="min-w-screen min-h-screen bg-gray flex mx-2">
+    <div className="min-w-max min-h-screen bg-gray flex mx-2">
       <div className="w-full">
         <div className="text-white bg-gray-700 shadow-md rounded my-2">
           <table className="min-w-full table-fixed border border-gray-400">
@@ -278,7 +278,7 @@ const ProblemsSidebar = ({
             </tbody>
           </table>
           <div className="flex shadow-inner border border-gray-400 bg-gray-700">
-            <div className="ml-auto mr-4 p-1 ">
+            <div className="mx-4 sm:ml-auto p-1 ">
               <span className="font-bold mr-8">
                 Page{" - "}
                 <input

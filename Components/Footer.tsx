@@ -8,19 +8,19 @@ export const Footer = () => {
     <div className="w-full mx-auto">
       <footer className="p-3 rounded shadow flex items-center justify-between md:p-3 bg-gray-800">
         <div>
-          <span className="text-sm text-gray-500 hover:text-gray-300 sm:text-center px-2 border-r">
+          <span className="text-sm text-gray-500 hover:text-gray-300 text-center px-2 border-r">
             @ ACD Team <i className="fa-solid fa-heart text-red-600"></i>
           </span>
           <Link href={`${BASE_URL}/about`}>
             <a
               target="_blank"
-              className="text-sm text-gray-500 hover:text-gray-300 sm:text-center mx-2"
+              className="text-sm text-gray-500 hover:text-gray-300 text-center mx-2"
             >
               About Us
             </a>
           </Link>
         </div>
-        <ul className="flex flex-wrap items-center mt-3 sm:mt-0">
+        <ul className="flex flex-wrap items-center">
           <li>
             <Link href="https://discord.gg/ymBgMYvJb4">
               <a

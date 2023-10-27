@@ -255,8 +255,8 @@ const FilterSidebar = ({
 
   const handleFilter = async (isNewFilter: boolean) => {
     let newProblems: number[] = [];
-    const allProblemsCount: number = allProblems.problems.length;
-    const oldProblemsCount: number = isNewFilter ? 0 : filteredProblems.length;
+    const allProblemsCount: number = allProblems?.problems.length || 0;
+    const oldProblemsCount: number = isNewFilter ? 0 : filteredProblems?.length || 0;
     let problemIdx: number = isNewFilter ? 0 : allProblemsIndex;
 
     while (
@@ -473,7 +473,7 @@ const FilterSidebar = ({
         <div className="md:flex">
           <input
             type="text"
-            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 sm:my-2"
+            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
             id="minDifficulty"
             name="minDifficulty"
             title="minimum difficulty"
@@ -485,7 +485,7 @@ const FilterSidebar = ({
 
           <input
             type="text"
-            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 sm:my-2"
+            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
             id="maxDifficulty"
             name="maxDifficulty"
             title="maximum difficulty"
@@ -504,7 +504,7 @@ const FilterSidebar = ({
         <div className="md:flex">
           <input
             type="text"
-            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 sm:my-2"
+            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
             id="minIndex"
             name="minIndex"
             title="minimum index"
@@ -516,7 +516,7 @@ const FilterSidebar = ({
 
           <input
             type="text"
-            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 sm:my-2"
+            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
             id="maxIndex"
             name="maxIndex"
             title="maximum index"
@@ -535,7 +535,7 @@ const FilterSidebar = ({
         <div className="md:flex">
           <input
             type="text"
-            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 sm:my-2"
+            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
             id="minSolvedBy"
             name="minSolvedBy"
             title="minimum solvedBy"
@@ -547,7 +547,7 @@ const FilterSidebar = ({
 
           <input
             type="text"
-            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 sm:my-2"
+            className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
             id="maxSolvedBy"
             name="maxSolvedBy"
             title="maximum solvedBy"
@@ -563,7 +563,7 @@ const FilterSidebar = ({
 
       <div className="mt-0.5">
         <p className="text-base text-white font-bold mb-0.5">Contest</p>
-        <div className="grid grid-cols-2 md:grid-cols-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 text-xs sm:text-sm md:text-xxs lg:text-sm">
           {getContestButtons()}
         </div>
       </div>
@@ -641,7 +641,7 @@ const FilterSidebar = ({
 
       <div className="mt-0.5">
         <p className="text-base text-white font-bold mb-0.5">Status</p>
-        <div className="grid grid-cols-2 md:grid-cols-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 text-xs sm:text-sm md:text-xxs lg:text-sm">
           {getStatusButtons()}
         </div>
       </div>
@@ -657,7 +657,7 @@ const FilterSidebar = ({
         </button>
       </div>
     </div>
-  )
+  );
   return <div></div>
 };
 
