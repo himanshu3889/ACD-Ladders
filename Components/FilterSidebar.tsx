@@ -12,7 +12,8 @@ const FilterSidebar = ({
   setSortingParam,
   sortingOrder,
   setSortingOrder,
-  sortingOrdersArr
+  sortingOrdersArr,
+  isShowingFilterSideBar
 }: {
   problemsPerPage: number;
   pageNumber: number;
@@ -21,7 +22,8 @@ const FilterSidebar = ({
   setSortingParam: (value: string) => void;
   sortingOrder: number;
   setSortingOrder: (value: number) => void;
-  sortingOrdersArr:[string, string, string]
+  sortingOrdersArr:[string, string, string];
+  isShowingFilterSideBar:boolean;
 }) => {
 
   const {
@@ -464,7 +466,7 @@ const FilterSidebar = ({
   }, [pageNumber]);
 
 
-  return (
+  if (isShowingFilterSideBar) return (
     <div className="mx-2 lg:text-sm sm:text-xs">
       <div className="mt-1">
         <p className="text-base text-white font-bold mb-0.5">Difficulty</p>
@@ -609,7 +611,9 @@ const FilterSidebar = ({
               Tags{" "}
               <i
                 className={`cursor-pointer ml-4 fa-solid text-lg ${
-                  isShowingTags ? "fa-chevron-down text-green-300" : "fa-chevron-right"
+                  isShowingTags
+                    ? "fa-chevron-down text-green-300"
+                    : "fa-chevron-right"
                 }`}
                 onClick={() => setIsShowingTags(!isShowingTags)}
               ></i>
@@ -653,7 +657,8 @@ const FilterSidebar = ({
         </button>
       </div>
     </div>
-  );
+  )
+  return <div></div>
 };
 
 export default FilterSidebar;
