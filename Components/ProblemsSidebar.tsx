@@ -9,6 +9,7 @@ export const CODEFORCES_API = process.env.NEXT_PUBLIC_CODEFORCES_API;
 
 const ProblemsSidebar = ({
   problemsPerPage,
+  setProblemsPerPage,
   pageNumber,
   setPageNumber,
   sortingParam,
@@ -18,6 +19,7 @@ const ProblemsSidebar = ({
   sortingOrdersArr,
 }: {
   problemsPerPage: number;
+  setProblemsPerPage: (value: number) => void;
   pageNumber: number;
   setPageNumber: (value: number) => void;
   sortingParam: string;
@@ -277,13 +279,33 @@ const ProblemsSidebar = ({
               {!isInitialMount.current && getProblemComponents()}
             </tbody>
           </table>
-          <div className="flex shadow-inner border border-gray-400 bg-gray-700">
-            <div className="mx-4 sm:ml-auto p-1 ">
+          <div className="flex flex-row-reverse sm:flex-row items-center  shadow-inner border border-gray-400 bg-gray-700">
+            <div className="p-1 mx-auto">
+              <div className="font-bold mr-8">
+                <label htmlFor="pageSize">PPP{" - "}</label>
+                <select
+                  id="pageSize"
+                  value={problemsPerPage}
+                  title="problems per page"
+                  className="bg-gray-200 border rounded text-black w-14"
+                  onChange={(event) => {
+                    setProblemsPerPage(parseInt(event.target.value));
+                  }}
+                >
+                  {[25, 50, 75, 100].map((problemsCnt) => (
+                    <option key={problemsCnt} value={problemsCnt}>
+                      {problemsCnt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="mx-auto p-1 ">
               <span className="font-bold mr-8">
                 Page{" - "}
                 <input
                   type="text"
-                  className="bg-gray-200 border rounded p-1 text-black w-12"
+                  className="bg-gray-200 border rounded p-0.5 text-black w-12"
                   name="pageNumber"
                   id="pageNumber"
                   value={pageInputNumber}

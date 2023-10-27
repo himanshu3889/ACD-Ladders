@@ -12,7 +12,7 @@ const Home = () => {
 
   const { removeUser }: any = useUserStore();
 
-  const problemsPerPage: number = 25; // fixed number of problems on the page
+  const [problemsPerPage, setProblemsPerPage] = useState<number>(25);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
   const [sortingParam, setSortingParam] = useState<string>("");
@@ -40,6 +40,7 @@ const Home = () => {
         >
           <ProblemsSidebar
             problemsPerPage={problemsPerPage}
+            setProblemsPerPage={setProblemsPerPage}
             pageNumber={pageNumber}
             setPageNumber={setPageNumber}
             sortingParam={sortingParam}
