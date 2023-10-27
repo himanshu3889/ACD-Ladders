@@ -103,6 +103,8 @@ const FilterSidebar = ({
 
   const [allProblemsIndex, setAllProblemsIndex] = useState<number>(0);
 
+  const [isShowingTags, setIsShowingTags] = useState<boolean>(true);
+
   function getSameProblemOtherContestId(
     problemContestRound: string,
     problemContestID: number,
@@ -602,8 +604,16 @@ const FilterSidebar = ({
         </div>
 
         <div className="mt-1">
-          <p className="text-base text-white font-bold mb-0.5 flex items-center justify-between">
-            Tags
+          <div className="text-base text-white font-bold mb-0.5 flex items-center justify-between">
+            <span>
+              Tags{" "}
+              <i
+                className={`cursor-pointer ml-4 fa-solid text-lg ${
+                  isShowingTags ? "fa-chevron-down text-green-300" : "fa-chevron-right"
+                }`}
+                onClick={() => setIsShowingTags(!isShowingTags)}
+              ></i>
+            </span>
             <span className="text-base text-white flex items-center mr-4">
               Clear Tags
               <i
@@ -611,10 +621,15 @@ const FilterSidebar = ({
                 onClick={handleTagsClear}
               />
             </span>
-          </p>
-          <div role="buttons" className="flex flex-wrap items-baseline w-full">
-            {getTagButtons()}
           </div>
+          {isShowingTags && (
+            <div
+              role="buttons"
+              className="flex flex-wrap items-baseline w-full"
+            >
+              {getTagButtons()}
+            </div>
+          )}
         </div>
       </div>
 
