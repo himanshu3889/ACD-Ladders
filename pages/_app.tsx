@@ -2,6 +2,8 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import "../styles/globals.css";
+import Navbar from "../Components/Navbar";
+import { Footer } from "../Components/Footer";
 
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -25,11 +27,11 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         />
       </Head>
       
-      {/* NAVBAR  */}
+      <Navbar/>
       <div>
         <Component {...pageProps} />
       </div>
-      {/* Footer */}
+      <Footer/>
     </>
   );
 };

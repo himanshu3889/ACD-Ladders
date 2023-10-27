@@ -18,6 +18,7 @@ const UserForm = () => {
     removeUser,
     setUserSolvedProblems,
     setUserAttemptedProblems,
+    setUserError
   }: any = useUserStore();
 
   const [userID, setUserID] = useState<string>("");
@@ -89,6 +90,7 @@ const UserForm = () => {
       setUserAttemptedProblems(userAttemptedProblems);
       setUser(userInfo);
     } catch (error) {
+      setUserError()
       resetProblemsStatus(allProblems.length);
       removeUser();
       setHasFetchingUser(false);
@@ -100,7 +102,7 @@ const UserForm = () => {
 
 
   return (
-    <div className="p-4">
+    <div className="p-0.5">
       <div className="-space-x-2 mx-auto w-max relative">
         <input
           className={`${

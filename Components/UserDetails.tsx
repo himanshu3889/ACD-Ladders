@@ -48,7 +48,7 @@ export default function UserDetails() {
 
   return (
     <div className="flex flex-row group">
-      <div className="each flex rounded shadow w-max m-2 bg-gray-50">
+      <div className="each flex rounded shadow w-max mx-2 bg-gray-50 relative">
         <div className="sec self-center p-0.5 pr-1">
           <Link href={`https://codeforces.com/profile/${userProfile?.handle}`}>
             <a target="_blank">
@@ -60,7 +60,7 @@ export default function UserDetails() {
             </a>
           </Link>
         </div>
-        <div className="sec self-center p-0.5 w-64">
+        <div className="sec self-center p-0 w-64 hidden md:inline-block">
           <div className="flex">{userIDColorStyleByRank()}</div>
           <div className="flex text-xs text-gray-600">
             <span>
@@ -74,8 +74,7 @@ export default function UserDetails() {
             </span>
           </div>
         </div>
-      </div>
-      <div className="cursor-pointer opacity-0 group-hover:opacity-100 text-gray-300 hover:text-gray-100">
+      <div className="absolute top-0 right-0 cursor-pointer opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 px-1">
         <i
           className="fa-solid fa-xmark text-xl"
           onClick={() => {
@@ -83,6 +82,7 @@ export default function UserDetails() {
             removeUser();
           }}
         ></i>
+      </div>
       </div>
     </div>
   );
