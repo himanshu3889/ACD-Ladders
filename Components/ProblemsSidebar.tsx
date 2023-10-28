@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import useProblemsStore from "../store/Problems";
-import UserForm from "./UserForm";
-import UserDetails from "./UserDetails";
 import useUserStore from "../store/User";
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 export const CODEFORCES_API = process.env.NEXT_PUBLIC_CODEFORCES_API;
@@ -83,20 +81,33 @@ const ProblemsSidebar = ({
     }
   }, [pageNumber]);
 
+
+  const getProblemDifficultyColorStyle = (rating: number) => {
+    return rating == 0
+      ? "text-gray-500"
+      : rating < 1200
+      ? "text-gray-600"
+      : rating < 1400
+      ? "text-green-600"
+      : rating < 1600
+      ? "text-cyan-600"
+      : rating < 1900
+      ? "text-blue-600"
+      : rating < 2100
+      ? "text-fuchsia-600"
+      : rating < 2400
+      ? "text-orange-600"
+      : "text-red-600";
+  };
+
+
   const getSingleProblemComponent = (index: number, problemNumber: number) => {
     const contestID: number = allProblems?.problems[index]?.contestId;
     const problemIndex: string = allProblems?.problems[index]?.index;
     const problemID: string = `${contestID}${problemIndex}`;
     const problemName: string = allProblems?.problems[index]?.name;
-    const problemSolvedCount: number =
-      allProblems?.problemStatistics[index]?.solvedCount !== undefined
-        ? allProblems?.problemStatistics[index]?.solvedCount
-        : 0;
-
-    const problemDifficulty: number =
-      allProblems?.problems[index]?.rating !== undefined
-        ? allProblems?.problems[index]?.rating
-        : 0;
+    const problemSolvedCount: number = allProblems?.problemStatistics[index]?.solvedCount || 0;
+    const problemDifficulty: number = allProblems?.problems[index]?.rating || 0;
 
     // ProblemStatus : Unsolved / Attempted / Solved;
     const problemStatusAndOtherContestId: string = problemsStatusSpacedOtherContestId[index] || "";
@@ -155,7 +166,7 @@ const ProblemsSidebar = ({
               >
                 <a target="_blank">
                   <i
-                    className="mr-6 fa-solid fa-circle-exclamation text-sm text-yellow-500 hover:text-yellow-600"
+                    className="mr-6 ml-2 fa-solid fa-circle-exclamation text-sm text-yellow-500 hover:text-yellow-600"
                     title={`Tried in ${sameProblemOtherContestId}${sameProblemOtherContestIndex}`}
                   />
                 </a>
@@ -177,7 +188,13 @@ const ProblemsSidebar = ({
         </td>
         <td className="lg:py-0.5 py-1 px-2 text-left">
           <div className="flex items-center">
-            <span>{problemDifficulty}</span>
+            <span
+              className={`font-bold ${getProblemDifficultyColorStyle(
+                problemDifficulty
+              )}`}
+            >
+              {problemDifficulty}
+            </span>
           </div>
         </td>
       </tr>
