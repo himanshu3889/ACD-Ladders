@@ -50,7 +50,7 @@ export default function UserDetails() {
     <div className="flex flex-row group">
       <div className="each flex rounded shadow w-max md:mr-2 ml-2 bg-gray-50 relative">
         <div className="sec self-center p-0.5 pr-1">
-          <Link href={`https://codeforces.com/profile/${userProfile?.handle}`}>
+          <Link href={`https://codeforces.com/profile/${userProfile?.handle}`} legacyBehavior>
             <a target="_blank">
               <img
                 className="cursor-pointer h-10 w-10 border p-0.5 rounded-full bg-gray-500 hover:border-2 hover:bg-blue-500"

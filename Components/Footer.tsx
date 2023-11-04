@@ -11,7 +11,7 @@ export const Footer = () => {
           <span className="text-sm text-gray-500 hover:text-gray-300 text-center px-2 border-r">
             @ ACD Team <i className="fa-solid fa-heart text-red-600"></i>
           </span>
-          <Link href={`${BASE_URL}/about`}>
+          <Link href={`${BASE_URL}/about`} legacyBehavior>
             <a
               target="_blank"
               className="text-sm text-gray-500 hover:text-gray-300 text-center mx-2"
@@ -22,7 +22,7 @@ export const Footer = () => {
         </div>
         <ul className="flex flex-wrap items-center">
           <li>
-            <Link href="https://discord.gg/ymBgMYvJb4">
+            <Link href="https://discord.gg/ymBgMYvJb4" legacyBehavior>
               <a
                 target="_blank"
                 className="mr-4 text-sm text-gray-500 md:mr-8 "
@@ -32,7 +32,7 @@ export const Footer = () => {
             </Link>
           </li>
           <li>
-            <Link href="https://www.youtube.com/@GrindCoding">
+            <Link href="https://www.youtube.com/@GrindCoding" legacyBehavior>
               <a
                 target="_blank"
                 className="mr-4 text-sm text-gray-500 md:mr-8 "
@@ -42,7 +42,7 @@ export const Footer = () => {
             </Link>
           </li>
           <li>
-            <Link href="https://github.com/himanshu3889/ACodeDaily/">
+            <Link href="https://github.com/himanshu3889/ACodeDaily/" legacyBehavior>
               <a
                 target="_blank"
                 className="mr-4 text-sm text-gray-500 md:mr-8 "

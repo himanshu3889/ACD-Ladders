@@ -15,7 +15,7 @@ const Navbar = () => {
         <div className="flex items-center justify-center">
           <div className="md:border-r md:border-gray-500 pr-2 mx-4 md:mx-2 flex flex-shrink-0 title-font font-medium items-center text-gray-900 md:mb-0">
             <Image
-              className="p-2 rounded-full"
+              className="p-0.5 rounded-full"
               src={AppLogo}
               alt="logo"
               width={45}

@@ -38,6 +38,7 @@ const ProblemsSidebar = ({
 
   const [pageInputNumber, setPageInputValue] = useState<number>(1);
   const handlePageInput = (event: any) => {
+    if (hasFetchingProblems){return}
     const newPageNumber = event.target.value.replace(/[^0-9]/g, "");
     setPageInputValue(newPageNumber);
   };
@@ -154,6 +155,7 @@ const ProblemsSidebar = ({
           <div className="flex items-center justify-between text-blue-600 hover:text-blue-800">
             <Link
               href={`https://codeforces.com/contest/${contestID}/problem/${problemIndex}`}
+              legacyBehavior
             >
               <a target="_blank">
                 {contestID}
@@ -163,6 +165,7 @@ const ProblemsSidebar = ({
             {problemStatus !== "Unsolved" && sameProblemOtherContestId && (
               <Link
                 href={`https://codeforces.com/contest/${sameProblemOtherContestId}/problem/${sameProblemOtherContestIndex}`}
+                legacyBehavior
               >
                 <a target="_blank">
                   <i
@@ -304,9 +307,11 @@ const ProblemsSidebar = ({
                   id="pageSize"
                   value={problemsPerPage}
                   title="problems per page"
-                  className="bg-gray-200 border rounded text-black w-14"
+                  className={`bg-gray-200 border rounded text-black w-14 ${hasFetchingProblems && "cursor-wait"}`}
+                  disabled={hasFetchingProblems}
                   onChange={(event) => {
-                    setProblemsPerPage(parseInt(event.target.value));
+                    !hasFetchingProblems &&
+                      setProblemsPerPage(parseInt(event.target.value));
                   }}
                 >
                   {[25, 50, 75, 100].map((problemsCnt) => (

@@ -40,59 +40,52 @@ const FilterSidebar = ({
     similarRoundDiv1Div2Contests,
     hasFetchingProblems,
   }: any = useProblemsStore();
-  const { userProfile, userSolvedProblems, userAttemptedProblems }: any =
-    useUserStore();
+  const { userProfile, userSolvedProblems, userAttemptedProblems }: any = useUserStore();
 
-  const [problemDifficultyRange, setProblemDifficultyRange] = useState<
-    [number, number]
-  >([0, 5000]);
-  const [problemIndexRange, setProblemsIndexRange] = useState<[string, string]>(
-    ["A", "Z"]
-  );
-  const [problemSolvedRange, setproblemSolvedRange] = useState<
-    [number, number]
-  >([0, 9999999999]);
+  const [problemDifficultyRange, setProblemDifficultyRange] = useState<[number, number]>([0, 5000]);
+  const [problemIndexRange, setProblemsIndexRange] = useState<[string, string]>(["A", "Z"]);
+  const [problemSolvedRange, setProblemSolvedRange] = useState<[number, number]>([0, 9999999999]);
   const [tagState, setTagState] = useState<Record<string, boolean>>({
     "brute force": false,
-    greedy: false,
-    sortings: false,
+    "greedy": false,
+    "sortings": false,
     "two pointers": false,
-    dp: false,
+    "dp": false,
     "binary search": false,
     "ternary search": false,
-    math: false,
+    "math": false,
     "number theory": false,
-    combinatorics: false,
+    "combinatorics": false,
     "chinese remainder theorem": false,
-    graphs: false,
-    trees: false,
+    "graphs": false,
+    "trees": false,
     "dfs and similar": false,
-    dsu: false,
+    "dsu": false,
     "divide and conquer": false,
     "data structures": false,
     "constructive algorithms": false,
-    implementation: false,
-    interactive: false,
-    geometry: false,
-    strings: false,
-    bitmasks: false,
+    "implementation": false,
+    "interactive": false,
+    "geometry": false,
+    "strings": false,
+    "bitmasks": false,
     "shortest paths": false,
-    probabilities: false,
-    hashing: false,
-    games: false,
-    flows: false,
+    "probabilities": false,
+    "hashing": false,
+    "games": false,
+    "flows": false,
     "graph matchings": false,
-    special: false,
-    matrices: false,
+    "special": false,
+    "matrices": false,
     "string suffix structures": false,
-    fft: false,
+    "fft": false,
     "expression parsing": false,
     "meet-in-the-middle": false,
     "2-sat": false,
-    schedules: false,
+    "schedules": false,
   });
 
-  const [isTagsORLogicFiltered, setIsTagsTakenByOR] = useState<boolean>(false);
+  const [isTagsORLogicFiltered, setIsTagsORLogicFiltered] = useState<boolean>(false);
   const [isTagsExcluded, setIsTagsExcluded] = useState<boolean>(false);
 
   const allContestTypes: Array<string> = [
@@ -365,7 +358,7 @@ const FilterSidebar = ({
     const newSolvedCount = event.target.value.replace(/[^0-9]/g, "");
     const newRange = [...problemSolvedRange];
     newRange[index] = newSolvedCount;
-    setproblemSolvedRange(newRange as [number, number]);
+    setProblemSolvedRange(newRange as [number, number]);
   };
 
   const handleTagToggle = (tag: string) => {
@@ -597,7 +590,7 @@ const FilterSidebar = ({
                     : "text-green-600 fa-toggle-off"
                 }`}
                 onClick={() => {
-                  setIsTagsTakenByOR(!isTagsORLogicFiltered);
+                  setIsTagsORLogicFiltered(!isTagsORLogicFiltered);
                 }}
               ></i>
             </div>
