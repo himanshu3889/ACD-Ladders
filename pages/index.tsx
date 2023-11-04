@@ -30,7 +30,7 @@ const Home = () => {
       <div className="flex flex-row font-sans bg-gray-200">
         <div
           className={`overflow-x-auto flex-auto ${
-            isShowingFilterSideBar ? "w-1/2 sm:w-2/3" : "w-full"
+            isShowingFilterSideBar ? "w-5/12 sm:w-2/3" : "w-full"
           } mr-1 border-2 rounded-md bg-slate-600`}
         >
           <ProblemsSidebar
@@ -48,7 +48,7 @@ const Home = () => {
 
         <div
           className={`flex-auto overflow-x-auto ${
-            isShowingFilterSideBar ? "w-1/2 sm:w-1/3" : ""
+            isShowingFilterSideBar ? "w-7/12 sm:w-1/3" : ""
           } ml-1 border-2 rounded-md bg-slate-600`}
         >
           <FilterSidebar

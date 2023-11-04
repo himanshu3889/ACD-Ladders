@@ -480,7 +480,7 @@ const FilterSidebar = ({
           <div className="md:flex">
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="minDifficulty"
               name="minDifficulty"
               title="minimum difficulty"
@@ -492,7 +492,7 @@ const FilterSidebar = ({
 
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="maxDifficulty"
               name="maxDifficulty"
               title="maximum difficulty"
@@ -511,7 +511,7 @@ const FilterSidebar = ({
           <div className="md:flex">
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="minIndex"
               name="minIndex"
               title="minimum index"
@@ -523,7 +523,7 @@ const FilterSidebar = ({
 
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="maxIndex"
               name="maxIndex"
               title="maximum index"
@@ -542,7 +542,7 @@ const FilterSidebar = ({
           <div className="md:flex">
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="minSolvedBy"
               name="minSolvedBy"
               title="minimum solvedBy"
@@ -554,7 +554,7 @@ const FilterSidebar = ({
 
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="maxSolvedBy"
               name="maxSolvedBy"
               title="maximum solvedBy"
