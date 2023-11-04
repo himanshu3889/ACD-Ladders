@@ -96,7 +96,7 @@ const problemsStore = (set: any) => ({
   allSortedProblemsBySolvedCountDsc: null,
   contestData: null,
   similarRoundDiv1Div2Contests: null,
-  hasFetchingProblems: true,
+  hasFetchingProblems: false,
 
   setAllProblems: (problems: IProblems) => set({ allProblems: problems }),
   setHasProblemsFiltered: (value: boolean) =>
@@ -151,7 +151,7 @@ const problemsStore = (set: any) => ({
       }
 
       // Extract the Contest Information
-      const contestData: Map<number, IContestRenew> = new Map();
+      const contestData: Record<number, IContestRenew> = {};
       const similarRoundDiv1Div2Contests: Map<string, number[]> = new Map();
       const contestsDataResult: IContestsResponseData =
         await contestResponse.json();
@@ -162,7 +162,7 @@ const problemsStore = (set: any) => ({
         const contestRound: string = contestRenewData.round;
         const contestType: string = contestRenewData.contestType;
         const isEducationalContest:boolean = contestRenewData.isEducationalContest
-        contestData.set(contestID, contestRenewData);
+        contestData[contestID] = contestRenewData ;
         if (!isEducationalContest && ["Div. 1", "Div. 2"].includes(contestType)) {
             const currentIDs = similarRoundDiv1Div2Contests.get(contestRound) || [];
             currentIDs.push(contestID)
@@ -236,11 +236,21 @@ const problemsStore = (set: any) => ({
         },
       });
       
-    const useProblemsStore = create(
-        persist(problemsStore, {
-          name: "problems",
+const useProblemsStore = create(
+  persist(problemsStore, {
+    name: "problems",
+    partialize: (state) =>
+      Object.fromEntries(
+        Object.entries(state).filter(
+          ([key]) =>
+            ![
+              "hasProblemsFiltered",
+              "filteredProblems",
+              "problemsStatusSpacedOtherContestId",
+            ].includes(key)
+        )
+      )
   })
-  
 );
 
 export default useProblemsStore;

@@ -133,14 +133,14 @@ const FilterSidebar = ({
     const problemIndex: string = problem.index;
     const problemName: string = problem.name;
     const problemRating: number = problem?.rating ?? 0;
-    const problemContestID: number | undefined = problem?.contestId;
+    const problemContestID: number = problem?.contestId || -1;
 
     const problemContestType: string =
-      contestData.get(problemContestID)?.contestType;
+      contestData[problemContestID]?.contestType || "";
     const isProblemContestEducational: boolean =
-      contestData.get(problemContestID)?.isEducationalContest;
+      contestData[problemContestID]?.isEducationalContest || false;
     const problemContestRound: string =
-      contestData.get(problemContestID)?.round;
+      contestData[problemContestID]?.round || "";
     const problemSolvedCount: number =
       allProblems.problemStatistics[index]?.solvedCount;
 

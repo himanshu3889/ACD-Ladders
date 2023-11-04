@@ -7,10 +7,7 @@ import useProblemsStore from "../store/Problems";
 import useUserStore from "../store/User";
 
 const Home = () => {
-  const { removeFiltering, fetchAllProblemsAndContest }: any =
-    useProblemsStore();
-
-  const { removeUser }: any = useUserStore();
+  const { fetchAllProblemsAndContest }: any = useProblemsStore();
 
   const [problemsPerPage, setProblemsPerPage] = useState<number>(25);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -23,9 +20,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await removeFiltering();
       await fetchAllProblemsAndContest();
-      await removeUser();
     };
     fetchData();
   }, []);

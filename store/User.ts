@@ -30,9 +30,7 @@ const userStore = (set: any) => ({
 });
 
 const useUserStore = create(
-  persist(userStore, {
-    name: "auth",
-  })
+  userStore
 );
 
 export default useUserStore;

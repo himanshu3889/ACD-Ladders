@@ -25,8 +25,8 @@ const UserForm = () => {
   const [hasFetchingUser, setHasFetchingUser] = useState<boolean>(false)
 
   const handleUserForm = async () => {
-    if (hasFetchingProblems || hasFetchingUser){
-      return ;
+    if (hasFetchingUser) {
+      return;
     }
 
     if (userID.length === 0) {
@@ -106,13 +106,13 @@ const UserForm = () => {
       <div className="-space-x-2 mx-auto sm:w-max relative">
         <input
           className={`${
-            hasFetchingProblems && "cursor-wait"
+            hasFetchingUser && "cursor-wait"
           } peer bg-yellow-300 h-10 w-1/2 sm:w-auto md:h-12 p-4 text-lg font-semibold focus:bg-yellow-400 outline-none caret-blue-700`}
           type="text"
           name="userNameSearch"
           id="userNameSearch"
           placeholder="Enter UserID"
-          disabled={hasFetchingProblems}
+          disabled={hasFetchingUser}
           onChange={(event) => {
             setUserID(event.target.value.trim());
           }}
@@ -131,11 +131,7 @@ const UserForm = () => {
         >
           <i
             className={`fa-solid  ${
-              !hasFetchingProblems
-                ? !hasFetchingUser
-                  ? "fa-search"
-                  : "fa-search fa-beat-fade"
-                : "fa-circle-notch fa-spin"
+              !hasFetchingUser ? "fa-search" : "fa-circle-notch fa-spin"
             }`}
           ></i>
         </button>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import useProblemsStore from "../store/Problems";
 import useUserStore from "../store/User";
+import Loading from "./Lodading";
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 export const CODEFORCES_API = process.env.NEXT_PUBLIC_CODEFORCES_API;
 
@@ -307,14 +308,12 @@ const ProblemsSidebar = ({
                   id="pageSize"
                   value={problemsPerPage}
                   title="problems per page"
-                  className={`bg-gray-200 border rounded text-black w-14 ${hasFetchingProblems && "cursor-wait"}`}
-                  disabled={hasFetchingProblems}
+                  className="bg-gray-200 border rounded text-black w-14"
                   onChange={(event) => {
-                    !hasFetchingProblems &&
-                      setProblemsPerPage(parseInt(event.target.value));
+                    setProblemsPerPage(parseInt(event.target.value));
                   }}
                 >
-                  {[25, 50, 75, 100].map((problemsCnt) => (
+                  {[15, 25, 50, 75, 100].map((problemsCnt) => (
                     <option key={problemsCnt} value={problemsCnt}>
                       {problemsCnt}
                     </option>
