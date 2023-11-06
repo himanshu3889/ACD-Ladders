@@ -17,6 +17,7 @@ const Navbar = () => {
         <div className="flex items-center justify-center">
           <div className="md:border-r md:border-gray-500 pr-2 mx-4 md:mx-2 flex flex-shrink-0 title-font font-medium items-center text-gray-900 md:mb-0">
             <div className="relative inline-block">
+              <div aria-label="Loading..." role="status"></div>
               <Image
                 className="p-0.5 rounded-full"
                 src={AppLogo}
@@ -30,9 +31,12 @@ const Navbar = () => {
               />
               {hasFetchingProblems && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <i
-                    className={`text-white fa fa-circle-notch fa-spin text-5xl`}
-                  ></i>
+                  <div
+                    className="animate-spin inline-block w-11 h-11 border-[2px] border-current border-t-transparent text-white rounded-full"
+                    role="status"
+                    aria-label="loading"
+                  >
+                  </div>
                 </div>
               )}
             </div>
