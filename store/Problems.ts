@@ -152,7 +152,7 @@ const problemsStore = (set: any) => ({
 
       // Extract the Contest Information
       const contestData: Record<number, IContestRenew> = {};
-      const similarRoundDiv1Div2Contests: Map<string, number[]> = new Map();
+      const similarRoundDiv1Div2Contests: Record<string, number[]> = {};
       const contestsDataResult: IContestsResponseData =
         await contestResponse.json();
 
@@ -164,9 +164,9 @@ const problemsStore = (set: any) => ({
         const isEducationalContest:boolean = contestRenewData.isEducationalContest
         contestData[contestID] = contestRenewData ;
         if (!isEducationalContest && ["Div. 1", "Div. 2"].includes(contestType)) {
-            const currentIDs = similarRoundDiv1Div2Contests.get(contestRound) || [];
+            const currentIDs = similarRoundDiv1Div2Contests[contestRound] || [];
             currentIDs.push(contestID)
-            similarRoundDiv1Div2Contests.set(contestRound, currentIDs);
+            similarRoundDiv1Div2Contests[contestRound] = currentIDs;
           }
       });
 

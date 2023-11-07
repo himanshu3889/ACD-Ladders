@@ -110,7 +110,7 @@ const FilterSidebar = ({
     problemContestID: number
   ): number {
     const sameRoundContestIds: number[] =
-      similarRoundDiv1Div2Contests.get(problemContestRound);
+      similarRoundDiv1Div2Contests[problemContestRound];
     let sameProblemOtherContestId: number = -1;
     if (sameRoundContestIds) {
       if (sameRoundContestIds.length === 2) {
