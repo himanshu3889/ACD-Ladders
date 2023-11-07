@@ -30,9 +30,6 @@ const FilterSidebar = ({
     allSortedProblemsByNameAsc,
     allSortedProblemsByDifficultyAsc,
     allSortedProblemsBySolvedCountAsc,
-    allSortedProblemsByNameDsc,
-    allSortedProblemsByDifficultyDsc,
-    allSortedProblemsBySolvedCountDsc,
     problemsStatusSpacedOtherContestId,
     filteredProblems,
     setFilteredProblems,
@@ -267,36 +264,33 @@ const FilterSidebar = ({
     const oldProblemsCount: number = isNewFilter
       ? 0
       : filteredProblems?.length || 0;
-    let problemIdx: number = isNewFilter ? 0 : allProblemsIndex;
+    let currIndex: number = isNewFilter ? 0 : allProblemsIndex;
+    const sortingType:string = sortingOrdersArr[sortingOrder];
 
     while (
-      problemIdx < allProblemsCount &&
+      currIndex < allProblemsCount &&
       newProblems.length + oldProblemsCount < pageNumber * problemsPerPage
     ) {
-      let currentProblemIndex: number = problemIdx;
-      if (sortingOrdersArr[sortingOrder] === "ASC") {
-        currentProblemIndex =
+      let problemIndex: number = currIndex;
+      if (sortingType) {
+        const newCurrIndex:number = sortingType === "ASC"
+          ? currIndex
+          : allProblemsCount - 1 - currIndex;
+        problemIndex =
           sortingParam === "Name"
-            ? allSortedProblemsByNameAsc[problemIdx]
+            ? allSortedProblemsByNameAsc[newCurrIndex]
             : sortingParam === "Difficulty"
-            ? allSortedProblemsByDifficultyAsc[problemIdx]
-            : allSortedProblemsBySolvedCountAsc[problemIdx];
-      } else if (sortingOrdersArr[sortingOrder] === "DSC") {
-        currentProblemIndex =
-          sortingParam === "Name"
-            ? allSortedProblemsByNameDsc[problemIdx]
-            : sortingParam === "Difficulty"
-            ? allSortedProblemsByDifficultyDsc[problemIdx]
-            : allSortedProblemsBySolvedCountDsc[problemIdx];
+            ? allSortedProblemsByDifficultyAsc[newCurrIndex]
+            : allSortedProblemsBySolvedCountAsc[newCurrIndex];
       }
 
-      if (hasSatisfyFilters(currentProblemIndex)) {
-        newProblems.push(currentProblemIndex);
+      if (hasSatisfyFilters(problemIndex)) {
+        newProblems.push(problemIndex);
       }
-      problemIdx++;
+      currIndex++;
     }
 
-    setAllProblemsIndex(problemIdx);
+    setAllProblemsIndex(currIndex);
     if (isNewFilter) {
       setFilteredProblems(newProblems);
       const calculatedPageNumber: number = Math.max(

@@ -91,9 +91,6 @@ const problemsStore = (set: any) => ({
   allSortedProblemsByNameAsc: null,
   allSortedProblemsByDifficultyAsc: null,
   allSortedProblemsBySolvedCountAsc: null,
-  allSortedProblemsByNameDsc: null,
-  allSortedProblemsByDifficultyDsc: null,
-  allSortedProblemsBySolvedCountDsc: null,
   contestData: null,
   similarRoundDiv1Div2Contests: null,
   hasFetchingProblems: false,
@@ -198,30 +195,11 @@ const problemsStore = (set: any) => ({
         return solvedByA - solvedByB;
       });
       
-      const problemsSortedIndicesByNameDsc: number[] = new Array(problemsCount);
-      const problemsSortedIndicesByDifficultyDsc: number[] = new Array(
-        problemsCount
-        );
-        const problemsSortedIndicesBySolvedByDsc: number[] = new Array(
-          problemsCount
-          );
-          for (let i = 0; i < problemsCount; i++) {
-            const reverseIndex = problemsCount - 1 - i;
-            problemsSortedIndicesByNameDsc[i] =
-            problemsSortedIndicesByNameAsc[reverseIndex];
-            problemsSortedIndicesByDifficultyDsc[i] =
-            problemsSortedIndicesByDifficultyAsc[reverseIndex];
-            problemsSortedIndicesBySolvedByDsc[i] =
-            problemsSortedIndicesBySolvedByAsc[reverseIndex];
-          }
           
           set({
             allSortedProblemsByNameAsc: problemsSortedIndicesByNameAsc,
             allSortedProblemsByDifficultyAsc: problemsSortedIndicesByDifficultyAsc,
             allSortedProblemsBySolvedCountAsc: problemsSortedIndicesBySolvedByAsc,
-            allSortedProblemsByNameDsc: problemsSortedIndicesByNameDsc,
-            allSortedProblemsByDifficultyDsc: problemsSortedIndicesByDifficultyDsc,
-            allSortedProblemsBySolvedCountDsc: problemsSortedIndicesBySolvedByDsc,
           });
         } catch (error) {
           set({ hasFetchingProblems: false });
