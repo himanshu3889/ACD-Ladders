@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import "../styles/globals.css";
 import Navbar from "../Components/Navbar";
 import { Footer } from "../Components/Footer";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -26,12 +28,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           crossOrigin="anonymous"
         />
       </Head>
-      
-      <Navbar/>
+
+      <ToastContainer autoClose={1800} limit={3} draggablePercent={30} />
+      <Navbar />
       <div>
         <Component {...pageProps} />
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

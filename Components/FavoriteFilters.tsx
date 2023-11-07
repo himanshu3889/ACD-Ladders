@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import useClickAway from "../utils/hooks/useClickAway";
+import { toast } from "react-toastify";
 
 type favoriteFilterProps = {
   problemDifficultyRange: [number, number];
@@ -76,8 +77,75 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     setResetFilter(stateToSave);
   }, []);
 
+  const filterEditSuccessNotify = (favFilterIndex: number) => {
+    const screenWidth = window.innerWidth;
+    const width = screenWidth <= 768 ? "70%" : "100%";
+    toast.success(`Filter No.${favFilterIndex + 1} Edit Successfully`, {
+      position: toast.POSITION.TOP_LEFT,
+      theme: "colored",
+      pauseOnHover: false,
+      style: {
+        marginTop: "56px",
+        width: width,
+      },
+    });
+  };
+
+  const filterDeleteSuccessNotify = (favFilterIndex: number) => {
+    const screenWidth = window.innerWidth;
+    const width = screenWidth <= 768 ? "70%" : "100%";
+    toast.success(`Filter No.${favFilterIndex + 1} Delete Successfully`, {
+      position: toast.POSITION.TOP_LEFT,
+      theme: "colored",
+      pauseOnHover: false,
+      style: {
+        marginTop: "56px",
+        width: width,
+      },
+    });
+  };
+
+  const filterSaveSuccessNotify = (favFilterIndex: number) => {
+    const screenWidth = window.innerWidth;
+    const width = screenWidth <= 768 ? "70%" : "100%";
+    toast.success(
+      `Filtering Saved Successfully to Filter No.${favFilterIndex + 1}`,
+      {
+        position: toast.POSITION.TOP_LEFT,
+        theme: "colored",
+        pauseOnHover: false,
+        style: {
+          marginTop: "56px",
+          width: width,
+        },
+      }
+    );
+  };
+
+  const filterSelectSuccessNotify = (favFilterIndex: number) => {
+    const screenWidth = window.innerWidth;
+    const width = screenWidth <= 768 ? "70%" : "100%";
+    toast.success(`Filter No.${favFilterIndex + 1} Selected Successfully`, {
+      position: toast.POSITION.TOP_LEFT,
+      theme: "colored",
+      pauseOnHover: false,
+      style: {
+        marginTop: "56px",
+        width: width,
+      },
+    });
+  };
+
   const handleSaveFilter = (event: any, favFilterIndex: number) => {
     event.stopPropagation();
+    const result = window.confirm(
+      `Are you sure you want to save filtering to filter No. ${
+        favFilterIndex + 1
+      } ?`
+    );
+    if (result === false) {
+      return
+    }
     const favFilterNewName: string =
       currentfavFilters[favFilterIndex]?.filterName ||
       `filter ${favFilterIndex + 1}`;
@@ -97,10 +165,17 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     newSavedStates[favFilterIndex] = stateToSave;
     setCurrentFavFilters(newSavedStates);
     localStorage.setItem("currentfavFilters", JSON.stringify(newSavedStates));
+    filterSaveSuccessNotify(favFilterIndex);
   };
 
   const handleDeleteFilter = (event: any, favFilterIndex: number) => {
     event.stopPropagation();
+    const result = window.confirm(
+      `Are you sure you want to delete filter No. ${favFilterIndex + 1} ?`
+    );
+    if (result === false) {
+      return
+    }
     const favFilterNewName: string =
       currentfavFilters[favFilterIndex]?.favFilterNewName ||
       `filter ${favFilterIndex + 1}`;
@@ -111,27 +186,39 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     newSavedStates[favFilterIndex] = stateToSave;
     setCurrentFavFilters(newSavedStates);
     localStorage.setItem("currentfavFilters", JSON.stringify(newSavedStates));
+    filterDeleteSuccessNotify(favFilterIndex);
   };
 
   const handleFilterRename = (event: any, favFilterIndex: number) => {
     event.stopPropagation();
-    if (renameFavFilterIndex === favFilterIndex) {
-      const newSavedStates = [...currentfavFilters];
-      newSavedStates[renameFavFilterIndex].filterName =
-        favFilterNewName.length > 0
-          ? favFilterNewName
-          : `filter ${renameFavFilterIndex + 1}`;
-      setCurrentFavFilters(newSavedStates);
-      localStorage.setItem("currentfavFilters", JSON.stringify(newSavedStates));
+    const result = window.confirm(
+      `Are you sure you want to rename filter No. ${favFilterIndex + 1} ?`
+    );
+    if (result === true) {
+      if (renameFavFilterIndex === favFilterIndex) {
+        const newSavedStates = [...currentfavFilters];
+        newSavedStates[renameFavFilterIndex].filterName =
+          favFilterNewName.length > 0
+            ? favFilterNewName
+            : `filter ${renameFavFilterIndex + 1}`;
+        setCurrentFavFilters(newSavedStates);
+        localStorage.setItem(
+          "currentfavFilters",
+          JSON.stringify(newSavedStates)
+        );
+      }
+      setRenameFavFilterIndex(-1);
+      filterEditSuccessNotify(favFilterIndex);
+    } else {
+      setRenameFavFilterIndex(-1);
     }
-    setRenameFavFilterIndex(-1);
   };
 
-  const handleFilterEditButton = (event: any, index: number) => {
+  const handleFilterEditButton = (event: any, favFilterIndex: number) => {
     event.stopPropagation();
-    if (index !== -1 && renameFavFilterIndex !== index) {
-      setRenameFavFilterIndex(index);
-      setFavFilterNewName(currentfavFilters[index]?.filterName);
+    if (favFilterIndex !== -1 && renameFavFilterIndex !== favFilterIndex) {
+      setRenameFavFilterIndex(favFilterIndex);
+      setFavFilterNewName(currentfavFilters[favFilterIndex]?.filterName);
     }
   };
 
@@ -164,6 +251,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     setContestType(statesToShow.contestType);
     setCurrStatus(statesToShow.currStatus);
     setIsShowingFilters(false);
+    filterSelectSuccessNotify(favFilterIndex);
   };
 
   const handleClickAwayFilters = () => {

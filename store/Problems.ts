@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { CODEFORCES_API } from "../pages/index";
 import { IProblem, IProblemStatistics,IContest } from "../types";
+import { toast } from "react-toastify";
 
 interface IProblems{
   problems: IProblem[];
@@ -25,6 +26,35 @@ interface IContestRenew {
   contestType: string;
   isEducationalContest: boolean;
 };
+
+  const problemFetchErrorNotify = () => {
+    const screenWidth = window.innerWidth;
+    const width = screenWidth <= 768 ? "70%" : "100%";
+    toast.error("Unable to fetch problems !", {
+      position: toast.POSITION.TOP_LEFT,
+      pauseOnHover: false,
+      style: {
+        marginTop: "56px",
+        width: width,
+      },
+      theme: "colored",
+    });
+  };
+
+
+  const problemFetchSuccessNotify = () => {
+    const screenWidth = window.innerWidth;
+    const width = screenWidth <= 768 ? "70%" : "100%";
+    toast.success("Problems fetched Successfully", {
+      position: toast.POSITION.TOP_LEFT,
+      pauseOnHover: false,
+      style: {
+        marginTop: "56px",
+        width: width,
+      },
+      theme: "colored",
+    });
+  };
 
 
 const getContestRenewData = (item: IContest): IContestRenew => {
@@ -201,7 +231,10 @@ const problemsStore = (set: any) => ({
             allSortedProblemsByDifficultyAsc: problemsSortedIndicesByDifficultyAsc,
             allSortedProblemsBySolvedCountAsc: problemsSortedIndicesBySolvedByAsc,
           });
+        problemFetchSuccessNotify();
+        
         } catch (error) {
+          problemFetchErrorNotify();
           set({ hasFetchingProblems: false });
           console.error(
             "Error fetching problems tempData from Codeforces!:",

@@ -4,6 +4,8 @@ import useUserStore from "../store/User";
 import { CODEFORCES_API } from "../pages/index";
 import { ISubmission, IUser } from "../types";
 import useProblemsStore from "../store/Problems";
+import { toast } from "react-toastify";
+
 interface IUserInfoResponseData {
   result: IUser[];
 }
@@ -18,11 +20,42 @@ const UserForm = () => {
     removeUser,
     setUserSolvedProblems,
     setUserAttemptedProblems,
-    setUserError
   }: any = useUserStore();
 
   const [userID, setUserID] = useState<string>("");
   const [hasFetchingUser, setHasFetchingUser] = useState<boolean>(false)
+  const userErrorNotify = () => {
+    const screenWidth = window.innerWidth;
+    const width = screenWidth <= 768 ? "70%" : "100%";
+    toast.error(`User Not Found : ${userID} `, {
+      position: toast.POSITION.TOP_LEFT,
+      theme: "colored",
+      pauseOnHover: false,
+      style: {
+        marginTop: "56px",
+        width: width,
+      },
+      toastId: userID,
+    });
+  };
+
+  const updateUserErrorNotify = () =>
+    toast.update(userID, { type: toast.TYPE.ERROR, autoClose: 1800 });
+
+    const userSuccessNotify = () => {
+      const screenWidth = window.innerWidth;
+      const width = screenWidth <= 768 ? "70%" : "100%";
+      toast.success(`User Found : ${userID}`, {
+        position: toast.POSITION.TOP_LEFT,
+        theme: "colored",
+        pauseOnHover: false,
+        style: {
+          marginTop: "56px",
+          width: width,
+        },
+        toastId: userID,
+      });
+    };
 
   const handleUserForm = async () => {
     if (hasFetchingUser) {
@@ -85,12 +118,14 @@ const UserForm = () => {
       });
 
       const userInfo: IUser = userInfoData.result[0];
-
+      
       setUserSolvedProblems(userSolvedProblems);
       setUserAttemptedProblems(userAttemptedProblems);
       setUser(userInfo);
+      userSuccessNotify()
     } catch (error) {
-      setUserError()
+      userErrorNotify();
+      updateUserErrorNotify();
       resetProblemsStatus(allProblems?.length || 0);
       removeUser();
       setHasFetchingUser(false);

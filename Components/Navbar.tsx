@@ -2,13 +2,12 @@ import React from "react";
 import UserForm from "./UserForm";
 import UserDetails from "./UserDetails";
 import useUserStore from "../store/User";
-import ErrorAlert from "./ErrorAlert";
 import AppLogo from "../utils/app-logo.png";
 import Image from "next/image";
 import useProblemsStore from "../store/Problems";
 
 const Navbar = () => {
-  const { userProfile, userError }: any = useUserStore();
+  const { userProfile }: any = useUserStore();
   const { hasFetchingProblems }: any = useProblemsStore();
 
   return (
@@ -49,7 +48,6 @@ const Navbar = () => {
 
         <div className="flex md:flex-row-reverse items-center justify-between">
           <UserForm />
-          {userError !== null && <ErrorAlert message={userError} />}
           {userProfile && <UserDetails />}
         </div>
       </div>

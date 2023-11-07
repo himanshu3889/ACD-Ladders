@@ -2,10 +2,25 @@ import React from "react";
 import useUserStore from "../store/User";
 import Link from "next/link";
 import useProblemsStore from "../store/Problems";
+import { toast } from "react-toastify";
 
 export default function UserDetails() {
   const { userProfile, removeUser, userSolvedProblems }: any = useUserStore();
   const { removeFiltering }: any = useProblemsStore();
+
+    const userRemoveInfoNotify = () => {
+      const screenWidth = window.innerWidth;
+      const width = screenWidth <= 768 ? "70%" : "100%";
+      toast.info(`User Removed Successfully : ${userProfile?.handle} `, {
+        position: toast.POSITION.TOP_LEFT,
+        theme: "colored",
+        pauseOnHover: false,
+        style: {
+          marginTop: "56px",
+          width: width,
+        },
+      });
+    };
 
   const getTextColorStyleByRank = (rank: string) => {
     return rank === "pupil"
@@ -78,6 +93,7 @@ export default function UserDetails() {
         <i
           className="fa-solid fa-xmark text-xl"
           onClick={() => {
+            userRemoveInfoNotify();
             removeFiltering();
             removeUser();
           }}

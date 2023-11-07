@@ -4,6 +4,7 @@ import useProblemsStore from "../store/Problems";
 import useUserStore from "../store/User";
 import { IProblem } from "../types";
 import FavoriteFilters from "./FavoriteFilters";
+import { toast } from "react-toastify";
 
 const FilterSidebar = ({
   problemsPerPage,
@@ -315,7 +316,7 @@ const FilterSidebar = ({
     }
   };
 
-  const handleNewFilter = async () => {
+  const handleNewFilter = async (isNewUser=false) => {
     problemIndexRange[0] =
       problemIndexRange[0].length > 0 ? problemIndexRange[0] : "A";
     problemIndexRange[1] =
@@ -333,6 +334,23 @@ const FilterSidebar = ({
 
     await handleFilter(true);
     setPageNumber(1);
+    if(!isNewUser){
+      newFilterApplyInfoNotify();
+    }
+  };
+
+  const newFilterApplyInfoNotify = () => {
+    const screenWidth = window.innerWidth;
+    const width = screenWidth <= 768 ? "70%" : "100%";
+    toast.info("New Filter Applied", {
+      position: toast.POSITION.TOP_LEFT,
+      theme: "colored",
+      pauseOnHover: false,
+      style: {
+        marginTop: "56px",
+        width: width,
+      },
+    });
   };
 
   const handleIndexInput = (event: any, index: number) => {
@@ -447,7 +465,7 @@ const FilterSidebar = ({
   const isInitialMount1 = useRef(true);
   useEffect(() => {
     if (!isInitialMount1.current) {
-      handleNewFilter();
+      handleNewFilter(true);
     }
     if (isInitialMount1.current) {
       isInitialMount1.current = false;
@@ -672,7 +690,7 @@ const FilterSidebar = ({
         <div className="flex items-center justify-center my-6">
           <button
             className="h-8 w-48 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-base font-bold text-white"
-            onClick={handleNewFilter}
+            onClick={()=>handleNewFilter(false)}
           >
             Apply Filters
           </button>
