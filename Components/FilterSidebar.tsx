@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import useProblemsStore from "../store/Problems";
 import useUserStore from "../store/User";
 import { IProblem } from "../types";
+import FavoriteFilters from "./FavoriteFilters";
 
 const FilterSidebar = ({
   problemsPerPage,
@@ -469,6 +470,25 @@ const FilterSidebar = ({
   if (isShowingFilterSideBar)
     return (
       <div className="mx-2 lg:text-sm sm:text-xs">
+        <FavoriteFilters
+          problemDifficultyRange={problemDifficultyRange}
+          setProblemDifficultyRange={setProblemDifficultyRange}
+          problemIndexRange={problemIndexRange}
+          setProblemIndexRange={setProblemsIndexRange}
+          problemSolvedRange={problemSolvedRange}
+          setProblemSolvedRange={setProblemSolvedRange}
+          tagState={tagState}
+          setTagState={setTagState}
+          isTagsORLogicFiltered={isTagsORLogicFiltered}
+          setIsTagsORLogicFiltered={setIsTagsORLogicFiltered}
+          isTagsExcluded={isTagsExcluded}
+          setIsTagsExcluded={setIsTagsExcluded}
+          contestType={contestType}
+          setContestType={setContestType}
+          currStatus={currStatus}
+          setCurrStatus={setCurrStatus}
+        />
+        <hr className="h-px mt-1 bg-white border-0" />
         <div className="mt-1">
           <p className="text-base text-white font-bold mb-0.5">Difficulty</p>
           <div className="md:flex">
