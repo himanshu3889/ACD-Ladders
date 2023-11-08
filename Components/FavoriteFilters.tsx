@@ -40,7 +40,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     contestType,
     setContestType,
     currStatus,
-    setCurrStatus,
+    setCurrStatus
   } = props;
   const [currentfavFilters, setCurrentFavFilters] = useState<Array<any>>([
     { filterName: "filter 1" },
@@ -122,19 +122,6 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     );
   };
 
-  const filterSelectSuccessNotify = (favFilterIndex: number) => {
-    const screenWidth = window.innerWidth;
-    const width = screenWidth <= 768 ? "70%" : "100%";
-    toast.success(`Filter No.${favFilterIndex + 1} Selected Successfully`, {
-      position: toast.POSITION.TOP_LEFT,
-      theme: "colored",
-      pauseOnHover: false,
-      style: {
-        marginTop: "56px",
-        width: width,
-      },
-    });
-  };
 
   const handleSaveFilter = (event: any, favFilterIndex: number) => {
     event.stopPropagation();
@@ -144,7 +131,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
       } ?`
     );
     if (result === false) {
-      return
+      return;
     }
     const favFilterNewName: string =
       currentfavFilters[favFilterIndex]?.filterName ||
@@ -174,7 +161,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
       `Are you sure you want to delete filter No. ${favFilterIndex + 1} ?`
     );
     if (result === false) {
-      return
+      return;
     }
     const favFilterNewName: string =
       currentfavFilters[favFilterIndex]?.favFilterNewName ||
@@ -226,14 +213,25 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     setFavFilterNewName(event.target.value);
   };
 
-  const handleRemoveSelectedFavFilter = () => {
-    setSelectedFavFilterIndex(-1);
+
+  const handleSetFilterStates = (filterStates: any) => {
+    setProblemDifficultyRange(filterStates.problemDifficultyRange);
+    setProblemIndexRange(filterStates.problemIndexRange);
+    setProblemSolvedRange(filterStates.problemSolvedRange);
+    setTagState(filterStates.tagState);
+    setIsTagsORLogicFiltered(filterStates.isTagsORLogicFiltered);
+    setIsTagsExcluded(filterStates.isTagsExcluded);
+    setContestType(filterStates.contestType);
+    setCurrStatus(filterStates.currStatus);
+    setIsShowingFilters(false);
   };
 
+    const handleRemoveSelectedFavFilter = () => {
+      setSelectedFavFilterIndex(-1);
+      handleSetFilterStates(resetFilter);
+    };
+
   const handleSelectFavFilter = (favFilterIndex: number) => {
-    setSelectedFavFilterIndex(
-      favFilterIndex === selectedFavFilterIndex ? -1 : favFilterIndex
-    );
     let statesToShow: any = resetFilter;
     if (
       favFilterIndex !== selectedFavFilterIndex &&
@@ -241,17 +239,12 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     ) {
       statesToShow = currentfavFilters[favFilterIndex];
     }
-
-    setProblemDifficultyRange(statesToShow.problemDifficultyRange);
-    setProblemIndexRange(statesToShow.problemIndexRange);
-    setProblemSolvedRange(statesToShow.problemSolvedRange);
-    setTagState(statesToShow.tagState);
-    setIsTagsORLogicFiltered(statesToShow.isTagsORLogicFiltered);
-    setIsTagsExcluded(statesToShow.isTagsExcluded);
-    setContestType(statesToShow.contestType);
-    setCurrStatus(statesToShow.currStatus);
-    setIsShowingFilters(false);
-    filterSelectSuccessNotify(favFilterIndex);
+    handleSetFilterStates(statesToShow)
+    if (favFilterIndex === selectedFavFilterIndex) {
+      setSelectedFavFilterIndex(-1);
+    } else {
+      setSelectedFavFilterIndex(favFilterIndex);
+    }
   };
 
   const handleClickAwayFilters = () => {
@@ -277,8 +270,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
             <i className="fa-solid fa-star text-yellow-500 mr-2"></i>
             <span className="cursor-text truncate">
               {selectedFavFilterIndex !== -1
-                ? selectedFavFilterIndex +
-                  1 +
+                ? (selectedFavFilterIndex + 1) +
                   ". " +
                   currentfavFilters[selectedFavFilterIndex]?.filterName
                 : "Saved Filters"}
@@ -317,7 +309,6 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
             ref={filtersDivRef}
           >
             <ul
-              tabIndex={-1}
               role="listbox"
               aria-labelledby="listbox-label"
               aria-activedescendant="listbox-favFilterNewName-3"

@@ -67,7 +67,7 @@ const Home = () => {
               isShowingFilterSideBar
                 ? "fa-chevron-right bg-white text-gray-900 border-2 border-gray-700 "
                 : "fa-chevron-left bg-gray-900 text-white border-2 border-white"
-            } absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer z-10 rounded-full p-2 w-10 h-10`}
+            } fixed top-1/2 transform -translate-y-1/2 right-0 cursor-pointer z-10 rounded-full p-2 w-10 h-10`}
             onClick={() => setIsShowingFilterSideBar(!isShowingFilterSideBar)}
             title={`${!isShowingFilterSideBar ? "Open" : "Close"} Filter`}
           ></i>

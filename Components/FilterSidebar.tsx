@@ -239,11 +239,16 @@ const FilterSidebar = ({
       }
     } else if (isTagsORLogicFiltered) {
       isIncludeTags = false;
+      let isAnyTagSelected = false;
       for (const tag in tagState) {
+        isAnyTagSelected ||= tagState[tag];
         if (tagState[tag] && problem?.tags?.includes(tag)) {
           isIncludeTags = true;
           break;
         }
+      }
+      if(!isAnyTagSelected){
+        isIncludeTags = true ;
       }
     } else if (!isTagsORLogicFiltered) {
       isIncludeTags = true;
@@ -263,9 +268,8 @@ const FilterSidebar = ({
   const handleFilter = async (isNewFilter: boolean) => {
     let newProblems: number[] = [];
     const allProblemsCount: number = allProblems?.problems.length || 0;
-    const oldProblemsCount: number = isNewFilter
-      ? 0
-      : filteredProblems?.length || 0;
+    const oldProblemsCount: number = 
+      isNewFilter ? 0 : (filteredProblems?.length || 0);
     let currIndex: number = isNewFilter ? 0 : allProblemsIndex;
     const sortingType:string = sortingOrdersArr[sortingOrder];
 
@@ -294,29 +298,19 @@ const FilterSidebar = ({
 
     setAllProblemsIndex(currIndex);
     if (isNewFilter) {
+      setPageNumber(1);
       setFilteredProblems(newProblems);
-      const calculatedPageNumber: number = Math.max(
-        1,
-        Math.ceil(newProblems.length / problemsPerPage)
-      );
-      if (pageNumber > calculatedPageNumber) {
-        setPageNumber(calculatedPageNumber);
-      }
     } else {
+      const calculatedPageNumber: number = 
+      Math.max(1, Math.ceil((filteredProblems.length + newProblems.length) / problemsPerPage));
+        if (pageNumber > calculatedPageNumber) {
+          setPageNumber(calculatedPageNumber);
+        }
       setFilteredProblems([...filteredProblems, ...newProblems]);
-      const calculatedPageNumber: number = Math.max(
-        1,
-        Math.ceil(
-          (filteredProblems.length + newProblems.length) / problemsPerPage
-        )
-      );
-      if (pageNumber > calculatedPageNumber) {
-        setPageNumber(calculatedPageNumber);
-      }
     }
   };
 
-  const handleNewFilter = async (isNewUser=false) => {
+  const handleNewFilter = async () => {
     problemIndexRange[0] =
       problemIndexRange[0].length > 0 ? problemIndexRange[0] : "A";
     problemIndexRange[1] =
@@ -333,25 +327,8 @@ const FilterSidebar = ({
       problemSolvedRange[1] > 0 ? problemSolvedRange[1] : 9999999999;
 
     await handleFilter(true);
-    setPageNumber(1);
-    if(!isNewUser){
-      newFilterApplyInfoNotify();
-    }
   };
 
-  const newFilterApplyInfoNotify = () => {
-    const screenWidth = window.innerWidth;
-    const width = screenWidth <= 768 ? "70%" : "100%";
-    toast.info("New Filter Applied", {
-      position: toast.POSITION.TOP_LEFT,
-      theme: "colored",
-      pauseOnHover: false,
-      style: {
-        marginTop: "56px",
-        width: width,
-      },
-    });
-  };
 
   const handleIndexInput = (event: any, index: number) => {
     const newIndex = event.target.value.replace(/[^a-z]/gi, "").toUpperCase();
@@ -465,7 +442,7 @@ const FilterSidebar = ({
   const isInitialMount1 = useRef(true);
   useEffect(() => {
     if (!isInitialMount1.current) {
-      handleNewFilter(true);
+      handleNewFilter();
     }
     if (isInitialMount1.current) {
       isInitialMount1.current = false;
@@ -512,7 +489,7 @@ const FilterSidebar = ({
           <div className="md:flex">
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="minDifficulty"
               name="minDifficulty"
               title="minimum difficulty"
@@ -524,7 +501,7 @@ const FilterSidebar = ({
 
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="maxDifficulty"
               name="maxDifficulty"
               title="maximum difficulty"
@@ -543,7 +520,7 @@ const FilterSidebar = ({
           <div className="md:flex">
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="minIndex"
               name="minIndex"
               title="minimum index"
@@ -555,7 +532,7 @@ const FilterSidebar = ({
 
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="maxIndex"
               name="maxIndex"
               title="maximum index"
@@ -574,7 +551,7 @@ const FilterSidebar = ({
           <div className="md:flex">
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="minSolvedBy"
               name="minSolvedBy"
               title="minimum solvedBy"
@@ -586,7 +563,7 @@ const FilterSidebar = ({
 
             <input
               type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-1 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
+              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
               id="maxSolvedBy"
               name="maxSolvedBy"
               title="maximum solvedBy"
@@ -690,7 +667,7 @@ const FilterSidebar = ({
         <div className="flex items-center justify-center my-6">
           <button
             className="h-8 w-48 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-base font-bold text-white"
-            onClick={()=>handleNewFilter(false)}
+            onClick={()=>handleNewFilter()}
           >
             Apply Filters
           </button>

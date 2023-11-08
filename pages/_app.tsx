@@ -29,7 +29,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         />
       </Head>
 
-      <ToastContainer autoClose={1800} limit={3} draggablePercent={30} />
+      <ToastContainer autoClose={1200} limit={3} draggablePercent={30} />
       <Navbar />
       <div>
         <Component {...pageProps} />
