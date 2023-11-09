@@ -85,7 +85,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
       theme: "colored",
       pauseOnHover: false,
       style: {
-        marginTop: "56px",
+        marginTop: width === "70%" ? "56px" : "0px",
         width: width,
       },
     });
@@ -99,7 +99,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
       theme: "colored",
       pauseOnHover: false,
       style: {
-        marginTop: "56px",
+        marginTop: width === "70%" ? "56px" : "0px",
         width: width,
       },
     });
@@ -115,7 +115,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
         theme: "colored",
         pauseOnHover: false,
         style: {
-          marginTop: "56px",
+          marginTop: width === "70%" ? "56px" : "0px",
           width: width,
         },
       }

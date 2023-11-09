@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { CODEFORCES_API } from "../pages/index";
 import { IProblem, IProblemStatistics,IContest } from "../types";
 import { toast } from "react-toastify";
+import contestDataRenewal, { IContestRenew } from "../utils/contestDataRenewal";
 
 interface IProblems{
   problems: IProblem[];
@@ -20,12 +21,6 @@ interface IContestsResponseData {
   result: IContest[];
 }
 
-interface IContestRenew {
-  contestName: string,
-  round: string;
-  contestType: string;
-  isEducationalContest: boolean;
-};
 
   const problemFetchErrorNotify = () => {
     const screenWidth = window.innerWidth;
@@ -34,7 +29,7 @@ interface IContestRenew {
       position: toast.POSITION.TOP_LEFT,
       pauseOnHover: false,
       style: {
-        marginTop: "56px",
+        marginTop: width === "70%" ? "56px" : "0px",
         width: width,
       },
       theme: "colored",
@@ -49,67 +44,12 @@ interface IContestRenew {
       position: toast.POSITION.TOP_LEFT,
       pauseOnHover: false,
       style: {
-        marginTop: "56px",
+        marginTop: width === "70%" ? "56px" : "0px",
         width: width,
       },
       theme: "colored",
     });
   };
-
-
-const getContestRenewData = (item: IContest): IContestRenew => {
-  const contestName: string = item.name;
-  const contestNameLength: number = contestName.length;
-  const words: string[] = [];
-  let prevIdx: number = 0;
-  let currIdx: number = 0;
-
-  while (prevIdx < contestNameLength) {
-    while (
-      currIdx < contestNameLength &&
-      contestName[currIdx] !== " " &&
-      contestName[currIdx] !== "(" &&
-      contestName[currIdx] !== ")" &&
-      contestName[currIdx] !== ","
-    ) {
-      currIdx++;
-    }
-
-    const word: string = contestName.slice(prevIdx, currIdx);
-    words.push(word);
-    currIdx++;
-    prevIdx = currIdx;
-  }
-
-  const contest: IContestRenew = {
-    contestName: contestName,
-    round: "",
-    contestType: "",
-    isEducationalContest: false,
-  };
-
-  if (words[0] === "Educational") {
-    contest.isEducationalContest = true;
-    contest.contestType = "Div. 2";
-  }
-
-  const wordsCount: number = words.length;
-  for (let wordsIdx: number = 0; wordsIdx < wordsCount; wordsIdx++) {
-    if (!contest.round && words[wordsIdx] === "Round") {
-      contest.round = words[wordsIdx + 1];
-    }
-    if (!contest.contestType && words[wordsIdx] === "Div.") {
-      contest.contestType = "Div. " + words[wordsIdx + 1];
-
-      if (wordsIdx + 4 < wordsCount 
-        && words[wordsIdx + 2] === "+" 
-        && words[wordsIdx + 3] === "Div.") {
-        contest.contestType += " + Div. " + words[wordsIdx + 4];
-      }
-    }
-  }
-  return contest;
-};
 
 
 
@@ -185,7 +125,7 @@ const problemsStore = (set: any) => ({
 
       contestsDataResult.result.forEach((item: IContest) => {
         const contestID: number = item.id;
-        const contestRenewData:IContestRenew = getContestRenewData(item);
+        const contestRenewData:IContestRenew = contestDataRenewal(item);
         const contestRound: string = contestRenewData.round;
         const contestType: string = contestRenewData.contestType;
         const isEducationalContest:boolean = contestRenewData.isEducationalContest

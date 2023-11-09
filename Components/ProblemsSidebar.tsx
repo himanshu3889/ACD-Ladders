@@ -2,9 +2,19 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import useProblemsStore from "../store/Problems";
 import useUserStore from "../store/User";
-import Loading from "./Lodading";
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 export const CODEFORCES_API = process.env.NEXT_PUBLIC_CODEFORCES_API;
+type problemSidebarProps = {
+  problemsPerPage: number;
+  setProblemsPerPage: React.Dispatch<React.SetStateAction<number>>;
+  pageNumber: number;
+  setPageNumber: React.Dispatch<React.SetStateAction<number>>;
+  sortingParam: string;
+  setSortingParam: React.Dispatch<React.SetStateAction<string>>;
+  sortingOrder: number;
+  setSortingOrder: React.Dispatch<React.SetStateAction<number>>;
+  sortingOrdersArr: [string, string, string];
+};
 
 const ProblemsSidebar = ({
   problemsPerPage,
@@ -16,17 +26,7 @@ const ProblemsSidebar = ({
   sortingOrder,
   setSortingOrder,
   sortingOrdersArr,
-}: {
-  problemsPerPage: number;
-  setProblemsPerPage: (value: number) => void;
-  pageNumber: number;
-  setPageNumber: (value: number) => void;
-  sortingParam: string;
-  setSortingParam: (value: string) => void;
-  sortingOrder: number;
-  setSortingOrder: (value: number) => void;
-  sortingOrdersArr: [string, string, string];
-}) => {
+}:problemSidebarProps) => {
   const {
     allProblems,
     problemsStatusSpacedOtherContestId,

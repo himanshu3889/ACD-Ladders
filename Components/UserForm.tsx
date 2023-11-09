@@ -32,7 +32,7 @@ const UserForm = () => {
       theme: "colored",
       pauseOnHover: false,
       style: {
-        marginTop: "56px",
+        marginTop: width === "70%" ? "56px" : "0px",
         width: width,
       },
       toastId: userID,
@@ -50,7 +50,7 @@ const UserForm = () => {
         theme: "colored",
         pauseOnHover: false,
         style: {
-          marginTop: "56px",
+          marginTop: width === "70%" ? "56px" : "0px",
           width: width,
         },
         toastId: userID,

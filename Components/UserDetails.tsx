@@ -16,7 +16,7 @@ export default function UserDetails() {
         theme: "colored",
         pauseOnHover: false,
         style: {
-          marginTop: "56px",
+          marginTop: width === "70%" ? "56px" : "0px",
           width: width,
         },
       });
