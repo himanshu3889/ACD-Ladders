@@ -2,7 +2,7 @@ import React from "react";
 import UserForm from "./UserForm";
 import UserDetails from "./UserDetails";
 import useUserStore from "../store/User";
-import AppLogo from "../utils/app-logo.png";
+import AppLogo from "../public/app-logo.png";
 import Image from "next/image";
 import useProblemsStore from "../store/Problems";
 

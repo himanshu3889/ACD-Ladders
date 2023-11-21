@@ -7,7 +7,6 @@ import { Footer } from "../Components/Footer";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [isSSR, setIsSSR] = useState<Boolean>(true);
 
@@ -20,7 +19,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <title>CF Filter</title>
+        <title>CF Filter | ACD</title>
+        <link
+          rel="icon"
+          href="app-logo.png"
+          type="image/png"
+          sizes="any"
+        />
         <link
           rel="stylesheet"
           href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"
