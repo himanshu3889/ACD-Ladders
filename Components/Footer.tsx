@@ -11,13 +11,12 @@ export const Footer = () => {
           <span className="text-xs sm:text-sm text-gray-500 hover:text-gray-300 text-center px-2 border-r">
             @ ACD Team <i className="fa-solid fa-heart text-red-600"></i>
           </span>
-          <Link href={`${BASE_URL}/about`} legacyBehavior>
-            <a
-              target="_blank"
+          <Link href={`${BASE_URL}/about`} >
+            <span
               className="text-xs sm:text-sm text-gray-500 hover:text-gray-300 text-center mx-2"
             >
               About Us
-            </a>
+            </span>
           </Link>
         </div>
         <ul className="flex flex-wrap items-center">

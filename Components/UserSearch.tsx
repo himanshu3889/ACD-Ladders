@@ -13,7 +13,7 @@ interface IUserSubmissionsData {
   result: ISubmission[];
 }
 
-const UserForm = () => {
+const UserSearch = () => {
   const { allProblems, resetProblemsStatus, hasFetchingProblems }: any = useProblemsStore();
   const {
     setUser,
@@ -175,4 +175,4 @@ const UserForm = () => {
   );
 };
 
-export default UserForm;
+export default UserSearch;
