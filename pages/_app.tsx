@@ -6,9 +6,13 @@ import Navbar from "../Components/Navbar";
 import { Footer } from "../Components/Footer";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/router";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [isSSR, setIsSSR] = useState<Boolean>(true);
+  const router = useRouter();
+  const isACDLaddersPage : boolean = router.pathname === "/";
+  const titleName: string = `${isACDLaddersPage ? "Ladders" : "CF Filter"} | ACD`;
 
   useEffect(() => {
     setIsSSR(false);
@@ -19,7 +23,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <title>CF Filter | ACD</title>
+        <title>{titleName}</title>
         <link
           rel="icon"
           href="app-logo.png"

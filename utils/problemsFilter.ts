@@ -48,9 +48,10 @@ export const problemsFilter = (props: problemsFilterProps) => {
 
   const {
     allProblems,
-    allSortedProblemsByNameAsc,
+    allSortedProblemsByIdAsc,
     allSortedProblemsByDifficultyAsc,
     allSortedProblemsBySolvedCountAsc,
+    allSortedProblemsByScoreAsc,
     problemsStatusSpacedOtherContestId,
     filteredProblems,
     setFilteredProblems,
@@ -97,7 +98,7 @@ export const problemsFilter = (props: problemsFilterProps) => {
     const problemContestRound: string =
       contestData[problemContestID]?.round || "";
     const problemSolvedCount: number =
-      allProblems.problemStatistics[index]?.solvedCount;
+      allProblems.problemStatistics[index]?.solvedCount || 0;
 
     // If UserProfile then find the problem status
     if (userProfile && problemContestID !== undefined) {
@@ -236,10 +237,12 @@ export const problemsFilter = (props: problemsFilterProps) => {
         const newCurrIndex: number =
           sortingType === "ASC" ? currIndex : (allProblemsCount - 1 - currIndex);
         allProblemsActualIndex =
-          sortingParam === "Name"
-            ? allSortedProblemsByNameAsc[newCurrIndex]
+          sortingParam === "Problem ID"
+            ? allSortedProblemsByIdAsc[newCurrIndex]
             : sortingParam === "Difficulty"
             ? allSortedProblemsByDifficultyAsc[newCurrIndex]
+            : sortingParam === "Score"
+            ? allSortedProblemsByScoreAsc[newCurrIndex]
             : allSortedProblemsBySolvedCountAsc[newCurrIndex];
       }
 

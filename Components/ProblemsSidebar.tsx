@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import useProblemsStore from "../store/Problems";
 import useUserStore from "../store/User";
+import { useRouter } from "next/router";
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 export const CODEFORCES_API = process.env.NEXT_PUBLIC_CODEFORCES_API;
 type problemSidebarProps = {
@@ -30,12 +31,13 @@ const ProblemsSidebar = ({
   const {
     allProblems,
     problemsStatusSpacedOtherContestId,
-    hasProblemsFiltered,
     filteredProblems,
     hasFetchingProblems
   }: any = useProblemsStore();
 
     const {userProfile, userSolvedProblems, userAttemptedProblems}: any = useUserStore();
+    const router = useRouter();
+    const isACDLaddersPage : boolean = router.pathname === "/";
 
   const [pageInputNumber, setPageInputValue] = useState<number>(1);
   const handlePageInput = (event: any) => {
@@ -49,7 +51,7 @@ const ProblemsSidebar = ({
       return ;
     }
 
-    if (param === "No." || param === "Problem ID") {
+    if (param === "No." || param === "Name") {
       if (sortingParam !== "") {
         setSortingParam("");
         setSortingOrder(0);
@@ -109,8 +111,8 @@ const ProblemsSidebar = ({
     const problemID: string = `${contestID}${problemIndex}`;
     const problemName: string = allProblems?.problems[index]?.name;
     const problemSolvedCount: number = allProblems?.problemStatistics[index]?.solvedCount || 0;
+    const problemScore : number = allProblems?.problems[index]?.frequency;
     const problemDifficulty: number = allProblems?.problems[index]?.rating || 0;
-
     // ProblemStatus : Unsolved / Attempted / Solved;
     const problemStatusAndOtherContestId: string = problemsStatusSpacedOtherContestId[index] || "";
     const [problemStatus = "Unsolved", sameProblemOtherContestId = ""] =
@@ -187,7 +189,7 @@ const ProblemsSidebar = ({
 
         <td className="lg:py-0.5 py-1 px-2 text-left">
           <div className="flex items-center">
-            <span>{problemSolvedCount}</span>
+            <span>{isACDLaddersPage ? problemScore : problemSolvedCount}</span>
           </div>
         </td>
         <td className="lg:py-0.5 py-1 px-2 text-left">
@@ -210,24 +212,14 @@ const ProblemsSidebar = ({
     let startIndex = (pageNumber - 1) * problemsPerPage;
     startIndex = Math.max(0, startIndex);
     let endIndex = startIndex + problemsPerPage;
-    if (hasProblemsFiltered) {
-      for (
-        let currIndex = startIndex;
-        currIndex < Math.min(endIndex, filteredProblems?.length);
-        currIndex++
+    for (
+      let currIndex = startIndex;
+      currIndex < Math.min(endIndex, filteredProblems?.length);
+      currIndex++
       ) {
-        currentProblems.push(
-          getSingleProblemComponent(filteredProblems[currIndex], currIndex + 1)
-        );
-      }
-    } else {
-      for (
-        let currIndex = startIndex;
-        currIndex < Math.min(endIndex, allProblems?.problems?.length);
-        currIndex++
-      ) {
-        currentProblems.push(getSingleProblemComponent(currIndex, currIndex + 1));
-      }
+      currentProblems.push(
+        getSingleProblemComponent(filteredProblems[currIndex], currIndex + 1)
+      );
     }
 
     return currentProblems;
@@ -237,7 +229,7 @@ const ProblemsSidebar = ({
     "No.",
     "Problem ID",
     "Name",
-    "Solved By",
+    isACDLaddersPage ? "Score" : "Solved By",
     "Difficulty",
   ];
 
@@ -257,6 +249,7 @@ const ProblemsSidebar = ({
                         item === "No."
                           ? "10%"
                           : item === "Problem ID" ||
+                            item === "Score" ||
                             item === "Solved By" ||
                             item === "Difficulty"
                           ? "15%"
@@ -265,7 +258,10 @@ const ProblemsSidebar = ({
                   >
                     <div
                       className={`flex items-center group ${
-                        index >= 2
+                        (item === "Problem ID" ||
+                        item === "Solved By" ||
+                        item === "Score" ||
+                        item === "Difficulty")
                           ? hasFetchingProblems
                             ? "cursor-wait"
                             : "cursor-pointer"
@@ -276,7 +272,10 @@ const ProblemsSidebar = ({
                       }}
                     >
                       <span>{item}</span>
-                      {index >= 2 && (
+                      {(item === "Problem ID" ||
+                        item === "Solved By" ||
+                        item === "Score" ||
+                        item === "Difficulty") && (
                         <div className="font-bold ml-1">
                           <i
                             className={`cursor-pointer ${
@@ -367,7 +366,7 @@ const ProblemsSidebar = ({
                 title="Last Page"
                 className="fa-solid fa-angles-right m-3 font-bold cursor-pointer"
                 onClick={() => {
-                  setPageNumber(1000);
+                  setPageNumber(10000);
                 }}
               ></i>
             </div>

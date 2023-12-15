@@ -4,6 +4,7 @@ import useProblemsStore from "../store/Problems";
 import useUserStore from "../store/User";
 import FavoriteFilters from "./FavoriteFilters";
 import { problemsFilter } from "../utils/problemsFilter";
+import { useRouter } from "next/router";
 type filterSidebarProps = {
   problemsPerPage: number;
   pageNumber: number;
@@ -29,6 +30,8 @@ const FilterSidebar = ({
 }: filterSidebarProps) => {
   const {hasFetchingProblems}: any = useProblemsStore();
   const { userProfile }: any = useUserStore();
+  const router = useRouter();
+  const isACDLaddersPage = router.pathname === "/";
 
   const [problemDifficultyRange, setProblemDifficultyRange] = useState<[number, number]>([0, 5000]);
   const [problemIndexRange, setProblemsIndexRange] = useState<[string, string]>(["A", "Z"]);
@@ -225,13 +228,16 @@ const FilterSidebar = ({
 
   const isInitialMount1 = useRef(true);
   useEffect(() => {
-    if (!isInitialMount1.current) {
-      myProblemsFilter.handleNewFilter();
+    const fetchData = async () => {
+      await myProblemsFilter.handleNewFilter();
+    };
+    if (!isInitialMount1.current && !hasFetchingProblems) {
+      fetchData();
     }
     if (isInitialMount1.current) {
       isInitialMount1.current = false;
     }
-  }, [userProfile, sortingOrder, sortingParam]);
+  }, [userProfile, sortingOrder, sortingParam, hasFetchingProblems]);
 
   const isInitialMount2 = useRef(true);
   useEffect(() => {
@@ -330,36 +336,37 @@ const FilterSidebar = ({
 
         <hr className="h-px mt-1 bg-white border-0" />
 
-        <div className="mt-0.5">
-          <p className="text-base text-white font-bold mb-0.5">Solved By</p>
-          <div className="md:flex">
-            <input
-              type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
-              id="minSolvedBy"
-              name="minSolvedBy"
-              title="minimum solvedBy"
-              value={problemSolvedRange[0]}
-              placeholder="0"
-              maxLength={10}
-              onChange={(event) => handleSolvedInput(event, 0)}
-            />
+        {!isACDLaddersPage && (
+          <div className="mt-0.5">
+            <p className="text-base text-white font-bold mb-0.5">Solved By</p>
+            <div className="md:flex">
+              <input
+                type="text"
+                className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
+                id="minSolvedBy"
+                name="minSolvedBy"
+                title="minimum solvedBy"
+                value={problemSolvedRange[0]}
+                placeholder="0"
+                maxLength={10}
+                onChange={(event) => handleSolvedInput(event, 0)}
+              />
 
-            <input
-              type="text"
-              className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
-              id="maxSolvedBy"
-              name="maxSolvedBy"
-              title="maximum solvedBy"
-              value={problemSolvedRange[1]}
-              placeholder="9999999999"
-              maxLength={10}
-              onChange={(event) => handleSolvedInput(event, 1)}
-            />
+              <input
+                type="text"
+                className="bg-gray-300 hover:bg-gray-100 focus:bg-white border rounded px-2 py-0.5 mx-2 flex-grow sm:w-auto md:w-1/2 lg:w-1/4 my-1 md:my-2 text-sm md:text-base"
+                id="maxSolvedBy"
+                name="maxSolvedBy"
+                title="maximum solvedBy"
+                value={problemSolvedRange[1]}
+                placeholder="9999999999"
+                maxLength={10}
+                onChange={(event) => handleSolvedInput(event, 1)}
+              />
+            </div>
           </div>
-        </div>
-
-        <hr className="h-px mt-1 bg-white border-0" />
+        )}
+        {!isACDLaddersPage && <hr className="h-px mt-1 bg-white border-0" />}
 
         <div className="mt-0.5">
           <p className="text-base text-white font-bold mb-0.5">Contest</p>
@@ -451,7 +458,7 @@ const FilterSidebar = ({
         <div className="flex items-center justify-center my-6">
           <button
             className="h-8 w-48 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-base font-bold text-white"
-            onClick={()=>myProblemsFilter.handleNewFilter()}
+            onClick={() => myProblemsFilter.handleNewFilter()}
           >
             Apply Filters
           </button>

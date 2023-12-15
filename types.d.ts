@@ -7,12 +7,13 @@ export interface IProblem {
   problemsetName?: string;
   points?: number;
   rating?: number;
+  frequency?:number;
 };
 
 
 export interface IProblemStatistics {
   contestId?: number;
-  index: string;
+  index?: string;
   solvedCount?: number;
 } ;
 

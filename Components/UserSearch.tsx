@@ -57,7 +57,7 @@ const UserSearch = () => {
       });
     };
 
-  const handleUserForm = async () => {
+  const handleUserSearch = async () => {
     if (hasFetchingUser) {
       return;
     }
@@ -137,8 +137,8 @@ const UserSearch = () => {
 
 
   return (
-    <div className="p-0.5">
-      <div className="-space-x-2 mx-auto sm:w-max relative">
+    <div className="p-0.5 pl-2">
+      <div className="ml-auto sm:w-max relative">
         <input
           className={`${
             hasFetchingUser && "cursor-wait"
@@ -154,7 +154,7 @@ const UserSearch = () => {
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
-              handleUserForm();
+              handleUserSearch();
             }
           }}
         />
@@ -162,7 +162,7 @@ const UserSearch = () => {
           className={`${
             hasFetchingUser && "cursor-progress"
           } bg-blue-700 hover:bg-blue-800 text-white font-semibold text-lg h-10 md:h-12 px-4 sm:px-10`}
-          onClick={handleUserForm}
+          onClick={handleUserSearch}
         >
           <i
             className={`fa-solid  ${
