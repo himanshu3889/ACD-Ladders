@@ -58,6 +58,10 @@ The following environment variables are required for configuring the project:
    - Description: Specifies the Codeforces API URL.
    - Example: `https://codeforces.com/api`
 
+3. **NEXT_PUBLIC_ACD_LADDERS_API**
+   - Description: Specifies the ACD Ladders API URL.
+   - Example: `https://acodedaily.com/api/v2/`
+
 ### Setting up Environment Variables
 
 To set up the required environment variables, follow these steps:
@@ -71,6 +75,7 @@ To set up the required environment variables, follow these steps:
    ```
    NEXT_PUBLIC_BASE_URL=http://localhost:3000
    NEXT_PUBLIC_CODEFORCES_API=https://codeforces.com/api
+   NEXT_PUBLIC_ACD_LADDERS_API = https://acodedaily.com/api/v2/
    ```
 
 
@@ -104,10 +109,10 @@ This will start the Next.js development server, and you can view your app by vis
 
 ### Sorting Results
 
-- **Sort by Name:**
-  Click on the Name(in table head) to sort filtered problems by name.
+- **Sort by Id:**
+  Click on the Id(in table head) to sort filtered problems by Id.
 
-- **Sort by SolvedBy:**
+- **Sort by SolvedBy(for cf_filter):**
   Click on the SolvedBy(in table head) to arrange filtered problems by solved count.
 
 - **Sort by Difficulty:**
