@@ -45,7 +45,7 @@ const about = () => {
         <div className="w-full lg:w-6/12 ">
           <img
             className="w-full h-full lg:py-24"
-            src="https://i.ibb.co/FhgPJt8/Rectangle-116.png"
+            src="/manSolvingProblem.png"
             alt="A group of People"
           />
         </div>
@@ -110,7 +110,7 @@ const about = () => {
           </p>
         </div>
         <div className="w-full lg:pt-8">
-          <div className="grid sm:grid-cols-2 grid-cols-1 lg:gap-4 shadow-lg rounded-md">
+          <div className="grid sm:grid-cols-3 grid-cols-1 lg:gap-4 shadow-lg rounded-md">
             <div className="p-4 pb-6 flex justify-center flex-col items-center">
               <Image
                 className="md:block hidden w-auto h-auto"
@@ -128,7 +128,7 @@ const about = () => {
               />
               <p className="font-medium text-xl leading-5 text-gray-100 mt-4">
                 <a
-                  href="https://www.linkedin.com/"
+                  href="https://www.linkedin.com/in/i-pranavmehta/"
                   target="_blank"
                   className="hover:text-blue-500"
                 >
@@ -156,11 +156,39 @@ const about = () => {
               />
               <p className="font-medium text-xl leading-5 text-gray-100 mt-4">
                 <a
-                  href="https://www.linkedin.com/"
+                  href="https://www.linkedin.com/in/himanshurajput8/"
                   target="_blank"
                   className="hover:text-blue-500"
                 >
                   Himanshu Rajput
+                </a>
+              </p>
+              <p className="text-xs leading-5 text-gray-100 mt-1">
+                (ACD Member)
+              </p>
+            </div>
+            <div className="p-4 pb-6 flex justify-center flex-col items-center">
+              <Image
+                className="md:block hidden w-auto h-auto"
+                src="/Shubham_Pandey.jpg"
+                alt="Subham Pandey featured Img"
+                width={170}
+                height={170}
+              />
+              <Image
+                className="md:hidden block w-auto h-auto"
+                src="/Shubham_Pandey.jpg"
+                alt="Subham Pandey featured Img"
+                width={170}
+                height={170}
+              />
+              <p className="font-medium text-xl leading-5 text-gray-100 mt-4">
+                <a
+                  href="https://www.linkedin.com/in/shubham-jr/"
+                  target="_blank"
+                  className="hover:text-blue-500"
+                >
+                  Shubham Pandey
                 </a>
               </p>
               <p className="text-xs leading-5 text-gray-100 mt-1">
