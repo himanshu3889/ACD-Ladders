@@ -1,53 +1,36 @@
-import { useState, useEffect, useRef } from "react";
-import useClickAway from "../utils/hooks/useClickAway";
-import { toast } from "react-toastify";
+import {useState, useEffect, useRef} from "react";
+import {
+  getLocalStorage,
+  setLocalStorage,
+} from "../../service/storageService/localStorage";
+import {
+  notifyService,
+  SUCCESS_NOTIFICATION,
+} from "../../service/notificationService/notifyService";
+import {favFilterStorage} from "../../configs/constants";
+import useClickAway from "../../hooks/useClickAway";
+import {IRootReducerState} from "../../app/store";
+import {
+  IFilterSlice,
+  IFiltersState,
+  resetFiltersState,
+  updateFilter,
+} from "../../features/filters/filterSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {ThunkDispatch} from "@reduxjs/toolkit";
 
-type favoriteFilterProps = {
-  problemDifficultyRange: [number, number];
-  setProblemDifficultyRange: React.Dispatch<
-    React.SetStateAction<[number, number]>
-  >;
-  problemIndexRange: [string, string];
-  setProblemIndexRange: React.Dispatch<React.SetStateAction<[string, string]>>;
-  problemSolvedRange: [number, number];
-  setProblemSolvedRange: React.Dispatch<React.SetStateAction<[number, number]>>;
-  tagState: Record<string, boolean>;
-  setTagState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
-  isTagsORLogicFiltered: boolean;
-  setIsTagsORLogicFiltered: React.Dispatch<React.SetStateAction<boolean>>;
-  isTagsExcluded: boolean;
-  setIsTagsExcluded: React.Dispatch<React.SetStateAction<boolean>>;
-  contestType: number;
-  setContestType: React.Dispatch<React.SetStateAction<number>>;
-  currStatus: number;
-  setCurrStatus: React.Dispatch<React.SetStateAction<number>>;
-};
+const FavoriteFilters = () => {
+  const dispatch: ThunkDispatch<any, any, any> = useDispatch();
 
-const FavoriteFilters = (props: favoriteFilterProps) => {
-  const {
-    problemDifficultyRange,
-    setProblemDifficultyRange,
-    problemIndexRange,
-    setProblemIndexRange,
-    problemSolvedRange,
-    setProblemSolvedRange,
-    tagState,
-    setTagState,
-    isTagsORLogicFiltered,
-    setIsTagsORLogicFiltered,
-    isTagsExcluded,
-    setIsTagsExcluded,
-    contestType,
-    setContestType,
-    currStatus,
-    setCurrStatus
-  } = props;
-  const [currentfavFilters, setCurrentFavFilters] = useState<Array<any>>([
-    { filterName: "filter 1" },
-    { filterName: "filter 2" },
-    { filterName: "filter 3" },
-    { filterName: "filter 4" },
-    { filterName: "filter 5" },
+  const filtersState: IFilterSlice = useSelector(
+    (state: IRootReducerState) => state.filters
+  );
+  const [favFilters, setFavFilters] = useState<Array<any>>([
+    {filterName: "filter 1"},
+    {filterName: "filter 2"},
+    {filterName: "filter 3"},
+    {filterName: "filter 4"},
+    {filterName: "filter 5"},
   ]);
 
   const [isShowingFilters, setIsShowingFilters] = useState<boolean>(false);
@@ -55,73 +38,53 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     useState<number>(-1);
   const [renameFavFilterIndex, setRenameFavFilterIndex] = useState<number>(-1);
   const [favFilterNewName, setFavFilterNewName] = useState<string>("");
-  const [resetFilter, setResetFilter] = useState<any>({});
-  const filtersDivRef = useRef(null);
+  // const [resetFilter, setResetFilter] = useState<any>({});
+  const filtersContainerRef = useRef(null);
+
+  interface ICurrentFilterState {
+    filterName?: string;
+    state?: IFilterSlice | IFiltersState;
+  }
+  function currentFilterStates({
+    filterName = "Filter Reset",
+    state = filtersState,
+  }: ICurrentFilterState) {
+    const currFiltersState = {
+      filterName: filterName,
+      problemDifficultyRange: state.problemDifficultyRange,
+      problemIndexRange: state.problemIndexRange,
+      problemSolvedRange: state.problemSolvedRange,
+      tagState: state.tagState,
+      isTagsORLogicFiltered: state.isTagsORLogicFiltered,
+      isTagsExcluded: state.isTagsExcluded,
+      contestType: state.contestType,
+      currStatus: state.currStatus,
+    };
+    return currFiltersState;
+  }
+  const resetFilter = currentFilterStates({state: resetFiltersState});
 
   useEffect(() => {
-    const savedStatesJSON = localStorage.getItem("currentfavFilters");
-    if (savedStatesJSON) {
-      setCurrentFavFilters(JSON.parse(savedStatesJSON));
+    const favFiltersData = getLocalStorage(favFilterStorage);
+    if (favFiltersData) {
+      setFavFilters(favFiltersData);
+    } else {
+      setLocalStorage(favFilterStorage, favFilters);
     }
-    const stateToSave = {
-      filterName: "Filter Reset",
-      problemDifficultyRange,
-      problemIndexRange,
-      problemSolvedRange,
-      tagState,
-      isTagsORLogicFiltered,
-      isTagsExcluded,
-      contestType,
-      currStatus,
-    };
-    setResetFilter(stateToSave);
   }, []);
 
-  const filterEditSuccessNotify = (favFilterIndex: number) => {
-    const screenWidth = window.innerWidth;
-    const width = screenWidth <= 768 ? "70%" : "100%";
-    toast.success(`Filter No.${favFilterIndex + 1} Edit Successfully`, {
-      position: toast.POSITION.TOP_LEFT,
-      theme: "colored",
-      pauseOnHover: false,
-      style: {
-        marginTop: width === "70%" ? "56px" : "0px",
-        width: width,
-      },
-    });
-  };
-
-  const filterDeleteSuccessNotify = (favFilterIndex: number) => {
-    const screenWidth = window.innerWidth;
-    const width = screenWidth <= 768 ? "70%" : "100%";
-    toast.success(`Filter No.${favFilterIndex + 1} Delete Successfully`, {
-      position: toast.POSITION.TOP_LEFT,
-      theme: "colored",
-      pauseOnHover: false,
-      style: {
-        marginTop: width === "70%" ? "56px" : "0px",
-        width: width,
-      },
-    });
-  };
-
-  const filterSaveSuccessNotify = (favFilterIndex: number) => {
-    const screenWidth = window.innerWidth;
-    const width = screenWidth <= 768 ? "70%" : "100%";
-    toast.success(
-      `Filtering Saved Successfully to Filter No.${favFilterIndex + 1}`,
-      {
-        position: toast.POSITION.TOP_LEFT,
-        theme: "colored",
-        pauseOnHover: false,
-        style: {
-          marginTop: width === "70%" ? "56px" : "0px",
-          width: width,
-        },
-      }
-    );
-  };
-
+  function handleChangeFilterStates({
+    favFilterIndex,
+    filterNewData,
+  }: {
+    favFilterIndex: number;
+    filterNewData: Record<string, any>;
+  }) {
+    const newSavedStates = [...favFilters];
+    newSavedStates[favFilterIndex] = filterNewData;
+    setFavFilters(newSavedStates);
+    setLocalStorage(favFilterStorage, newSavedStates);
+  }
 
   const handleSaveFilter = (event: any, favFilterIndex: number) => {
     event.stopPropagation();
@@ -134,25 +97,21 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
       return;
     }
     const favFilterNewName: string =
-      currentfavFilters[favFilterIndex]?.filterName ||
-      `filter ${favFilterIndex + 1}`;
-    const stateToSave = {
+      favFilters[favFilterIndex]?.filterName || `filter ${favFilterIndex + 1}`;
+    const filterNewStates = currentFilterStates({
       filterName: favFilterNewName,
-      problemDifficultyRange,
-      problemIndexRange,
-      problemSolvedRange,
-      tagState,
-      isTagsORLogicFiltered,
-      isTagsExcluded,
-      contestType,
-      currStatus,
-    };
-
-    const newSavedStates = [...currentfavFilters];
-    newSavedStates[favFilterIndex] = stateToSave;
-    setCurrentFavFilters(newSavedStates);
-    localStorage.setItem("currentfavFilters", JSON.stringify(newSavedStates));
-    filterSaveSuccessNotify(favFilterIndex);
+    });
+    const newSavedStates = [...favFilters];
+    newSavedStates[favFilterIndex] = filterNewStates;
+    setFavFilters(newSavedStates);
+    setLocalStorage(favFilterStorage, newSavedStates);
+    notifyService({
+      message: `Filtering Saved Successfully to Filter No.${
+        favFilterIndex + 1
+      }`,
+      type: SUCCESS_NOTIFICATION,
+      position: "top-left",
+    });
   };
 
   const handleDeleteFilter = (event: any, favFilterIndex: number) => {
@@ -164,16 +123,20 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
       return;
     }
     const favFilterNewName: string =
-      currentfavFilters[favFilterIndex]?.favFilterNewName ||
+      favFilters[favFilterIndex]?.favFilterNewName ||
       `filter ${favFilterIndex + 1}`;
-    const stateToSave = {
+    const filterNewData = {
       filterName: favFilterNewName,
     };
-    const newSavedStates = [...currentfavFilters];
-    newSavedStates[favFilterIndex] = stateToSave;
-    setCurrentFavFilters(newSavedStates);
-    localStorage.setItem("currentfavFilters", JSON.stringify(newSavedStates));
-    filterDeleteSuccessNotify(favFilterIndex);
+    handleChangeFilterStates({
+      favFilterIndex: favFilterIndex,
+      filterNewData: filterNewData,
+    });
+    notifyService({
+      message: `Filter No.${favFilterIndex + 1} Delete Successfully`,
+      type: SUCCESS_NOTIFICATION,
+      position: "top-left",
+    });
   };
 
   const handleFilterRename = (event: any, favFilterIndex: number) => {
@@ -182,64 +145,67 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
       `Are you sure you want to rename filter No. ${favFilterIndex + 1} ?`
     );
     if (result === true) {
-      if (renameFavFilterIndex === favFilterIndex) {
-        const newSavedStates = [...currentfavFilters];
-        newSavedStates[renameFavFilterIndex].filterName =
-          favFilterNewName.length > 0
-            ? favFilterNewName
-            : `filter ${renameFavFilterIndex + 1}`;
-        setCurrentFavFilters(newSavedStates);
-        localStorage.setItem(
-          "currentfavFilters",
-          JSON.stringify(newSavedStates)
-        );
-      }
-      setRenameFavFilterIndex(-1);
-      filterEditSuccessNotify(favFilterIndex);
-    } else {
-      setRenameFavFilterIndex(-1);
+      const filterNewData = getLocalStorage(favFilterStorage)[favFilterIndex];
+      filterNewData.filterName =
+        favFilterNewName.length > 0
+          ? favFilterNewName
+          : `filter ${renameFavFilterIndex + 1}`;
+      handleChangeFilterStates({
+        favFilterIndex: favFilterIndex,
+        filterNewData: filterNewData,
+      });
+      notifyService({
+        message: `Filter No.${favFilterIndex + 1} Edit Successfully`,
+        type: SUCCESS_NOTIFICATION,
+        position: "top-left",
+      });
     }
+    setRenameFavFilterIndex(-1);
   };
 
   const handleFilterEditButton = (event: any, favFilterIndex: number) => {
     event.stopPropagation();
     if (favFilterIndex !== -1 && renameFavFilterIndex !== favFilterIndex) {
       setRenameFavFilterIndex(favFilterIndex);
-      setFavFilterNewName(currentfavFilters[favFilterIndex]?.filterName);
+      setFavFilterNewName(favFilters[favFilterIndex]?.filterName);
     }
   };
 
-  const handleFilterInput = (event: any) => {
+  const handleFilterNameInput = (event: any) => {
+    event.stopPropagation();
     setFavFilterNewName(event.target.value);
   };
 
-
-  const handleSetFilterStates = (filterStates: any) => {
-    setProblemDifficultyRange(filterStates.problemDifficultyRange);
-    setProblemIndexRange(filterStates.problemIndexRange);
-    setProblemSolvedRange(filterStates.problemSolvedRange);
-    setTagState(filterStates.tagState);
-    setIsTagsORLogicFiltered(filterStates.isTagsORLogicFiltered);
-    setIsTagsExcluded(filterStates.isTagsExcluded);
-    setContestType(filterStates.contestType);
-    setCurrStatus(filterStates.currStatus);
+  const handleApplyFilterStates = (currFiltersState: any) => {
+    dispatch(
+      updateFilter({
+        problemDifficultyRange: currFiltersState.problemDifficultyRange,
+        problemIndexRange: currFiltersState.problemIndexRange,
+        problemSolvedRange: currFiltersState.problemSolvedRange,
+        tagState: currFiltersState.tagState,
+        isTagsORLogicFiltered: currFiltersState.isTagsORLogicFiltered,
+        isTagsExcluded: currFiltersState.isTagsExcluded,
+        contestType: currFiltersState.contestType,
+        currStatus: currFiltersState.currStatus,
+      })
+    );
     setIsShowingFilters(false);
   };
 
-    const handleRemoveSelectedFavFilter = () => {
-      setSelectedFavFilterIndex(-1);
-      handleSetFilterStates(resetFilter);
-    };
+  const handleRemoveSelectedFavFilter = () => {
+    setSelectedFavFilterIndex(-1);
+    handleApplyFilterStates(resetFilter);
+  };
 
   const handleSelectFavFilter = (favFilterIndex: number) => {
-    let statesToShow: any = resetFilter;
+    let filterStatesToShow: any = resetFilter;
     if (
       favFilterIndex !== selectedFavFilterIndex &&
-      currentfavFilters[favFilterIndex]?.problemDifficultyRange
+      favFilters[favFilterIndex]?.problemDifficultyRange
     ) {
-      statesToShow = currentfavFilters[favFilterIndex];
+      filterStatesToShow = favFilters[favFilterIndex];
     }
-    handleSetFilterStates(statesToShow)
+    handleApplyFilterStates(filterStatesToShow);
     if (favFilterIndex === selectedFavFilterIndex) {
       setSelectedFavFilterIndex(-1);
     } else {
@@ -255,7 +221,8 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
     }, 0);
   };
 
-  useClickAway(filtersDivRef, handleClickAwayFilters);
+  // If click outside then filter container then filter container will not be shown
+  useClickAway(filtersContainerRef, handleClickAwayFilters);
 
   return (
     <div className="w-40 md:w-64 text-xs md:text-sm">
@@ -270,9 +237,10 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
             <i className="fa-solid fa-star text-yellow-500 mr-2"></i>
             <span className="cursor-text truncate">
               {selectedFavFilterIndex !== -1
-                ? (selectedFavFilterIndex + 1) +
+                ? selectedFavFilterIndex +
+                  1 +
                   ". " +
-                  currentfavFilters[selectedFavFilterIndex]?.filterName
+                  favFilters[selectedFavFilterIndex]?.filterName
                 : "Saved Filters"}
             </span>
           </div>
@@ -306,7 +274,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
         {isShowingFilters && (
           <div
             className="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg"
-            ref={filtersDivRef}
+            ref={filtersContainerRef}
           >
             <ul
               role="listbox"
@@ -314,7 +282,7 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
               aria-activedescendant="listbox-favFilterNewName-3"
               className="overflow-auto border-4 rounded-lg border-gray-400 max-h-56"
             >
-              {currentfavFilters.map((item: any, favFilterIndex: number) => (
+              {favFilters.map((item: any, favFilterIndex: number) => (
                 <li
                   key={favFilterIndex}
                   id={`fav-${favFilterIndex + 1}`}
@@ -336,18 +304,18 @@ const FavoriteFilters = (props: favoriteFilterProps) => {
                           className="w-4/5 ml-1 font-normal truncate"
                           title={
                             item?.filterName ||
-                            currentfavFilters[favFilterIndex]?.filterName
+                            favFilters[favFilterIndex]?.filterName
                           }
                         >
                           {item?.filterName ||
-                            currentfavFilters[favFilterIndex]?.filterName}
+                            favFilters[favFilterIndex]?.filterName}
                         </span>
                       ) : (
                         <input
                           className="w-4/5 mx-1 px-1.5 text-black font-normal border-2 rounded-md border-yellow-500"
                           value={favFilterNewName}
                           maxLength={40}
-                          onChange={(event) => handleFilterInput(event)}
+                          onChange={(event) => handleFilterNameInput(event)}
                           onClick={(event) => event.stopPropagation()}
                           onKeyDown={(event) => {
                             if (event.key === "Enter") {

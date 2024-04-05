@@ -1,11 +1,18 @@
-import React from "react";
-import Sidebars from "../Components/Sidebars";
-export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-export const CODEFORCES_API = process.env.NEXT_PUBLIC_CODEFORCES_API;
-export const ACD_LADDERS_API = process.env.NEXT_PUBLIC_ACD_LADDERS_API;
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import Sidebars from "../components/Sidebars";
+import { PLATFORMS } from "../configs/constants";
+import { setPlatform } from "../features/problems/problemSlice";
 
-const Home = () => {
-  return <Sidebars isAcdLaddersPage={false} />;
+const CodeforcesHome = () => {
+  const dispatch: ThunkDispatch<any, any, any> = useDispatch();
+  useEffect(() => {
+    // clear all the states and fetch the data again
+    dispatch(setPlatform(PLATFORMS.CF))
+  }, []);
+  
+  return <Sidebars />;
 };
 
-export default Home;
+export default CodeforcesHome;
