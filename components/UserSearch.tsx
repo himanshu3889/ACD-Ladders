@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import {useState} from "react";
 import {
   ERROR_NOTIFICATION,
@@ -14,7 +14,15 @@ import {
   fetchUserSubmissions,
 } from "../features/user/userAction";
 import {IRootReducerState} from "../app/store";
-import {updateFilter} from "../features/filters/filterSlice";
+import {
+  IProblemsSlice,
+  resetProblemsStatus,
+} from "../features/problems/problemSlice";
+import {IProblem} from "../types";
+import {ISearchSlice} from "../features/search/searchSlice";
+import {IFilterSlice, updateFilter} from "../features/filters/filterSlice";
+import {problemsFilter} from "../features/evaluators/problemFilter";
+import {StatusOptions} from "../features/filters/filterConstants";
 
 const UserSearch = () => {
   const dispatch: ThunkDispatch<any, any, any> = useDispatch();
@@ -24,45 +32,108 @@ const UserSearch = () => {
   const userState: IUserSlice = useSelector(
     (state: IRootReducerState) => state.user
   );
+  const problemsState: IProblemsSlice = useSelector(
+    (state: IRootReducerState) => state.problems
+  );
+
+  const searchState: ISearchSlice = useSelector(
+    (state: IRootReducerState) => state.search
+  );
+  const filterState: IFilterSlice = useSelector(
+    (state: IRootReducerState) => state.filters
+  );
+
+  const myProblemsFilter = problemsFilter();
+
   const isLoadingUser: boolean =
     userState.isLoadingProfile || userState.isLoadingSubmissions;
-  const [userId, setUserId] = useState<string>(userState.profile?.handle || "");
-
+  const [userId, setUserId] = useState<string>(userState.searchedHandle || "");
   const handleUserSearch = async () => {
     if (isLoadingUser || userId.length === 0) {
       return;
     }
 
-    dispatch(
-      updateFilter({
-        problemsSeenCount: 0,
-        problemsSeenMaxCount: 0,
-      })
-    );
-
-    function userSearchNotify(found:boolean) {
+    function userSearchNotify(found: boolean) {
       notifyService({
-        message: `User ${!found ? "not": ""} Found: ${userId}`,
+        message: `User ${!found ? "not" : ""} Found: ${userId}`,
         type: found ? SUCCESS_NOTIFICATION : ERROR_NOTIFICATION,
         id: userId,
         position: "top-left",
       });
     }
 
-    dispatch(fetchUserSubmissions({platform, userId})).then((response) => {
-      if (response.meta.requestStatus === "fulfilled") {
-        dispatch(fetchUserProfile({platform, userId})).then((response) => {
-          if (response.meta.requestStatus === "fulfilled") {
-            userSearchNotify(true)
-          } else {
-            userSearchNotify(false);
-          }
+    try {
+      const response1 = await dispatch(
+        fetchUserSubmissions({platform, userId})
+      );
+      if (response1.meta.requestStatus === "rejected") {
+        throw new Error("User submissions not fetched");
+      }
+      const response2 = await dispatch(fetchUserProfile({platform, userId}));
+      if (response2.meta.requestStatus === "rejected") {
+        throw new Error("User profile not fetched");
+      }
+      console.log("user searched successfully");
+      userSearchNotify(true);
+    } catch (error) {
+      console.error(error);
+      userSearchNotify(false);
+    }
+  };
+
+  // When problems changed need to refresh the user submissions also
+  const isInitialMount = useRef<boolean>(true);
+  useEffect(() => {
+    if (!isInitialMount.current) {
+      handleUserSearch();
+    } else {
+      isInitialMount.current = false;
+    }
+  }, [problemsState.allProblems]);
+
+  const searchProblems = async () => {
+    if (searchState.searchPattern) {
+      console.log("searching...", searchState.searchPattern);
+      if (searchState.isSearchOnAllProblems) {
+        // search the problems having pattern without filters
+        await myProblemsFilter.handleSearchWtihoutFilters({
+          isNewSearch: true,
         });
       } else {
-        userSearchNotify(false);
+        // search the problems having pattern with filters
+        await myProblemsFilter.handleSearchWithFilter({isNewSearch: true});
       }
-    });
+    } else {
+      // search the problems normally without pattern
+      await myProblemsFilter.handleFilter({isNewFilter: true});
+    }
   };
+
+  // user change -> problems status changes -> filter problem status change if the user remove
+  useEffect(() => {
+    // If status is not set to all problems then we need to go to search the problems again
+    // TODO: if we have status of all problems then don't want to search the problems again
+    // if (!userState && problemsState.problemsStatus !== )
+    searchProblems();
+    dispatch(
+      updateFilter({
+        currStatus: StatusOptions.All,
+      })
+    );
+  }, [problemsState.problemsStatus]);
+
+  useEffect(() => {
+    // profile change need to update the problems status
+    if (userState.profile) {
+      myProblemsFilter.updateProblemsStatus({
+        startIndex: 0,
+        endIndex: 99999999,
+        reupdate: true,
+      });
+    } else {
+      dispatch(resetProblemsStatus());
+    }
+  }, [userState.profile]);
 
   return (
     <div className="p-0.5 pl-2">

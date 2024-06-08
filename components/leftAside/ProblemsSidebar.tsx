@@ -14,6 +14,8 @@ import {
 } from "../../features/filters/filterConstants";
 import {ThunkDispatch} from "@reduxjs/toolkit";
 import {PLATFORMS} from "../../configs/constants";
+import TextSearch from "../textSearch/TextSearch";
+import {ISearchSlice} from "../../features/search/searchSlice";
 
 const ProblemsSidebar = () => {
   const dispatch: ThunkDispatch<any, any, any> = useDispatch();
@@ -26,6 +28,9 @@ const ProblemsSidebar = () => {
   );
   const userState: IUserSlice = useSelector(
     (state: IRootReducerState) => state.user
+  );
+  const searchState: ISearchSlice = useSelector(
+    (state: IRootReducerState) => state.search
   );
 
   const platform: PLATFORMS = problemsState.platform;
@@ -69,10 +74,19 @@ const ProblemsSidebar = () => {
 
     for (
       let currIndex = startIndex;
-      currIndex < Math.min(endIndex, problemsState.filtered?.length);
+      currIndex <
+      Math.min(
+        endIndex,
+        (searchState.searchPattern
+          ? problemsState.searched
+          : problemsState.filtered
+        )?.length
+      ); 
       currIndex++
     ) {
-      const allProblemIndex = problemsState.filtered[currIndex];
+      const allProblemIndex = searchState.searchPattern
+        ? problemsState.searched[currIndex]
+        : problemsState.filtered[currIndex];
       const problemStatus = problemsState.problemsStatus[allProblemIndex];
       const sameProblemOtherContestId =
         problemsState.otherContestId[allProblemIndex];
@@ -118,6 +132,9 @@ const ProblemsSidebar = () => {
   return (
     <div className="min-w-max min-h-screen bg-gray flex mx-2">
       <div className="w-full">
+        <div className="flex justify-start my-2">
+          <TextSearch />
+        </div>
         <div className="text-white bg-gray-700 shadow-md rounded my-2">
           <table className="min-w-full table-fixed border border-gray-400">
             <thead>

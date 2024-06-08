@@ -17,11 +17,12 @@ export interface IFilterSlice {
   contestType: CFContestTypes | "";
   currStatus: StatusOptions;
   problemsSeenCount: number;
-  problemsSeenMaxCount: number; 
+  problemsSeenMaxCount: number;
   sortingOrder: SortingOrders;
   pageNumber: number;
   problemsPerPage: number;
   sortingParam: string;
+  filterProblemsSeenCount: number;
 }
 
 export interface IFiltersState {
@@ -44,12 +45,13 @@ const initialState: IFilterSlice = {
   isTagsExcluded: false,
   contestType: "",
   currStatus: StatusOptions.All,
-  problemsSeenCount: 0,  
-  problemsSeenMaxCount: 0, 
+  problemsSeenCount: 0,
+  problemsSeenMaxCount: 0,
   sortingOrder: SortingOrders.None,
-  pageNumber: 1, 
+  pageNumber: 1,
   problemsPerPage: problemsPerPage[0],
-  sortingParam: "",  // TODO: NEED TO FIX THE SORTING PARAMS
+  sortingParam: "", 
+  filterProblemsSeenCount: 0,
 };
 
 export const resetFiltersState: IFiltersState = {

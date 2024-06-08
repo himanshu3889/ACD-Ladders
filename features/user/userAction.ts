@@ -58,7 +58,7 @@ export const fetchUserSubmissions: AsyncThunk<
         response = await fetchCFUserSubmissionsApi(userId);
       }
       const userSubmissions: ISubmission[] = response.result;
-      const result = preProcessUserSubmissionsHelper({
+      const result = await preProcessUserSubmissionsHelper({
         platform: platform,
         userSubmissions: userSubmissions,
       });

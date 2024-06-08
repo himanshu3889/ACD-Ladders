@@ -1,8 +1,9 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IUser} from "../../types";
 import {fetchUserSubmissions, fetchUserProfile} from "./userAction";
 
 export interface IUserSlice {
+  searchedHandle: string;
   profile: IUser | null;
   userSolvedProblems: Record<number, Record<string, string>>;
   userAttemptedProblems: Record<number, Record<string, string>>;
@@ -13,6 +14,7 @@ export interface IUserSlice {
 }
 
 const initialState: IUserSlice = {
+  searchedHandle: "",
   profile: null,
   userSolvedProblems: {},
   userAttemptedProblems: {},
@@ -36,6 +38,7 @@ export const userSlice = createSlice({
       .addCase(fetchUserProfile.fulfilled, (state: any, action: any) => {
         state.isLoadingProfile = false;
         state.profile = action.payload;
+        state.searchedHandle = action.payload.handle;
         state.isError = false;
         state.message = "";
       })

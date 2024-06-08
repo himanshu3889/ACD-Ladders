@@ -11,52 +11,45 @@ import {
 import {fetchAllContests} from "../contests/contestAction";
 import {updateFilter} from "../filters/filterSlice";
 import {fetchAllProblems, preprocessProblems} from "../problems/problemAction";
-import {fetchUserProfile, fetchUserSubmissions} from "../user/userAction";
 
 const PlatformInit: FC<PropsWithChildren> = ({children}) => {
   const dispatch: ThunkDispatch<any, any, any> = useDispatch();
   const platform: PLATFORMS = useSelector(
     (state: IRootReducerState) => state.problems.platform
   );
-  const isInitialMount = useRef(true);
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      console.log(`Refresh ${platform}....`);
-      dispatch(fetchAllProblems({platform: platform}))
-        .then((result) => {
-          const {platform, allProblems}: any = result.payload;
-          dispatch(
-            preprocessProblems({platform: platform, problems: allProblems})
-          );
-        })
-        .catch((error) => {
-          console.error(error);
-          notifyService({
-            message:
-              "Unable to fetch the problem data from whatever the platform",
-            type: ERROR_NOTIFICATION,
-          });
+    console.log(`Refresh ${platform}....`);
+    dispatch(fetchAllProblems({platform: platform}))
+      .then((result) => {
+        const {platform, allProblems}: any = result.payload;
+        dispatch(
+          preprocessProblems({platform: platform, problems: allProblems})
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+        notifyService({
+          message:
+            "Unable to fetch the problem data from whatever the platform",
+          type: ERROR_NOTIFICATION,
         });
+      });
 
-      // Fetch the contests data
-      dispatch(fetchAllContests({platform: platform}))
-        .then((result) => {})
-        .catch((error) => {
-          console.error(error);
-          notifyService({
-            message:
-              "Unable to fetch the contest data from whatever the platform",
-            type: ERROR_NOTIFICATION,
-          });
+    // Fetch the contests data
+    dispatch(fetchAllContests({platform: platform}))
+      .then((result) => {})
+      .catch((error) => {
+        console.error(error);
+        notifyService({
+          message:
+            "Unable to fetch the contest data from whatever the platform",
+          type: ERROR_NOTIFICATION,
         });
-
-      dispatch(updateFilter({problemsSeenMaxCount: 0, problemsSeenCount: 0}));
-    }
+      });
+    
+    dispatch(updateFilter({problemsSeenCount: 0}));
   }, [platform]);
   return <>{children}</>;
 };
 
 export {PlatformInit};
-

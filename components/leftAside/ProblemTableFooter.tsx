@@ -2,13 +2,17 @@ import {ThunkDispatch} from "@reduxjs/toolkit";
 import React, {FC, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {IRootReducerState} from "../../app/store";
-import { problemsFilter } from "../../features/evaluators/problemFilter";
+import {problemsFilter} from "../../features/evaluators/problemFilter";
 import {IFilterSlice, updateFilter} from "../../features/filters/filterSlice";
+import {ISearchSlice} from "../../features/search/searchSlice";
 
 const ProblemTableFooter: FC = () => {
   const dispatch: ThunkDispatch<any, any, any> = useDispatch();
   const filtersState: IFilterSlice = useSelector(
     (state: IRootReducerState) => state.filters
+  );
+  const searchState: ISearchSlice = useSelector(
+    (state: IRootReducerState) => state.search
   );
   const isLoadingProblems: boolean = useSelector(
     (state: IRootReducerState) => state.problems.isLoading
@@ -33,19 +37,34 @@ const ProblemTableFooter: FC = () => {
     setPageInputValue(newPageNumber);
   };
 
+  const filterProblemsOnPageChange = async () => {
+    if (searchState.searchPattern) {
+      console.log("searching...", searchState.searchPattern);
+      if (searchState.isSearchOnAllProblems) {
+        // search the problems having pattern without filters
+        await myProblemsFilter.handleSearchWtihoutFilters({
+          isNewSearch: false,
+        });
+      } else {
+        // search the problems having pattern with filters
+        await myProblemsFilter.handleSearchWithFilter({isNewSearch: false});
+      }
+    } else {
+      // search the problems normally without pattern
+      await myProblemsFilter.handleFilter({isNewFilter: false});
+    }
+  };
+
   const isInitialMount = useRef(true);
   useEffect(() => {
     setPageInputValue(filtersState.pageNumber);
-    const filterProblems = async () => {
-      await myProblemsFilter.handleFilter({isNewFilter: false});
-    };
     if (!isInitialMount.current) {
-      filterProblems();
+      filterProblemsOnPageChange();
     }
     if (isInitialMount.current) {
       isInitialMount.current = false;
     }
-  }, [filtersState.pageNumber, filtersState.problemsPerPage]);
+  }, [ filtersState.pageNumber, filtersState.problemsPerPage]);
 
   return (
     <div className="mx-auto p-1 ">

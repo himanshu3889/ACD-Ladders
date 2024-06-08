@@ -30,6 +30,7 @@ const Navbar = () => {
       router.push(`${BASE_URL}/`);
     }
   };
+  console.log("navbar rerender")
 
   const isProfileShow: boolean = userState.profile !== null;
   // &&
@@ -37,7 +38,7 @@ const Navbar = () => {
   // !userState.isLoadingSubmissions;
 
   return (
-    <header className="w-full overflow-auto bg-gray-700 body-font mb-0.5 shadow-sm border-1.5 border-white">
+    <div className="w-full overflow-auto bg-gray-700 body-font mb-0.5 shadow-sm border-1.5 border-white">
       <div className="mx-1 flex justify-between items-center py-2 px-2">
         <div className="flex items-center justify-center">
           <div className="md:border-r md:border-gray-500 md:pr-2 mx-2 flex flex-shrink-0 title-font font-medium items-center text-gray-900 md:mb-0">
@@ -98,7 +99,7 @@ const Navbar = () => {
           </div>
         )}
       </div>
-    </header>
+    </div>
   );
 };
 

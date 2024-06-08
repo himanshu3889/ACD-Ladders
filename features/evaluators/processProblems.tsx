@@ -10,7 +10,6 @@ export const processCFProblems = async ({
   platform,
   problems,
 }: IPreProcessProblems): Promise<{
-  filtered: number[];
   sortedByIdAsc: number[];
   sortedByScoreAsc: number[];
   sortedByDifficultyAsc: number[];
@@ -18,13 +17,11 @@ export const processCFProblems = async ({
 }> => {
   const problemStatistics = problems.problemStatistics;
   const problemsCount: number = problems.problems.length;
-  const filtered: number[] = new Array(problemsCount); // Initially mark all problems filtered
   const sortedByIdAsc: number[] = new Array(problemsCount);
   const sortedByDifficultyAsc: number[] = new Array(problemsCount);
   const sortedBySolvedByAsc: number[] = new Array(problemsCount);
   const sortedByScoreAsc: number[] = new Array(problemsCount);
   for (let i = 0; i < problemsCount; i++) {
-    filtered[i] = i;
     sortedByIdAsc[i] = i;
     sortedByDifficultyAsc[i] = i;
     sortedBySolvedByAsc[i] = i;
@@ -66,7 +63,6 @@ export const processCFProblems = async ({
     });
 
   return {
-    filtered,
     sortedByIdAsc,
     sortedByScoreAsc,
     sortedByDifficultyAsc,

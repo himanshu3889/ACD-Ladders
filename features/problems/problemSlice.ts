@@ -8,7 +8,8 @@ import {fetchAllProblems, preprocessProblems} from "./problemAction";
 export interface IProblemsSlice {
   platform: PLATFORMS;
   allProblems: IProblems; // problems and problem statistics
-  filtered: number[]; 
+  filtered: number[];
+  searched: number[];
   problemsStatus: StatusOptions[]; // status of each problem in allProblems
   otherContestId: number[]; // For Same div1 and div2 round the higher index div2 problems are found in div1, -1: Not found
   sortedByIdAscOrder: number[];
@@ -25,6 +26,7 @@ const initialState: IProblemsSlice = {
   platform: PLATFORMS.ACD, // default platform for every user
   allProblems: {problems: [], problemStatistics: []},
   filtered: [],
+  searched: [],
   problemsStatus: [],
   otherContestId: [],
   sortedByIdAscOrder: [],
@@ -44,17 +46,23 @@ export const problemsSlice = createSlice({
     resetAllProblems: (state: any) => initialState,
     setFilteredProblems: (state: any, action: PayloadAction<number[]>) => {
       state.filtered = action.payload;
+      return state;
     },
-    setPlatform: (state:any, action:PayloadAction<PLATFORMS>) => {
+    setSearchedProblems: (state: any, action: PayloadAction<number[]>) => {
+      state.searched = action.payload;
+      return state;
+    },
+    setPlatform: (state: any, action: PayloadAction<PLATFORMS>) => {
       state.platform = action.payload;
+      return state;
     },
-    removeFiltering: (state: any) => {
-      state.filtered = []; // TODO: WHEN USER REMOVED THE PROBLEMS ARE NOT SHOWING
+    resetProblemsStatus: (state: any) => {
       const allProblemsCount: number = state.allProblems?.problems?.length || 0;
       state.problemsStatus = new Array(allProblemsCount).fill(
         StatusOptions.Unsolved
       );
       state.otherContestId = new Array(allProblemsCount).fill(-1);
+      return state;
     },
     updateProblemStatus: (
       state,
@@ -64,6 +72,7 @@ export const problemsSlice = createSlice({
       if (index >= 0 && index < state.problemsStatus.length) {
         state.problemsStatus[index] = value;
       }
+      return state;
     },
     updateMultiProblemStatus: (
       state,
@@ -75,6 +84,7 @@ export const problemsSlice = createSlice({
           state.problemsStatus[index] = value;
         }
       });
+      return state;
     },
     updateOtherContestId: (
       state,
@@ -84,6 +94,7 @@ export const problemsSlice = createSlice({
       if (index >= 0 && index < state.otherContestId.length) {
         state.otherContestId[index] = value;
       }
+      return state;
     },
     updateMultiOtherContestId: (
       state,
@@ -95,12 +106,14 @@ export const problemsSlice = createSlice({
           state.otherContestId[index] = value;
         }
       });
+      return state;
     },
   },
   extraReducers: (builder: any) => {
     builder
       .addCase(fetchAllProblems.pending, (state: any) => {
         state.isLoading = true;
+        return state;
       })
       .addCase(fetchAllProblems.fulfilled, (state: any, action: any) => {
         state.isLoading = false;
@@ -114,15 +127,19 @@ export const problemsSlice = createSlice({
         state.otherContestId = new Array(allProblemsCount).fill(-1);
         state.filtered = state.isError = false;
         state.message = "";
+        state.isPreprocessed = false;
+        return state;
       })
       .addCase(fetchAllProblems.rejected, (state: any, action: any) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
+        return state;
       });
     builder
       .addCase(preprocessProblems.pending, (state: any) => {
         state.isLoading = true;
+        return state;
       })
       .addCase(preprocessProblems.fulfilled, (state: any, action: any) => {
         state.isLoading = false;
@@ -135,11 +152,13 @@ export const problemsSlice = createSlice({
         state.isError = false;
         state.message = "";
         state.isPreprocessed = true; // mark as preprocessed
+        return state;
       })
       .addCase(preprocessProblems.rejected, (state: any, action: any) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
+        return state;
       });
   },
 });
@@ -148,7 +167,8 @@ export const {
   resetAllProblems,
   setPlatform,
   setFilteredProblems,
-  removeFiltering,
+  setSearchedProblems,
+  resetProblemsStatus,
   updateProblemStatus,
   updateMultiProblemStatus,
   updateOtherContestId,

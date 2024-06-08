@@ -52,3 +52,7 @@ export const fetchCFUserSubmissionsApi = async (userId: string) => {
     throw error;
   }
 };
+
+// TODO : ANALYSE THE DATA FROM THE CONTESTS YOU PARTICIPATED
+// https://codeforces.com/api/contest.standings?contestId=566&asManager=true&from=1&count=5&showUnofficial=true
+// https://codeforces.com/api/contest.standings?contestId=566&asManager=true&from=1&count=5&showUnofficial=true

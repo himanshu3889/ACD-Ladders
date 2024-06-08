@@ -21,6 +21,7 @@ import {problemsFilter} from "../../features/evaluators/problemFilter";
 import {IUser} from "../../types";
 import {IUserSlice} from "../../features/user/userSlice";
 import {PLATFORMS} from "../../configs/constants";
+import {updateSearch} from "../../features/search/searchSlice";
 interface IFilterSidebarProps {
   isShowingFilterSideBar: boolean;
 }
@@ -42,11 +43,10 @@ const FilterSidebar: React.FC<IFilterSidebarProps> = ({
   const filtersState: IFilterSlice = useSelector(
     (state: IRootReducerState) => state.filters
   );
-  const userState: IUserSlice = useSelector(
-    (state: IRootReducerState) => state.user
-  );
 
-  const userProfile: IUser | null = userState.profile;
+  const userProfile: IUser | null = useSelector(
+    (state: IRootReducerState) => state.user.profile
+  );
   const platform: PLATFORMS = useSelector(
     (state: IRootReducerState) => state.problems.platform
   );
@@ -73,7 +73,7 @@ const FilterSidebar: React.FC<IFilterSidebarProps> = ({
   ) => {
     let newDifficulty: string = event.target.value.replace(/[^0-9]/g, "");
     if (newDifficulty === "") {
-      newDifficulty = index === 0 ? "0" : "5000";
+      newDifficulty = "0";
     }
     const range: [number, number] = [...filtersState.problemDifficultyRange];
     range[index] = parseInt(newDifficulty, 10);
@@ -88,7 +88,7 @@ const FilterSidebar: React.FC<IFilterSidebarProps> = ({
   const handleSolvedInput = (event: any, index: number) => {
     let newSolvedCount: string = event.target.value.replace(/[^0-9]/g, "");
     if (newSolvedCount === "") {
-      newSolvedCount = index === 0 ? "0" : "9999999999";
+      newSolvedCount = "0";
     }
     const range: [number, number] = [...filtersState.problemSolvedRange];
     range[index] = parseInt(newSolvedCount);
@@ -195,14 +195,9 @@ const FilterSidebar: React.FC<IFilterSidebarProps> = ({
       </>
     );
   };
-  // No filtering
-  // if problems / contests are loading
-  // if user profile / submissions are loading
-  const isLoading: boolean =
-    isLoadingProblems ||
-    isLoadingContests ||
-    userState.isLoadingProfile ||
-    userState.isLoadingSubmissions;
+
+  // No filtering : if problems / contests are loading
+  const isLoading: boolean = isLoadingProblems || isLoadingContests;
 
   const isInitialMount = useRef(true);
   useEffect(() => {
@@ -216,7 +211,6 @@ const FilterSidebar: React.FC<IFilterSidebarProps> = ({
       isInitialMount.current = false;
     }
   }, [
-    userProfile, // new user profile new filter
     filtersState.sortingOrder,
     filtersState.sortingParam,
     isLoading, // after loading complete set the new filter
@@ -233,15 +227,20 @@ const FilterSidebar: React.FC<IFilterSidebarProps> = ({
     dispatch(
       updateFilter({
         problemIndexRange: [
-          filtersState.problemIndexRange[0].length > 0
-            ? filtersState.problemIndexRange[0]
-            : "A",
-          filtersState.problemIndexRange[1].length > 0
-            ? filtersState.problemIndexRange[1]
-            : "Z",
+          filtersState.problemIndexRange[0] || "A",
+          filtersState.problemIndexRange[1] || "Z",
+        ],
+        problemDifficultyRange: [
+          filtersState.problemDifficultyRange[0] || 0,
+          filtersState.problemDifficultyRange[1] || 5000,
+        ],
+        problemSolvedRange: [
+          filtersState.problemSolvedRange[0] || 0,
+          filtersState.problemSolvedRange[1] || 9999999999,
         ],
       })
     );
+    dispatch(updateSearch({searchPattern: ""})); // don't want the search when filter is apply
     myProblemsFilter.handleFilter({isNewFilter: true});
   };
 

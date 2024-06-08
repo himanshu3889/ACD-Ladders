@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useEffect} from "react";
 import Link from "next/link";
 import {
   INFO_NOTIFICATION,
@@ -8,10 +8,15 @@ import {ThunkDispatch} from "@reduxjs/toolkit";
 import {useDispatch, useSelector} from "react-redux";
 import {resetUser} from "../features/user/userSlice";
 import {IRootReducerState} from "../app/store";
-import {removeFiltering} from "../features/problems/problemSlice";
+import {
+  IProblemsSlice,
+  resetProblemsStatus,
+} from "../features/problems/problemSlice";
 import {IUser} from "../types";
-import {updateFilter} from "../features/filters/filterSlice";
+import {IFilterSlice, updateFilter} from "../features/filters/filterSlice";
 import {StatusOptions} from "../features/filters/filterConstants";
+import {problemsFilter} from "../features/evaluators/problemFilter";
+import {ISearchSlice} from "../features/search/searchSlice";
 
 const getUserRankColorStyle = (rank: string) => {
   return rank === "pupil"
@@ -37,22 +42,15 @@ export default function UserDetails() {
     (state: IRootReducerState) => state.user.profile
   );
 
-  function handleRemoveUser() {
-    dispatch(removeFiltering());
+  // TODO: GO TO THE PAGE 1 if user problem status is not all
+  const handleRemoveUser = () => {
     dispatch(resetUser());
-    dispatch(
-      updateFilter({
-        currStatus: StatusOptions.All,
-        problemsSeenCount: 0,
-        problemsSeenMaxCount: 0,
-      })
-    );
     notifyService({
       message: `User Removed Successfully : ${userProfile?.handle} `,
       type: INFO_NOTIFICATION,
       position: "top-left",
     });
-  }
+  };
 
   const UserIDColorStyleByRank: FC = () => {
     const userID: string = userProfile?.handle || "";
@@ -82,7 +80,7 @@ export default function UserDetails() {
       <div className="each flex rounded shadow w-max md:mr-2 ml-2 bg-gray-50 relative">
         <div className="sec self-center p-0.5 pr-1">
           <Link
-            href={`https://codeforces.com/profile/${userProfile?.handle}`} // TODO : DYNAMIC
+            href={`https://codeforces.com/profile/${userProfile?.handle}`}
             legacyBehavior
           >
             <a target="_blank">
@@ -110,7 +108,7 @@ export default function UserDetails() {
             </span>
           </div>
         </div>
-        <div className="md:absolute top-0 right-0 cursor-pointer md:opacity-0 md:group-hover:opacity-100 text-red-400 hover:text-red-600 px-1">
+        <div className="md:absolute top-0 right-0 cursor-pointer text-red-400 hover:text-red-600 px-1">
           <i
             className="fa-solid fa-xmark text-xl"
             onClick={handleRemoveUser}
