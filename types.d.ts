@@ -7,21 +7,30 @@ export interface IProblem {
   problemsetName?: string;
   points?: number;
   rating?: number;
-  frequency?:number;
-};
-
+  frequency?: number;
+}
 
 export interface IProblemStatistics {
   contestId?: number;
   index?: string;
   solvedCount?: number;
-} ;
+}
+
+export interface IProblems {
+  problems: IProblem[];
+  problemStatistics: IProblemStatistics[];
+}
 
 export interface IContest {
   id: number;
   name: string;
   type: "CF" | "IOI" | "ICPC";
-  phase: "BEFORE" | "CODING" | "PENDING_SYSTEM_TEST" | "SYSTEM_TEST" | "FINISHED";
+  phase:
+    | "BEFORE"
+    | "CODING"
+    | "PENDING_SYSTEM_TEST"
+    | "SYSTEM_TEST"
+    | "FINISHED";
   frozen: boolean;
   durationSeconds: number;
   startTimeSeconds?: number;
@@ -35,8 +44,7 @@ export interface IContest {
   country?: string;
   city?: string;
   season?: string;
-
-};
+}
 
 export interface IUser {
   handle: string;
@@ -58,7 +66,7 @@ export interface IUser {
   friendOfCount: number;
   avatar: string;
   titlePhoto: string;
-};
+}
 
 export interface ISubmission {
   id: number;
@@ -105,5 +113,4 @@ export interface ISubmission {
   timeConsumedMillis: number;
   memoryConsumedBytes: number;
   points?: number;
-};
-
+}

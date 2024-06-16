@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { BASE_URL } from "./ProblemsSidebar";
+import { BASE_URL } from "../../configs/constants";
 
 
 export const Footer = () => {
