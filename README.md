@@ -119,6 +119,19 @@ This will start the Next.js development server, and you can view your app by vis
   Click on the Difficulty(in table head) to arrange filtered problems by difficulty level.
 
 
+### Search Problems 
+
+Note: User can search problems only on problems id and problems name fields.
+
+- **Search on All Problems:**
+  Click on the `All` button to search on all problems instead filtering problems.  
+
+- **Search with Match Case :**
+  Click on the `Aa` button to search problems with match case e.g. world and WorLd will be same.  
+
+- **Search only whole word :**
+  Click on the `W` button to search problems with complete word e.g. HelloWorld will not include if user search world but in Hello World will include if user search world .  
+
 ### Additional Features
 
 - **Toggle and Clear Tags:**
