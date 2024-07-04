@@ -6,65 +6,27 @@ import {
   userAnalyticsKeysArray,
 } from "../../../../pages/analytics/cf";
 import {mixedSort, titleCase} from "../../../../utils/stringAlgos";
-import AxisSelectDropdown from "./AxisSelectDropdown";
-import FilterSelectGroup from "./FilterSelectGroup";
-import {StatusOptions} from "../../../../features/filters/filterConstants";
-import {getUserAnalyticsData} from "../generateUserAnalyticsData";
-import {IContest, ISubmission} from "../../../../types";
+import AxisSelectDropdown from "../submissionAnalyticsChart/AxisSelectDropdown";
 const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
   ssr: false, // Ensure ApexCharts is not imported during SSR
 });
 
-const statusGroup: StatusOptions[] = [
-  StatusOptions.Solved,
-  StatusOptions.Attempted,
-];
-const participantType: string[] = ["PRACTICE", "CONTESTANT", "VIRTUAL"];
-
-interface ISubmissionAnalyticsChartProps {
-  userSubmissions: ISubmission[];
-  contests: IContest[];
+interface ISubmissioChartProps {
+  userSubmissionAnalytics: any;
 }
-const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
-  userSubmissions,
-  contests,
+const SubmissionChart: FC<ISubmissioChartProps> = ({
+  userSubmissionAnalytics,
 }) => {
-  const [userSubmissionAnalytics, setUserSubmissionAnalytics] = useState<any>(
-    {}
-  );
   const [analyticsXAxis, setanalyticsXAxis] =
     useState<UserAnalyticsKeys | null>(UserAnalyticsKeys.RATING);
   const [analyticsYAxis, setanalyticsYAxis] =
     useState<UserAnalyticsKeys | null>(UserAnalyticsKeys.STATUS);
-  const [statusFilters, setStatusFilters] = useState<StatusOptions[]>([]);
-  const [participantTypeFilters, setparticipantTypeFilters] = useState<
-    string[]
-  >([]);
-
   const [xAxisCategories, setXAxisCategories] = useState<any>([]);
   const [series, setSeries] = useState<any>([]);
 
-  const generateUserAnalyticsData = async () => {
-    // TODO: ADD THE LOADER FUNCTIONALITY
-    const userAnalyticsData = await getUserAnalyticsData({
-      userSubmissions: userSubmissions,
-      contests: contests,
-      statusFilters: statusFilters,
-      participantTypeFilters: participantTypeFilters,
-    });
-    console.log({userAnalyticsData});
-    setUserSubmissionAnalytics(userAnalyticsData);
-  };
-
-  useEffect(() => {
-    if (contests.length > 0 && userSubmissions.length > 0) {
-      generateUserAnalyticsData();
-    }
-  }, [contests, userSubmissions, statusFilters, participantTypeFilters]);
-
   const handleChartPrepare = () => {
+    // Extract ratings and tags
     if (!analyticsXAxis || !analyticsYAxis) {
-      console.error("You need to choose both x and y axis");
       return;
     }
     try {
@@ -87,7 +49,7 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
       const yCategories = new Set<string>();
       xCategories.forEach((x) => {
         Object.keys(
-          userSubmissionAnalytics?.[analyticsXAxis]?.[x]?.[analyticsYAxis] ?? {}
+          userSubmissionAnalytics[analyticsXAxis][x][analyticsYAxis] || {}
         ).forEach((status) => {
           yCategories.add(status);
         });
@@ -100,9 +62,7 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
           name: y,
           data: xCategories.map(
             (x) =>
-              userSubmissionAnalytics?.[analyticsXAxis]?.[x]?.[
-                analyticsYAxis
-              ]?.[y] ?? 0
+              userSubmissionAnalytics[analyticsXAxis][x][analyticsYAxis][y] || 0
           ),
         };
       });
@@ -116,7 +76,6 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
   useEffect(() => {
     handleChartPrepare();
   }, [userSubmissionAnalytics, analyticsXAxis, analyticsYAxis]);
-
   // Configure the chart options
   const options: ApexCharts.ApexOptions = {
     chart: {
@@ -185,54 +144,38 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
 
   return (
     <div>
-      <div className="flex flex-row m-4">
-        <div className="">
-          <div className="font-semibold">X Axis</div>
-          <AxisSelectDropdown
-            value={analyticsXAxis}
-            allValues={userAnalyticsKeysArray}
-            setValue={setanalyticsXAxis}
-            id="x-axis"
+      <div className="m-8">
+        <div className="flex flex-row m-4">
+          <div className="me-4">
+            <div className="font-semibold">X Axis</div>
+            <AxisSelectDropdown
+              value={analyticsXAxis}
+              allValues={userAnalyticsKeysArray}
+              setValue={setanalyticsXAxis}
+              id="x-axis"
+            />
+          </div>
+          <div className="mx-4">
+            <div className="font-semibold">Y Axis</div>
+            <AxisSelectDropdown
+              value={analyticsYAxis}
+              allValues={userAnalyticsKeysArray}
+              setValue={setanalyticsYAxis}
+              id="y-axis"
+            />
+          </div>
+        </div>
+        <div id="chart">
+          <DynamicApexCharts
+            options={options}
+            series={series}
+            type="bar"
+            height={600}
           />
         </div>
-        <div className="ml-4">
-          <div className="font-semibold">Y Axis</div>
-          <AxisSelectDropdown
-            value={analyticsYAxis}
-            allValues={userAnalyticsKeysArray}
-            setValue={setanalyticsYAxis}
-            id="y-axis"
-          />
-        </div>
-        <div className="ml-8">
-          <FilterSelectGroup
-            values={statusGroup}
-            options={statusFilters}
-            setOptions={setStatusFilters}
-            formLabel="Status"
-            formHelperText="default is All if nothing selected"
-          />
-        </div>
-        <div className="ml-4">
-          <FilterSelectGroup
-            values={participantType}
-            options={participantTypeFilters}
-            setOptions={setparticipantTypeFilters}
-            formLabel="Participant"
-            formHelperText="default is All if nothing selected"
-          />
-        </div>
-      </div>
-      <div id="submission-chart">
-        <DynamicApexCharts
-          options={options}
-          series={series}
-          type="bar"
-          height={600}
-        />
       </div>
     </div>
   );
 };
 
-export default SubmissionAnalyticsChart;
+export default SubmissionChart;

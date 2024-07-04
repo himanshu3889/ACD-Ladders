@@ -145,9 +145,13 @@ const updateUserAnalyticsData = (
 export const getUserAnalyticsData = async ({
   userSubmissions,
   contests,
+  statusFilters,
+  participantTypeFilters,
 }: {
   userSubmissions: ISubmission[];
   contests: IContest[];
+  statusFilters: StatusOptions[];
+  participantTypeFilters: string[];
 }) => {
   // processCFContests  process the contests
   const {contestData, similarRoundDiv1Div2Contests}: IPreprocessCFContests =
@@ -232,6 +236,17 @@ export const getUserAnalyticsData = async ({
       problemStatusPushHelper(problemStatus, userAttemptedProblems);
     }
     problemStatuses.map((problemStatus: StatusOptions) => {
+      // check for the status filter
+      if (statusFilters.length > 0 && !statusFilters.includes(problemStatus)) {
+        return;
+      }
+      // check for the participant type filter
+      if (
+        participantTypeFilters.length > 0 &&
+        !participantTypeFilters.includes(participantType)
+      ) {
+        return;
+      }
       updateUserAnalyticsData(
         userAnalyticsData,
         keys,

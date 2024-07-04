@@ -1,7 +1,7 @@
 import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import React, {FC} from "react";
-import {UserAnalyticsKeys} from "../../../pages/analytics/cf";
-import {titleCase} from "../../../utils/stringAlgos";
+import {UserAnalyticsKeys} from "../../../../pages/analytics/cf";
+import {titleCase} from "../../../../utils/stringAlgos";
 
 interface IAxisSelectDropdown {
   value: UserAnalyticsKeys | null;
@@ -30,7 +30,9 @@ const AxisSelectDropdown: FC<IAxisSelectDropdown> = ({
         size="small"
       >
         {allValues.map((val: string) => (
-          <MenuItem value={val}>{titleCase(val)}</MenuItem>
+          <MenuItem key={val} value={val}>
+            {titleCase(val)}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>
