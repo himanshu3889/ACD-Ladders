@@ -17,38 +17,39 @@ const PlatformInit: FC<PropsWithChildren> = ({children}) => {
   const platform: PLATFORMS = useSelector(
     (state: IRootReducerState) => state.problems.platform
   );
-  useEffect(() => {
-    console.log(`Refresh ${platform}....`);
-    dispatch(fetchAllProblems({platform: platform}))
-      .then((result) => {
-        const {platform, allProblems}: any = result.payload;
-        dispatch(
-          preprocessProblems({platform: platform, problems: allProblems})
-        );
-      })
-      .catch((error) => {
-        console.error(error);
-        notifyService({
-          message:
-            "Unable to fetch the problem data from whatever the platform",
-          type: ERROR_NOTIFICATION,
-        });
-      });
+  // TODO: REMOVE THE PLATFORM REFRESH ON EVERY PAGE CHANGE CREATING ISSUES IN THE ANALYTICS
+  // useEffect(() => {
+  //   console.log(`Refresh ${platform}....`);
+  //   dispatch(fetchAllProblems({platform: platform}))
+  //     .then((result) => {
+  //       const {platform, allProblems}: any = result.payload;
+  //       dispatch(
+  //         preprocessProblems({platform: platform, problems: allProblems})
+  //       );
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       notifyService({
+  //         message:
+  //           "Unable to fetch the problem data from whatever the platform",
+  //         type: ERROR_NOTIFICATION,
+  //       });
+  //     });
 
-    // Fetch the contests data
-    dispatch(fetchAllContests({platform: platform}))
-      .then((result) => {})
-      .catch((error) => {
-        console.error(error);
-        notifyService({
-          message:
-            "Unable to fetch the contest data from whatever the platform",
-          type: ERROR_NOTIFICATION,
-        });
-      });
+  //   // Fetch the contests data
+  //   dispatch(fetchAllContests({platform: platform}))
+  //     .then((result) => {})
+  //     .catch((error) => {
+  //       console.error(error);
+  //       notifyService({
+  //         message:
+  //           "Unable to fetch the contest data from whatever the platform",
+  //         type: ERROR_NOTIFICATION,
+  //       });
+  //     });
     
-    dispatch(updateFilter({problemsSeenCount: 0}));
-  }, [platform]);
+  //   dispatch(updateFilter({problemsSeenCount: 0}));
+  // }, [platform]);
   return <>{children}</>;
 };
 

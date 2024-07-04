@@ -11,6 +11,7 @@ import {persistor, rootStore} from "../app/store";
 import "../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import {PlatformInit} from "../features/evaluators/PlatformInit";
+import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 
 const MyApp = ({Component, pageProps}: AppProps) => {
   const [isSSR, setIsSSR] = useState<Boolean>(true);
@@ -41,14 +42,16 @@ const MyApp = ({Component, pageProps}: AppProps) => {
 
       <Provider store={rootStore}>
         <PersistGate loading={null} persistor={persistor}>
-          <ToastContainer autoClose={1200} limit={3} draggablePercent={30} />
-          <PlatformInit>
-            <Navbar />
-            <div>
-              <Component {...pageProps} />
-            </div>
-            <Footer />
-          </PlatformInit>
+          <AppRouterCacheProvider>
+            <ToastContainer autoClose={1200} limit={3} draggablePercent={30} />
+            <PlatformInit>
+              <Navbar />
+              <div>
+                <Component {...pageProps} />
+              </div>
+              <Footer />
+            </PlatformInit>
+          </AppRouterCacheProvider>
         </PersistGate>
       </Provider>
     </>
