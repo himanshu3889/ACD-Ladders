@@ -14,13 +14,14 @@ import {IContest, ISubmission} from "../../../../types";
 const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
   ssr: false, // Ensure ApexCharts is not imported during SSR
 });
+import FilterDateRange from "./FilterDateRange";
 
 const statusGroup: StatusOptions[] = [
   StatusOptions.Solved,
   StatusOptions.Attempted,
 ];
 const participantType: string[] = ["PRACTICE", "CONTESTANT", "VIRTUAL"];
-
+export type IDateRangeFilter = [number | null, number | null];
 interface ISubmissionAnalyticsChartProps {
   userSubmissions: ISubmission[];
   contests: IContest[];
@@ -40,6 +41,10 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
   const [participantTypeFilters, setparticipantTypeFilters] = useState<
     string[]
   >([]);
+  const [dateRangeFilters, setDateRangeFilters] = useState<IDateRangeFilter>([
+    null,
+    null,
+  ]);
 
   const [xAxisCategories, setXAxisCategories] = useState<any>([]);
   const [series, setSeries] = useState<any>([]);
@@ -51,6 +56,7 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
       contests: contests,
       statusFilters: statusFilters,
       participantTypeFilters: participantTypeFilters,
+      dateRangeFilters: dateRangeFilters,
     });
     console.log({userAnalyticsData});
     setUserSubmissionAnalytics(userAnalyticsData);
@@ -60,7 +66,11 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
     if (contests.length > 0 && userSubmissions.length > 0) {
       generateUserAnalyticsData();
     }
-  }, [contests, userSubmissions, statusFilters, participantTypeFilters]);
+  }, [contests, userSubmissions, statusFilters, participantTypeFilters, dateRangeFilters]);
+
+  // useEffect(() => {
+  //   console.log({dateRangeFilters});
+  // }, [dateRangeFilters]);
 
   const handleChartPrepare = () => {
     if (!analyticsXAxis || !analyticsYAxis) {
@@ -223,7 +233,10 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
           />
         </div>
       </div>
-      <div id="submission-chart">
+      <div className="">
+        <FilterDateRange setDateRangeFilters={setDateRangeFilters} />
+      </div>
+      <div id="submission-chart" className="mt-12">
         <DynamicApexCharts
           options={options}
           series={series}

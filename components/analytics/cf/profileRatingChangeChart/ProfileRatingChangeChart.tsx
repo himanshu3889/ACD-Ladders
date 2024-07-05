@@ -3,16 +3,19 @@ import React, {FC, useEffect, useState} from "react";
 import dynamic from "next/dynamic";
 import moment from "moment";
 import {IContestResult} from "../../../../types";
-import {CODEFORCES_LEVELS} from "../../../../configs/constants";
+import {
+  CF_RATING_RANK_RELATION,
+  I_CF_RATING_RANK_RELATION,
+} from "../../../../configs/constants";
 
 const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
   ssr: false, // Ensure ApexCharts is not imported during SSR
 });
 
-export const getLevelByRating = (rating: any) => {
-  for (const level of CODEFORCES_LEVELS) {
-    if (rating >= level.minRating && rating <= level.maxRating) {
-      return level.text;
+export const getRankByRating = (rating: any) => {
+  for (const relation of CF_RATING_RANK_RELATION) {
+    if (rating >= relation.minRating && rating <= relation.maxRating) {
+      return relation.rank;
     }
   }
   return ""; // Default value
@@ -25,7 +28,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
   const fetchData = async () => {
     try {
       const data =
-        await require("../../../data/CF/original/user_himanshu3889_cf.json");
+        await require("../../../../data/CF/user_himanshu3889_cf.json");
       setRatingChange(data.rating_change.result);
     } catch (error) {
       console.error(error);
@@ -51,14 +54,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
     contestId: item.contestId,
   }));
 
-  const generateAnnotations = (
-    levels: {
-      minRating: number;
-      maxRating: number;
-      text: string;
-      color: string;
-    }[]
-  ) => {
+  const generateAnnotations = (levels: I_CF_RATING_RANK_RELATION[]) => {
     return levels.map((level) => ({
       y: level.minRating,
       y2: level.maxRating,
@@ -73,10 +69,10 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
     }));
   };
 
-  const annotationsYaxis = generateAnnotations(CODEFORCES_LEVELS);
+  const annotationsYaxis = generateAnnotations(CF_RATING_RANK_RELATION);
   const maxRating = Math.max(...chartData.map((item) => item.newRating));
   const minRatingsSet = new Set(
-    CODEFORCES_LEVELS.map((level) => level.minRating)
+    CF_RATING_RANK_RELATION.map((level) => level.minRating)
   );
 
   const points = chartData.map((item) => ({
@@ -188,7 +184,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
         const formattedRatingChange =
           ratingChange > 0 ? `+${ratingChange}` : `${ratingChange}`;
         const round = item.contestName; // Add the round info if available in your data
-        const currentLevel = getLevelByRating(item.newRating);
+        const currentLevel = getRankByRating(item.newRating);
         const details = `
           <div style="padding: 10px; background: #fff; border-radius: 5px; border: 1px solid #ccc;">
             <div style="font-weight: bold; margin-bottom: 1px;">Rating: ${rating} (${formattedRatingChange}), ${currentLevel}</div>

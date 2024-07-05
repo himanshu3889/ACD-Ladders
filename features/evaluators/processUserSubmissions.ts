@@ -1,3 +1,4 @@
+import {IDateRangeFilter} from "../../components/analytics/cf/submissionAnalyticsChart/SubmissionAnalyticsChart";
 import {PLATFORMS} from "../../configs/constants";
 import {ISubmission} from "../../types";
 import {IUserSolvedAttemptedProblems} from "../user/userSlice";
@@ -5,6 +6,7 @@ import {IUserSolvedAttemptedProblems} from "../user/userSlice";
 interface IPreProcessContests {
   platform: PLATFORMS;
   userSubmissions: ISubmission[];
+  dateRange?: IDateRangeFilter;
 }
 
 export interface IProcessedCFUserSubmissions {
@@ -15,6 +17,7 @@ export interface IProcessedCFUserSubmissions {
 export const processCFUserSubmissions = async ({
   platform,
   userSubmissions,
+  dateRange,
 }: IPreProcessContests): Promise<IProcessedCFUserSubmissions> => {
   const userSolvedProblems: IUserSolvedAttemptedProblems = {};
   const userAttemptedProblems: IUserSolvedAttemptedProblems = {};
@@ -24,6 +27,16 @@ export const processCFUserSubmissions = async ({
     const problemIndex: string = item.problem.index;
     const problemName: string = item.problem.name;
     const verdict: string | undefined = item.verdict;
+    const submittedTime: number = item.creationTimeSeconds;
+    const startTime = dateRange?.[0] ?? null;
+    const endTime = dateRange?.[1] ?? null;
+    console.log({startTime, endTime, submittedTime})
+    if (
+      (startTime && submittedTime < startTime) ||
+      (endTime && submittedTime > endTime)
+    ) {
+      return;
+    }
 
     if (contestId !== undefined) {
       if (verdict === "OK") {

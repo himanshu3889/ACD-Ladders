@@ -4,7 +4,7 @@ import {IContest, ISubmission} from "../../../types";
 import userData from "../../../data/CF/user_himanshu3889_cf.json";
 import contestOriginalData from "../../../data/CF/contests_cf.json";
 import SubmissionAnalyticsChart from "../../../components/analytics/cf/submissionAnalyticsChart/SubmissionAnalyticsChart";
-import ProfileRatingChangeChart from "./rating_change";
+import ProfileRatingChangeChart from "../../../components/analytics/cf/profileRatingChangeChart/ProfileRatingChangeChart";
 
 export enum UserAnalyticsKeys {
   RATING = "rating",

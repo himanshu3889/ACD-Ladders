@@ -13,35 +13,41 @@ export enum PLATFORMS {
   CF = "CF",
 }
 
-export const CODEFORCES_LEVELS = [
-  {minRating: 0, maxRating: 1199, text: "Newbie", color: "#9E9E9E"}, // Gray
-  {minRating: 1200, maxRating: 1399, text: "Pupil", color: "#32CD32"}, // Green
-  {minRating: 1400, maxRating: 1599, text: "Specialist", color: "#00FFFF"}, // Cyan
-  {minRating: 1600, maxRating: 1899, text: "Expert", color: "#0000FF"}, // Blue
+export type I_CF_RATING_RANK_RELATION = {
+  minRating: number;
+  maxRating: number;
+  rank: string;
+  color: string;
+};
+export const CF_RATING_RANK_RELATION = [
+  {minRating: 0, maxRating: 1199, rank: "Newbie", color: "#9E9E9E"}, // Gray
+  {minRating: 1200, maxRating: 1399, rank: "Pupil", color: "#32CD32"}, // Green
+  {minRating: 1400, maxRating: 1599, rank: "Specialist", color: "#00FFFF"}, // Cyan
+  {minRating: 1600, maxRating: 1899, rank: "Expert", color: "#0000FF"}, // Blue
   {
     minRating: 1900,
     maxRating: 2199,
-    text: "Candidate Master",
+    rank: "Candidate Master",
     color: "#8A2BE2",
   }, // Violet
-  {minRating: 2200, maxRating: 2299, text: "Master", color: "#FFA500"}, // Orange
+  {minRating: 2200, maxRating: 2299, rank: "Master", color: "#FFA500"}, // Orange
   {
     minRating: 2300,
     maxRating: 2599,
-    text: "International Master",
+    rank: "International Master",
     color: "#FF4500",
   }, // Orange
-  {minRating: 2600, maxRating: 2899, text: "Grandmaster", color: "#FF0000"}, // Red
+  {minRating: 2600, maxRating: 2899, rank: "Grandmaster", color: "#FF0000"}, // Red
   {
     minRating: 2900,
     maxRating: 2999,
-    text: "International Grandmaster",
+    rank: "International Grandmaster",
     color: "#DC143C",
   }, // Red
   {
     minRating: 3000,
     maxRating: Infinity,
-    text: "Legendary Grandmaster",
+    rank: "Legendary Grandmaster",
     color: "#000000",
   }, // Black
 ];

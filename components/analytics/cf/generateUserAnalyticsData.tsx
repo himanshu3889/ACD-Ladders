@@ -12,6 +12,7 @@ import {StatusOptions} from "../../../features/filters/filterConstants";
 import {IUserSolvedAttemptedProblems} from "../../../features/user/userSlice";
 import {ANALYTICS_TOTAL, UserAnalyticsKeys} from "../../../pages/analytics/cf";
 import {IContest, ISubmission} from "../../../types";
+import {IDateRangeFilter} from "./submissionAnalyticsChart/SubmissionAnalyticsChart";
 
 export const generatePairs = (values: string[]) => {
   const pairs: [string, string][] = [];
@@ -147,11 +148,13 @@ export const getUserAnalyticsData = async ({
   contests,
   statusFilters,
   participantTypeFilters,
+  dateRangeFilters,
 }: {
   userSubmissions: ISubmission[];
   contests: IContest[];
   statusFilters: StatusOptions[];
   participantTypeFilters: string[];
+  dateRangeFilters: IDateRangeFilter;
 }) => {
   // processCFContests  process the contests
   const {contestData, similarRoundDiv1Div2Contests}: IPreprocessCFContests =
@@ -163,6 +166,7 @@ export const getUserAnalyticsData = async ({
   }: IProcessedCFUserSubmissions = await processCFUserSubmissions({
     platform: PLATFORMS.CF,
     userSubmissions: userSubmissions,
+    dateRange: dateRangeFilters,
   });
   // enable maximum options in the graph
 
@@ -191,6 +195,18 @@ export const getUserAnalyticsData = async ({
     const participantType: string = submission.author.participantType;
     const contestType: string = contestData[contestId].contestType;
     const contestRound: string = contestData[contestId].round;
+
+    // Apply the date range filter if any
+    const submittedTime: number = submission.creationTimeSeconds;
+    const startTime = dateRangeFilters?.[0] ?? null;
+    const endTime = dateRangeFilters?.[1] ?? null;
+    if (
+      (startTime && submittedTime < startTime) ||
+      (endTime && submittedTime > endTime)
+    ) {
+      return;
+    }
+
     const {
       isSolved,
       isAttempted,

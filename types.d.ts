@@ -1,3 +1,4 @@
+// CODEFORCES objects: https://codeforces.com/apiHelp/objects#Submission
 export interface IProblem {
   contestId?: number;
   index: string;
