@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from "react";
+import React, {FC} from "react";
 import Link from "next/link";
 import {
   INFO_NOTIFICATION,
@@ -8,30 +8,23 @@ import {ThunkDispatch} from "@reduxjs/toolkit";
 import {useDispatch, useSelector} from "react-redux";
 import {resetUser} from "../features/user/userSlice";
 import {IRootReducerState} from "../app/store";
-import {
-  IProblemsSlice,
-  resetProblemsStatus,
-} from "../features/problems/problemSlice";
 import {IUser} from "../types";
-import {IFilterSlice, updateFilter} from "../features/filters/filterSlice";
-import {StatusOptions} from "../features/filters/filterConstants";
-import {problemsFilter} from "../features/evaluators/problemFilter";
-import {ISearchSlice} from "../features/search/searchSlice";
 
-const getUserRankColorStyle = (rank: string) => {
-  return rank === "pupil"
+export const getUserRankColorStyle = (rank: string) => {
+  const rankLowerCase: string = rank.toLowerCase();
+  return rankLowerCase === "pupil"
     ? "text-green-500"
-    : rank === "specialist"
+    : rankLowerCase === "specialist"
     ? "text-cyan-500"
-    : rank === "expert"
+    : rankLowerCase === "expert"
     ? "text-blue-500"
-    : rank === "candidate master"
+    : rankLowerCase === "candidate master"
     ? "text-fuchsia-600"
-    : rank === "master" || rank === "international master"
+    : rankLowerCase === "master" || rankLowerCase === "international master"
     ? "text-orange-500"
-    : rank === "grandmaster" ||
-      rank === "legendary grandmaster" ||
-      rank === "international grandmaster"
+    : rankLowerCase === "grandmaster" ||
+      rankLowerCase === "legendary grandmaster" ||
+      rankLowerCase === "international grandmaster"
     ? "text-red-500"
     : "text-gray-500";
 };

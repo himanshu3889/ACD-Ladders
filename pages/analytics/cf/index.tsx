@@ -45,13 +45,16 @@ const ApexChart: React.FC = () => {
   return (
     <div className="px-8 py-4">
       <div className="bg-gray-100 rounded p-4 border border-gray-300">
-        <ProfileRatingChangeChart />
+        <ProfileRatingChangeChart handle={"himanshu3889"} />   // TODO HANDLE DYNAMICALLY
       </div>
       <div className="bg-gray-100 rounded my-4 p-4 border border-gray-300">
         <SubmissionAnalyticsChart
           userSubmissions={userSubmissions}
           contests={contests}
         />
+      </div>
+      <div>
+
       </div>
     </div>
   );

@@ -7,10 +7,30 @@ import {
   CF_RATING_RANK_RELATION,
   I_CF_RATING_RANK_RELATION,
 } from "../../../../configs/constants";
+import {getUserRankColorStyle} from "../../../UserDetails";
 
 const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
   ssr: false, // Ensure ApexCharts is not imported during SSR
 });
+
+interface IExtraProfileData {
+  currentRating: number;
+  currentRank: string;
+  maxRating: number;
+  maxRank: string;
+  maxUp: number;
+  maxDown: number;
+}
+
+interface IChartData {
+  date: string;
+  timestamp: number;
+  oldRating: number;
+  newRating: number;
+  rank: number;
+  contestName: string;
+  contestId: number;
+}
 
 export const getRankByRating = (rating: any) => {
   for (const relation of CF_RATING_RANK_RELATION) {
@@ -21,9 +41,45 @@ export const getRankByRating = (rating: any) => {
   return ""; // Default value
 };
 
-interface IProfileRatingChangeChartProps {}
-const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
+const getExtraProfileInfo = (
+  ratingChange: IContestResult[]
+): IExtraProfileData => {
+  let currentRating: number = 0;
+  let currentRank: string = "";
+  let maxRating: number = 0;
+  let maxRank: string = "";
+  let maxUp: number = 0;
+  let maxDown: number = 0;
+  ratingChange.forEach((item: IContestResult) => {
+    const oldRating: number = item.oldRating;
+    const newRating: number = item.newRating;
+    const ratingDifference: number = newRating - oldRating;
+    currentRating = newRating;
+    maxRating = Math.max(maxRating, newRating);
+    maxUp = Math.max(maxUp, ratingDifference);
+    maxDown = Math.min(maxDown, ratingDifference);
+  });
+
+  currentRank = getRankByRating(currentRating);
+  maxRank = getRankByRating(maxRating);
+
+  return {currentRating, currentRank, maxRating, maxRank, maxUp, maxDown};
+};
+
+const getDate = (timestamp: number) => {
+  return moment.unix(timestamp).format("DD MMM YYYY");
+};
+
+interface IProfileRatingChangeChartProps {
+  handle: string;
+}
+const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
+  handle,
+}) => {
   const [ratingChange, setRatingChange] = useState<IContestResult[]>([]);
+  const [chartData, setChartData] = useState<IChartData[]>([]);
+  const [extraProfileData, setExtraProfileData] =
+    useState<IExtraProfileData | null>(null);
 
   const fetchData = async () => {
     try {
@@ -39,20 +95,28 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
     fetchData();
   }, []);
 
-  const getDate = (timestamp: number) => {
-    return moment.unix(timestamp).format("DD MMM YYYY");
+  const generateChartAndProfileData = () => {
+    // Preprocess data for the chart
+    const myChartData: IChartData[] = ratingChange.map(
+      (item: IContestResult) => ({
+        date: getDate(item.ratingUpdateTimeSeconds),
+        timestamp: item.ratingUpdateTimeSeconds,
+        oldRating: item.oldRating,
+        newRating: item.newRating,
+        rank: item.rank,
+        contestName: item.contestName,
+        contestId: item.contestId,
+      })
+    );
+
+    setChartData(myChartData);
+    const myExtraProfileData = getExtraProfileInfo(ratingChange);
+    setExtraProfileData(myExtraProfileData);
   };
 
-  // Preprocess data for the chart
-  const chartData = ratingChange.map((item: IContestResult) => ({
-    date: getDate(item.ratingUpdateTimeSeconds),
-    timestamp: item.ratingUpdateTimeSeconds,
-    oldRating: item.oldRating,
-    newRating: item.newRating,
-    rank: item.rank,
-    contestName: item.contestName,
-    contestId: item.contestId,
-  }));
+  useEffect(() => {
+    generateChartAndProfileData();
+  }, [ratingChange]);
 
   const generateAnnotations = (levels: I_CF_RATING_RANK_RELATION[]) => {
     return levels.map((level) => ({
@@ -70,7 +134,6 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
   };
 
   const annotationsYaxis = generateAnnotations(CF_RATING_RANK_RELATION);
-  const maxRating = Math.max(...chartData.map((item) => item.newRating));
   const minRatingsSet = new Set(
     CF_RATING_RANK_RELATION.map((level) => level.minRating)
   );
@@ -134,7 +197,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
       },
     },
     title: {
-      text: `Max Rating ${maxRating}`,
+      text: `${handle}`,
       align: "left",
     },
     xaxis: {
@@ -161,7 +224,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
     },
     yaxis: {
       min: 0, // Minimum value of the y-axis
-      max: Math.ceil((maxRating + 500) / 100) * 100, // Maximum value of the y-axis
+      max: Math.ceil((extraProfileData?.maxRating ?? 0 + 500) / 100) * 100, // Maximum value of the y-axis
       tickPlacement: "on", // Ensure ticks are placed on multiples of 100
       labels: {
         formatter: function (value: number) {
@@ -180,9 +243,9 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
         );
         const rating = item.newRating;
         const rank = "Rank: " + item.rank; // Add the rank info if available in your data
-        const ratingChange = item.newRating - item.oldRating;
+        const ratingDiff = item.newRating - item.oldRating;
         const formattedRatingChange =
-          ratingChange > 0 ? `+${ratingChange}` : `${ratingChange}`;
+          ratingDiff > 0 ? `+${ratingDiff}` : `${ratingDiff}`;
         const round = item.contestName; // Add the round info if available in your data
         const currentLevel = getRankByRating(item.newRating);
         const details = `
@@ -211,12 +274,52 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({}) => {
   return (
     <div>
       <div id="profile-chart">
-        <DynamicApexCharts
-          options={options}
-          series={series}
-          type="line"
-          height={450}
-        />
+        {extraProfileData && (
+          <div className="ml-2">
+            <div className="flex flex-row">
+              <div>Current Rating :</div>
+              <div className="ml-1">{extraProfileData?.currentRating}</div>
+              <div
+                className={`ml-1 ${getUserRankColorStyle(
+                  extraProfileData?.currentRank ?? ""
+                )}`}
+              >
+                ({extraProfileData?.currentRank})
+              </div>
+            </div>
+            <div className="flex flex-row">
+              <div>Max Rating :</div>
+              <div className="ml-1">{extraProfileData?.maxRating}</div>
+              <div
+                className={`ml-1 ${getUserRankColorStyle(
+                  extraProfileData?.maxRank ?? ""
+                )}`}
+              >
+                ({extraProfileData?.maxRank})
+              </div>
+            </div>
+            <div className="flex flex-row">
+              <div>Max Up :</div>
+              <div className="ml-1">{extraProfileData?.maxUp ?? "-"}</div>
+            </div>
+            <div className="flex flex-row">
+              <div>Max Down :</div>
+              <div className="ml-1">{extraProfileData?.maxDown ?? "-"}</div>
+            </div>
+            <div className="flex flex-row">
+              <div>Contests :</div>
+              <div className="ml-1">{ratingChange?.length ?? "-"}</div>
+            </div>
+          </div>
+        )}
+        <div className="mt-4">
+          <DynamicApexCharts
+            options={options}
+            series={series}
+            type="line"
+            height={450}
+          />
+        </div>
       </div>
     </div>
   );
