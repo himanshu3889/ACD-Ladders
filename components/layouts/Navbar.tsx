@@ -30,7 +30,6 @@ const Navbar = () => {
       router.push(`${BASE_URL}/`);
     }
   };
-  console.log("navbar rerender")
 
   const isProfileShow: boolean = userState.profile !== null;
   // &&

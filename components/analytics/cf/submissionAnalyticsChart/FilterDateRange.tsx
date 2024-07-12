@@ -2,7 +2,7 @@ import React, {FC, useState} from "react";
 import {DateRangePicker, RangeKeyDict} from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import {Checkbox, FormControlLabel, FormGroup, FormLabel} from "@mui/material";
+import {Checkbox, FormControlLabel} from "@mui/material";
 import {IDateRangeFilter} from "./SubmissionAnalyticsChart";
 
 interface ISelectionRange {
@@ -50,14 +50,12 @@ const FilterDateRange: FC<IFilterDateRangeProps> = ({setDateRangeFilters}) => {
     <div>
       <div className="flex flex-row items-center">
         <div className="font-semibold mr-4">Select Date Range</div>
-        <FormGroup>
-          <FormControlLabel
-            label={undefined}
-            key={"date-range-picker"}
-            control={<Checkbox onChange={handleFilterCheckbox} />}
-            checked={filterApplied}
-          />
-        </FormGroup>
+        <FormControlLabel
+          label={undefined}
+          key={"date-range-picker"}
+          control={<Checkbox onChange={handleFilterCheckbox} />}
+          checked={filterApplied}
+        />
       </div>
 
       {filterApplied && (

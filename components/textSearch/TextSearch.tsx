@@ -45,7 +45,6 @@ const TextSearch: FC = () => {
   };
 
   const handleRemoveSearch = () => {
-    console.log("Search removed");
     if (searchRef.current) {
       searchRef.current.value = "";
     }

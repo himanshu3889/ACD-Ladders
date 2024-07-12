@@ -5,6 +5,7 @@ import userData from "../../../data/CF/user_himanshu3889_cf.json";
 import contestOriginalData from "../../../data/CF/contests_cf.json";
 import SubmissionAnalyticsChart from "../../../components/analytics/cf/submissionAnalyticsChart/SubmissionAnalyticsChart";
 import ProfileRatingChangeChart from "../../../components/analytics/cf/profileRatingChangeChart/ProfileRatingChangeChart";
+import ContestAnalytics from "../../../components/analytics/cf/contestAnalytics/ContestAnalytics";
 
 export enum UserAnalyticsKeys {
   RATING = "rating",
@@ -43,9 +44,10 @@ const ApexChart: React.FC = () => {
   }, []);
 
   return (
-    <div className="px-8 py-4">
+    <div className="px-4 py-4">
       <div className="bg-gray-100 rounded p-4 border border-gray-300">
-        <ProfileRatingChangeChart handle={"himanshu3889"} />   // TODO HANDLE DYNAMICALLY
+        <ProfileRatingChangeChart handle={"himanshu3889"} /> // TODO HANDLE
+        DYNAMICALLY
       </div>
       <div className="bg-gray-100 rounded my-4 p-4 border border-gray-300">
         <SubmissionAnalyticsChart
@@ -53,8 +55,8 @@ const ApexChart: React.FC = () => {
           contests={contests}
         />
       </div>
-      <div>
-
+      <div className="">
+        <ContestAnalytics />
       </div>
     </div>
   );

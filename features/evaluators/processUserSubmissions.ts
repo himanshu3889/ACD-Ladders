@@ -30,7 +30,6 @@ export const processCFUserSubmissions = async ({
     const submittedTime: number = item.creationTimeSeconds;
     const startTime = dateRange?.[0] ?? null;
     const endTime = dateRange?.[1] ?? null;
-    console.log({startTime, endTime, submittedTime})
     if (
       (startTime && submittedTime < startTime) ||
       (endTime && submittedTime > endTime)

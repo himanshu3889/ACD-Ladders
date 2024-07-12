@@ -75,7 +75,7 @@ export interface IMember {
 
 export interface IParty {
   contestId?: number;
-  members: Member[];
+  members: IMember[];
   participantType:
     | "CONTESTANT"
     | "PRACTICE"
@@ -144,4 +144,29 @@ export interface IContestResult {
   ratingUpdateTimeSeconds: number;
   oldRating: number;
   newRating: number;
+}
+
+interface IProblemResult {
+  points: number;
+  penalty?: number;
+  rejectedAttemptCount: number;
+  type: "PRELIMINARY" | "FINAL";
+  bestSubmissionTimeSeconds?: number;
+}
+
+export interface IRankListRow {
+  party: IParty;
+  rank: number;
+  points: number;
+  penalty: number;
+  successfulHackCount: number;
+  unsuccessfulHackCount: number;
+  problemResults: IProblemResult[];
+  lastSubmissionTimeSeconds?: number;
+}
+
+export interface IContestStandings {
+  contest: IContest;
+  problems: IProblem[];
+  rows: IRankListRow[];
 }

@@ -9,7 +9,7 @@ import {mixedSort, titleCase} from "../../../../utils/stringAlgos";
 import AxisSelectDropdown from "./AxisSelectDropdown";
 import FilterSelectGroup from "./FilterSelectGroup";
 import {StatusOptions} from "../../../../features/filters/filterConstants";
-import {getUserAnalyticsData} from "../generateUserAnalyticsData";
+import {processSubmissionAnalyticsData} from "../../../../utils/analytics/cf/submissionAnalytics/processSubmissionAnalyticsData";
 import {IContest, ISubmission} from "../../../../types";
 const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
   ssr: false, // Ensure ApexCharts is not imported during SSR
@@ -51,14 +51,13 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
 
   const generateUserAnalyticsData = async () => {
     // TODO: ADD THE LOADER FUNCTIONALITY
-    const userAnalyticsData = await getUserAnalyticsData({
+    const userAnalyticsData = await processSubmissionAnalyticsData({
       userSubmissions: userSubmissions,
       contests: contests,
       statusFilters: statusFilters,
       participantTypeFilters: participantTypeFilters,
       dateRangeFilters: dateRangeFilters,
     });
-    console.log({userAnalyticsData});
     setUserSubmissionAnalytics(userAnalyticsData);
   };
 
@@ -66,11 +65,13 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
     if (contests.length > 0 && userSubmissions.length > 0) {
       generateUserAnalyticsData();
     }
-  }, [contests, userSubmissions, statusFilters, participantTypeFilters, dateRangeFilters]);
-
-  // useEffect(() => {
-  //   console.log({dateRangeFilters});
-  // }, [dateRangeFilters]);
+  }, [
+    contests,
+    userSubmissions,
+    statusFilters,
+    participantTypeFilters,
+    dateRangeFilters,
+  ]);
 
   const handleChartPrepare = () => {
     if (!analyticsXAxis || !analyticsYAxis) {

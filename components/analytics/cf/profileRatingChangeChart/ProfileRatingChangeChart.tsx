@@ -156,7 +156,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
     },
   }));
 
-  const options: any = {
+  const options: ApexCharts.ApexOptions = {
     chart: {
       type: "line",
       zoom: {
@@ -180,12 +180,11 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
       shape: "circle", // Shape of the markers
       colors: ["#1F2937"], // Set the color of the markers to yellow
       strokeColors: "#fff", // Set the border color of the markers to white
-      strokeWidth: 2, // Set the border width of the markers
+      strokeWidth: 1.5, // Set the border width of the markers
     },
     grid: {
       show: true, // Show the grid (set to false to hide all grid lines)
       borderColor: "#e0e0e0", // Border color for the grid
-      borderWidth: 1, // Border width for the grid
       padding: {
         right: 30,
         left: 20,
@@ -210,7 +209,6 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
         show: true,
         borderType: "solid",
         color: "#000", // X-axis tick color
-        width: 1, // X-axis tick width
       },
       crosshairs: {
         show: true,
@@ -225,7 +223,6 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
     yaxis: {
       min: 0, // Minimum value of the y-axis
       max: Math.ceil((extraProfileData?.maxRating ?? 0 + 500) / 100) * 100, // Maximum value of the y-axis
-      tickPlacement: "on", // Ensure ticks are placed on multiples of 100
       labels: {
         formatter: function (value: number) {
           return minRatingsSet.has(value) ? value.toString() : ""; // Format labels to show only specific values
@@ -241,18 +238,20 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
         const dateTime = moment(item.timestamp * 1000).format(
           "MMM D, YYYY HH:mm"
         );
-        const rating = item.newRating;
-        const rank = "Rank: " + item.rank; // Add the rank info if available in your data
-        const ratingDiff = item.newRating - item.oldRating;
-        const formattedRatingChange =
+        const rating: number = item.newRating;
+        const rank: string = "Rank: " + item.rank; // Add the rank info if available in your data
+        const ratingDiff: number = item.newRating - item.oldRating;
+        const formattedRatingChange: string =
           ratingDiff > 0 ? `+${ratingDiff}` : `${ratingDiff}`;
-        const round = item.contestName; // Add the round info if available in your data
+        const round: string = item.contestName; // Add the round info if available in your data
+        const contestId: number = item.contestId;
         const currentLevel = getRankByRating(item.newRating);
         const details = `
           <div style="padding: 10px; background: #fff; border-radius: 5px; border: 1px solid #ccc;">
             <div style="font-weight: bold; margin-bottom: 1px;">Rating: ${rating} (${formattedRatingChange}), ${currentLevel}</div>
             <div style="margin-bottom: 1px;">${rank}</div>
             <div style="margin-bottom: 1px;">${round}</div>
+            <div style="margin-bottom: 1px;">Contest Id: ${contestId}</div>
             <div>${dateTime}</div>
           </div>
         `;
