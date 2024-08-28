@@ -29,8 +29,6 @@ const UserRankAnalyticsHeader: FC<IUserRankAnalyticsHeader> = ({
     useState<IIndicesOrUserSubmissionOrder>({});
 
   const getIndicesSubmissionOrder = () => {
-    console.log({ problemIndicesSolvedByUsersInSec }, "rank header se");
-
     const indicesSubmissionData = Object.keys(
       problemIndicesSolvedByUsersInSec
     )

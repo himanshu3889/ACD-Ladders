@@ -8,6 +8,7 @@ import {
   I_CF_RATING_RANK_RELATION,
 } from "../../../../configs/constants";
 import {getUserRankColorStyle} from "../../../UserDetails";
+import {fetchCFUserRatingChangeApi} from "../../../../service/codeforces";
 
 const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
   ssr: false, // Ensure ApexCharts is not imported during SSR
@@ -50,7 +51,7 @@ const getExtraProfileInfo = (
   let maxRank: string = "";
   let maxUp: number = 0;
   let maxDown: number = 0;
-  ratingChange.forEach((item: IContestResult) => {
+  ratingChange?.forEach((item: IContestResult) => {
     const oldRating: number = item.oldRating;
     const newRating: number = item.newRating;
     const ratingDifference: number = newRating - oldRating;
@@ -71,34 +72,45 @@ const getDate = (timestamp: number) => {
 };
 
 interface IProfileRatingChangeChartProps {
-  handle: string;
+  userHandle: string | null;
+  setUserHandle: React.Dispatch<React.SetStateAction<string | null>>;
+  isLoadingSubmissionsAndContests: boolean;
 }
 const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
-  handle,
+  userHandle,
+  setUserHandle
 }) => {
   const [ratingChange, setRatingChange] = useState<IContestResult[]>([]);
   const [chartData, setChartData] = useState<IChartData[]>([]);
   const [extraProfileData, setExtraProfileData] =
     useState<IExtraProfileData | null>(null);
+  const [isPreparingChart, setisPreparingChart] = useState<boolean>(false);
 
-  const fetchData = async () => {
+  const fetchUserRatingChange = async () => {
+    if (!userHandle) {
+      setRatingChange([]);
+      return;
+    }
     try {
-      const data =
-        await require("../../../../data/CF/user_himanshu3889_cf.json");
-      setRatingChange(data.rating_change.result);
+      const response = await fetchCFUserRatingChangeApi(userHandle);
+      const ratingChangeData = response.result;
+      setRatingChange(ratingChangeData);
     } catch (error) {
+      setUserHandle(null)
+      setRatingChange([]);
       console.error(error);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchUserRatingChange();
+  }, [userHandle]);
 
-  const generateChartAndProfileData = () => {
+  const generateChartAndProfileData = async () => {
     // Preprocess data for the chart
-    const myChartData: IChartData[] = ratingChange.map(
-      (item: IContestResult) => ({
+    setisPreparingChart(true);
+    const myChartData: IChartData[] =
+      ratingChange?.map((item: IContestResult) => ({
         date: getDate(item.ratingUpdateTimeSeconds),
         timestamp: item.ratingUpdateTimeSeconds,
         oldRating: item.oldRating,
@@ -106,12 +118,11 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
         rank: item.rank,
         contestName: item.contestName,
         contestId: item.contestId,
-      })
-    );
-
+      })) ?? [];
     setChartData(myChartData);
     const myExtraProfileData = getExtraProfileInfo(ratingChange);
     setExtraProfileData(myExtraProfileData);
+    setisPreparingChart(false);
   };
 
   useEffect(() => {
@@ -119,7 +130,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
   }, [ratingChange]);
 
   const generateAnnotations = (levels: I_CF_RATING_RANK_RELATION[]) => {
-    return levels.map((level) => ({
+    return levels?.map((level) => ({
       y: level.minRating,
       y2: level.maxRating,
       borderColor: "#000",
@@ -135,10 +146,10 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
 
   const annotationsYaxis = generateAnnotations(CF_RATING_RANK_RELATION);
   const minRatingsSet = new Set(
-    CF_RATING_RANK_RELATION.map((level) => level.minRating)
+    CF_RATING_RANK_RELATION?.map((level) => level.minRating)
   );
 
-  const points = chartData.map((item) => ({
+  const points = chartData?.map((item) => ({
     x: item.timestamp * 1000,
     y: item.newRating,
     marker: {
@@ -196,7 +207,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
       },
     },
     title: {
-      text: `${handle}`,
+      text: `${userHandle}`,
       align: "left",
     },
     xaxis: {
@@ -263,7 +274,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
   const series = [
     {
       name: "Rating",
-      data: chartData.map((item) => ({
+      data: chartData?.map((item) => ({
         x: item.timestamp * 1000,
         y: item.newRating,
       })),

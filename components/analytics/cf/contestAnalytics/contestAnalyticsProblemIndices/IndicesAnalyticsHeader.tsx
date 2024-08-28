@@ -7,13 +7,15 @@ interface IIndicesAnalyticsHeader {
   setShowUserHandleDataPoints: React.Dispatch<
     React.SetStateAction<{[key: string]: boolean}>
   >;
+  contestUserHandles: string[];
 }
 export const IndicesAnalyticsHeader: FC<IIndicesAnalyticsHeader> = ({
   userHandlesColors,
   showUserHandleDataPoints,
   setShowUserHandleDataPoints,
+  contestUserHandles,
 }) => {
-  const [showingDataPoints, setShowingDataPoints] = useState<boolean>(false);
+  const [showingDataPoints, setShowingDataPoints] = useState<boolean>(true);
 
   const isAnyHandleDataPointShowing = (userHandleDataPoints: {
     [key: string]: boolean;
@@ -48,11 +50,13 @@ export const IndicesAnalyticsHeader: FC<IIndicesAnalyticsHeader> = ({
 
   return (
     <div className="flex flex-row items-center ml-2">
-      <FormControlLabel
-        label={undefined}
-        control={<Checkbox onChange={handleUserDataPointShowCheckbox} />}
-        checked={showingDataPoints}
-      />
+      {contestUserHandles.length > 0 && (
+        <FormControlLabel
+          label={undefined}
+          control={<Checkbox onChange={handleUserDataPointShowCheckbox} />}
+          checked={showingDataPoints}
+        />
+      )}
       <div className="flex flex-row items-center space-x-2">
         {Object.entries(showUserHandleDataPoints).map(
           ([userHandle, showPoint], index: number) => (

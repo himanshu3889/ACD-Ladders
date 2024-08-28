@@ -50,21 +50,22 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
   const [series, setSeries] = useState<any>([]);
 
   const generateUserAnalyticsData = async () => {
-    // TODO: ADD THE LOADER FUNCTIONALITY
-    const userAnalyticsData = await processSubmissionAnalyticsData({
-      userSubmissions: userSubmissions,
-      contests: contests,
-      statusFilters: statusFilters,
-      participantTypeFilters: participantTypeFilters,
-      dateRangeFilters: dateRangeFilters,
-    });
-    setUserSubmissionAnalytics(userAnalyticsData);
+    try {
+      const userAnalyticsData = await processSubmissionAnalyticsData({
+        userSubmissions: userSubmissions,
+        contests: contests,
+        statusFilters: statusFilters,
+        participantTypeFilters: participantTypeFilters,
+        dateRangeFilters: dateRangeFilters,
+      });
+      setUserSubmissionAnalytics(userAnalyticsData);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
-    if (contests.length > 0 && userSubmissions.length > 0) {
-      generateUserAnalyticsData();
-    }
+    generateUserAnalyticsData();
   }, [
     contests,
     userSubmissions,
@@ -90,33 +91,35 @@ const SubmissionAnalyticsChart: FC<ISubmissionAnalyticsChartProps> = ({
         return;
       }
       // Extract and sort xCategories
-      const xCategories = Object.keys(
-        userSubmissionAnalytics?.[analyticsXAxis] || {}
-      ).sort(mixedSort);
+      const xCategories =
+        Object.keys(userSubmissionAnalytics?.[analyticsXAxis] || {}).sort(
+          mixedSort
+        ) ?? [];
 
       // Extract and sort yCategories
       const yCategories = new Set<string>();
-      xCategories.forEach((x) => {
+      xCategories?.forEach((x) => {
         Object.keys(
           userSubmissionAnalytics?.[analyticsXAxis]?.[x]?.[analyticsYAxis] ?? {}
-        ).forEach((status) => {
+        )?.forEach((status) => {
           yCategories.add(status);
         });
       });
       const sortedYCategories = Array.from(yCategories).sort(mixedSort);
 
       // Generate the series from y categories
-      const mySeries = sortedYCategories.map((y) => {
-        return {
-          name: y,
-          data: xCategories.map(
-            (x) =>
-              userSubmissionAnalytics?.[analyticsXAxis]?.[x]?.[
-                analyticsYAxis
-              ]?.[y] ?? 0
-          ),
-        };
-      });
+      const mySeries =
+        sortedYCategories?.map((y) => {
+          return {
+            name: y,
+            data: xCategories?.map(
+              (x) =>
+                userSubmissionAnalytics?.[analyticsXAxis]?.[x]?.[
+                  analyticsYAxis
+                ]?.[y] ?? 0
+            ),
+          };
+        }) ?? {};
       setXAxisCategories(xCategories);
       setSeries(mySeries);
     } catch (error) {

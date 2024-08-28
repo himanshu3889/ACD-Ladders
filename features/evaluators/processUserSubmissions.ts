@@ -22,7 +22,7 @@ export const processCFUserSubmissions = async ({
   const userSolvedProblems: IUserSolvedAttemptedProblems = {};
   const userAttemptedProblems: IUserSolvedAttemptedProblems = {};
 
-  userSubmissions.forEach((item: ISubmission) => {
+  userSubmissions?.forEach((item: ISubmission) => {
     const contestId: number | undefined = item.problem.contestId;
     const problemIndex: string = item.problem.index;
     const problemName: string = item.problem.name;

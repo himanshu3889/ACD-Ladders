@@ -44,7 +44,7 @@ const getSubmissionsCountMinuteArray = ({
     contestDurationMinutes + 1
   ).fill(0);
 
-  contestStandings.rows.forEach(
+  contestStandings.rows?.forEach(
     (contestStandingRow: IRankListRow, index: number) => {
       const problemIndexSubmissionTime: number =
         contestStandingRow.problemResults?.[problemIndexNum]
@@ -71,7 +71,7 @@ export const getProblemIndicesSubmissionCountByMin = async ({
 }: IGetSubmissionCountByMinRecordProps): Promise<IProblemIndicesSubmissionsArrayRecord> => {
   const problemIndexSubmissionsByMin: IProblemIndicesSubmissionsArrayRecord =
     {};
-  const numProblems = contestStandings.problems.length;
+  const numProblems = contestStandings.problems?.length;
   for (
     let problemIndexNum = 0;
     problemIndexNum < numProblems;
@@ -95,7 +95,7 @@ export const getHandlesRankInContest = ({
   const usersHandleRank: IUsersHandleRank = {};
   const userHandlesSet: Set<string> = new Set(userHandles);
 
-  contestStandings.rows.forEach((contestStandingRow: IRankListRow) => {
+  contestStandings.rows?.forEach((contestStandingRow: IRankListRow) => {
     const userHandle: string =
       contestStandingRow.party.members[0]?.handle ?? "";
     const userRank: number = contestStandingRow.rank;
@@ -132,7 +132,7 @@ export const getProblemIndicesSolvedByUsersInSec = ({
   const indicesSolvedByUsersInSec: IIndicesSolvedByUsersInSec = {};
   const userHandlesContestStandingIndex: {[key: string]: number} = {};
   const userHandlesSet: Set<string> = new Set(userHandles);
-  contestStandings.rows.forEach(
+  contestStandings.rows?.forEach(
     (contestStandingRow: IRankListRow, standingIndex: number) => {
       const userHandle: string =
         contestStandingRow.party?.members?.[0]?.handle ?? "";
@@ -141,7 +141,7 @@ export const getProblemIndicesSolvedByUsersInSec = ({
       }
     }
   );
-  const numProblems = contestStandings.problems.length;
+  const numProblems = contestStandings.problems?.length;
   for (
     let problemIndexNum = 0;
     problemIndexNum < numProblems;

@@ -10,7 +10,6 @@ import {Provider} from "react-redux";
 import {persistor, rootStore} from "../app/store";
 import "../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
-import {PlatformInit} from "../features/evaluators/PlatformInit";
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 
 const MyApp = ({Component, pageProps}: AppProps) => {
@@ -44,13 +43,11 @@ const MyApp = ({Component, pageProps}: AppProps) => {
         <PersistGate loading={null} persistor={persistor}>
           <AppRouterCacheProvider>
             <ToastContainer autoClose={1200} limit={3} draggablePercent={30} />
-            <PlatformInit>
-              <Navbar />
-              <div>
-                <Component {...pageProps} />
-              </div>
-              <Footer />
-            </PlatformInit>
+            <Navbar />
+            <div>
+              <Component {...pageProps} />
+            </div>
+            <Footer />
           </AppRouterCacheProvider>
         </PersistGate>
       </Provider>

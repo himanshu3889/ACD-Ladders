@@ -50,3 +50,15 @@ export const mixedSort = (a: string, b: string) => {
   // Fallback to lexicographic comparison if either value is not a number
   return a.localeCompare(b);
 };
+
+export const parseNumber = (text: string) => {
+  const newValue = text.replace(/\D/g, "");
+  return newValue;
+};
+
+export const removeSpaces = (text: string | null | undefined): string => {
+  if (!text) {
+    return "";
+  }
+  return text.replace(/\s+/g, "");
+};

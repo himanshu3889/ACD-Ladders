@@ -30,7 +30,6 @@ const ContestAnalyticsUserRankChart: FC<
   usersHandlesRank,
   problemIndicesSolvedByUsersInSec,
 }) => {
-  console.log({problemIndicesSolvedByUsersInSec}, "user rank chart se")
   const [usersRankArrayMap, setUsersRankArrayMap] =
     useState<IUsersRankArrayMap>(new Map<string, number[]>());
   const [xAxisCategories, setXAxisCategories] = useState<any>([]);
@@ -51,12 +50,7 @@ const ContestAnalyticsUserRankChart: FC<
     getUsersRankArrayMap();
   }, [usersHandlesRank]);
 
-  // TODO: MARK THE USERS INDICES SUBMISSION POINTS
   const handleChartPrepare = () => {
-    if (usersRankArrayMap.size === 0) {
-      return;
-    }
-
     const contestDurationInMin: number = Math.ceil(
       (contestStandings?.contest.durationSeconds ?? 0) / 60
     );
@@ -79,7 +73,7 @@ const ContestAnalyticsUserRankChart: FC<
 
   useEffect(() => {
     handleChartPrepare();
-  }, [usersRankArrayMap, contestId]);
+  }, [usersRankArrayMap]);
 
   const options: ApexCharts.ApexOptions = {
     chart: {

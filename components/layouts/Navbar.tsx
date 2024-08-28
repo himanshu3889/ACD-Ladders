@@ -18,7 +18,9 @@ const Navbar = () => {
   const isLoadingProblems: boolean = useSelector(
     (state: IRootReducerState) => state.problems.isLoading
   );
-  const showUserSearch = !router.pathname.includes("/about");
+  const allowedPaths = ["/", "/cf_filter"]
+  const path = router.pathname
+  const showUserSearch = allowedPaths.includes(path)
   const platform: PLATFORMS = useSelector(
     (state: IRootReducerState) => state.problems.platform
   );

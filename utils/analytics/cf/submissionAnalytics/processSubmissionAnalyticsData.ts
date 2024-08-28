@@ -183,7 +183,7 @@ export const processSubmissionAnalyticsData = async ({
 
   const problemSeenSet: Set<string> = new Set();
 
-  userSubmissions.forEach(async (submission: ISubmission) => {
+  userSubmissions?.forEach(async (submission: ISubmission) => {
     const contestId: number = submission?.contestId ?? -1;
     const problemRating: number = submission.problem?.rating ?? 0;
     if (!problemRating || contestId === -1 || !contestData[contestId]) {

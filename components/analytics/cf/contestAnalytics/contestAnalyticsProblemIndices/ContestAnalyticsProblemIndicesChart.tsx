@@ -29,10 +29,8 @@ const ContestAnalyticsProblemIndicesChart: FC<
   contestId,
   contestStandings,
   contestUserHandles,
-  usersHandleRank,
   problemIndicesSolvedByUsersInSec,
 }) => {
-  console.log({contestId});
   const [problemIndicesSubmissions, setProblemIndicesSubmissions] =
     useState<IProblemIndicesSubmissionsArrayRecord>({});
 
@@ -41,22 +39,35 @@ const ContestAnalyticsProblemIndicesChart: FC<
   const [pointAnnotations, setPointAnnotations] = useState<PointAnnotations[]>(
     []
   );
-  const [userHandlesColors, setUserHandlesColors] = useState<{
-    [key: string]: string;
-  }>(
-    contestUserHandles.reduce((acc, handle, index) => {
+
+  const getUsersColorsData = () => {
+    return contestUserHandles.reduce((acc, handle, index) => {
       acc[handle] = lightColors[index % lightColors.length];
       return acc;
-    }, {} as {[key: string]: string})
-  );
+    }, {} as {[key: string]: string});
+  };
+
+  const getUsersDataPointsData = () => {
+    return contestUserHandles.reduce((acc, handle) => {
+      acc[handle] = true;
+      return acc;
+    }, {} as {[key: string]: boolean});
+  };
+  const [userHandlesColors, setUserHandlesColors] = useState<{
+    [key: string]: string;
+  }>(getUsersColorsData());
   const [showUserHandleDataPoints, setShowUserHandleDataPoints] = useState<{
     [key: string]: boolean;
-  }>(
-    contestUserHandles.reduce((acc, handle) => {
-      acc[handle] = false;
-      return acc;
-    }, {} as {[key: string]: boolean})
-  );
+  }>(getUsersDataPointsData());
+
+  const getUserHandlesData = () => {
+    setUserHandlesColors(getUsersColorsData());
+    setShowUserHandleDataPoints(getUsersDataPointsData());
+  };
+
+  useEffect(() => {
+    getUserHandlesData();
+  }, [contestUserHandles]);
 
   const getContestProblemIndicesAnalytics = async () => {
     if (!contestStandings) {
@@ -66,7 +77,6 @@ const ContestAnalyticsProblemIndicesChart: FC<
       await getProblemIndicesSubmissionCountByMin({
         contestStandings: contestStandings,
       });
-    console.log({problemIndicesSubmissionsArrayRecord});
     setProblemIndicesSubmissions(problemIndicesSubmissionsArrayRecord);
   };
 
@@ -81,10 +91,6 @@ const ContestAnalyticsProblemIndicesChart: FC<
         problemIndexSeriesIndex[problemIndex] = index;
       }
     );
-    // TODO: MAKE THE LIST OF THE USERS WITH THEIR RESPECTIVE COLORS (SHOW THE COLORS TEXT ANNOTATITON  OR NOT BY CLICK ON THE DIV)
-    // HIDE TEXT
-    // USER -> PROBLEM A (29 MIN, 28 SEC) -> PROBLEM B (10 MIN) ->
-    // Problem -> USER_X (29 MIN, 23 SEC) -> USER_Y (20 MIN, 12 SEC) ->
 
     const newAnnotations: PointAnnotations[] = [];
     for (const [problemIndex, solvedUsers] of Object.entries(
@@ -153,9 +159,6 @@ const ContestAnalyticsProblemIndicesChart: FC<
   };
 
   useEffect(() => {
-    // TODO:
-    // when problemIndicesSubmissions changed problemIndicesSolvedByUsersInSec changes surely by some dependency so when both changes then prepare chart data
-    // when problemIndicesSolvedByUsersInSec changed the problemIndicesSubmissions unchange so don't need to wait anything
     handleChartPrepare();
   }, [
     problemIndicesSubmissions,
@@ -228,21 +231,12 @@ const ContestAnalyticsProblemIndicesChart: FC<
 
   return (
     <div id="contest-problem-index-chart">
-      {/* <div>
-        {Object.entries(usersHandleRank)
-          .sort((a, b) => a[1] - b[1])
-          .map(([user, rank], index) => (
-            <div key={index} className="flex flex-row">
-              <div className="font-semibold">{user}:</div>
-              <div className="ml-1">{rank}</div>
-            </div>
-          ))}
-      </div> */}
       <div className="mt-8">
         <IndicesAnalyticsHeader
           userHandlesColors={userHandlesColors}
           showUserHandleDataPoints={showUserHandleDataPoints}
           setShowUserHandleDataPoints={setShowUserHandleDataPoints}
+          contestUserHandles={contestUserHandles}
         />
       </div>
 

@@ -5,6 +5,9 @@ export const CF_ProblemsUrl: string = `${CF_API}/problemset.problems`;
 export const CF_ContestsUrl: string = `${CF_API}/contest.list`;
 export const CF_UserInfoUrl: string = `${CF_API}/user.info`;
 export const CF_UserSubmissionUrl: string = `${CF_API}/user.status`;
+export const CF_UserRatingChangeUrl: string = `${CF_API}/user.rating`;
+export const CF_ContestStandingsUrl: string = `${CF_API}/contest.standings`;
+export const CF_ContestRatingChangesUrl: string = `${CF_API}/contest.ratingChanges`;
 export const ACD_Ladders_ProblemsUrl: string = `${ACD_LADDERS_API}/all`;
 export const favFilterStorage: string = "favFilters";
 
@@ -48,6 +51,6 @@ export const CF_RATING_RANK_RELATION = [
     minRating: 3000,
     maxRating: Infinity,
     rank: "Legendary Grandmaster",
-    color: "#000000",
+    color: "#AA0000",
   }, // Black
 ];
