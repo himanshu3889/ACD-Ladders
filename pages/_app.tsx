@@ -1,7 +1,7 @@
 import type {AppProps} from "next/app";
 import Head from "next/head";
 import {useEffect, useState} from "react";
-import Navbar from "../components/layouts/Navbar";
+import Navbar from "../components/layouts/navbar/Navbar";
 import {Footer} from "../components/layouts/Footer";
 import {ToastContainer} from "react-toastify";
 import {useRouter} from "next/router";
@@ -12,13 +12,18 @@ import "../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 
+const defaultRouteTitle = "ACD";
+export const routeTitles: Record<string, string> = {
+  "/": "Ladders",
+  "/cf_filter": "CF Filter",
+  "/analytics/cf": "CF Analytics",
+};
+
 const MyApp = ({Component, pageProps}: AppProps) => {
   const [isSSR, setIsSSR] = useState<Boolean>(true);
   const router = useRouter();
-  const isACDLaddersPage: boolean = router.pathname === "/";
-  const titleName: string = `${
-    isACDLaddersPage ? "Ladders" : "CF Filter"
-  } | ACD`;
+  const currentPath = router.pathname;
+  const titleName: string = routeTitles?.[currentPath] ?? defaultRouteTitle;
 
   useEffect(() => {
     setIsSSR(false);
@@ -30,7 +35,7 @@ const MyApp = ({Component, pageProps}: AppProps) => {
     <>
       <Head>
         <title>{titleName}</title>
-        <link rel="icon" href="app-logo.png" type="image/png" sizes="any" />
+        <link rel="icon" href="/app-logo.png" type="image/png" sizes="any" />
         <link
           rel="stylesheet"
           href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"

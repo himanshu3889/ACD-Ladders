@@ -21,6 +21,12 @@ const statusGroup: StatusOptions[] = [
   StatusOptions.Attempted,
 ];
 const participantType: string[] = ["PRACTICE", "CONTESTANT", "VIRTUAL"];
+// TODO: MAKE THE QUERY PARAMS FOR THESE
+// X Axis : submission_analytics_x
+// Y Axis : submission_analytics_y
+// Status : submission_analytics_statuses
+// Participant : submission_analytics_particpants
+// DateRange: submission_analytics_date_left, submission_analytics_date_right
 export type IDateRangeFilter = [number | null, number | null];
 interface ISubmissionAnalyticsChartProps {
   userSubmissions: ISubmission[];

@@ -9,6 +9,7 @@ import {
 } from "../../../../configs/constants";
 import {getUserRankColorStyle} from "../../../UserDetails";
 import {fetchCFUserRatingChangeApi} from "../../../../service/codeforces";
+import {bisectLeft} from "../../../../utils/algorithms/bisectLeft";
 
 const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
   ssr: false, // Ensure ApexCharts is not imported during SSR
@@ -78,7 +79,7 @@ interface IProfileRatingChangeChartProps {
 }
 const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
   userHandle,
-  setUserHandle
+  setUserHandle,
 }) => {
   const [ratingChange, setRatingChange] = useState<IContestResult[]>([]);
   const [chartData, setChartData] = useState<IChartData[]>([]);
@@ -96,7 +97,7 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
       const ratingChangeData = response.result;
       setRatingChange(ratingChangeData);
     } catch (error) {
-      setUserHandle(null)
+      setUserHandle(null);
       setRatingChange([]);
       console.error(error);
     }
@@ -167,6 +168,17 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
     },
   }));
 
+  const minRatingsArray = Array.from(minRatingsSet);
+  minRatingsArray.push(5000);   // adding dummy data 5000
+  minRatingsArray.sort((a, b) => a - b);
+  const maxYLabelIdx = bisectLeft(
+    minRatingsArray,
+    extraProfileData?.maxRating ?? 0
+  );
+
+  const maxYLabel =
+    minRatingsArray[maxYLabelIdx + 1] ?? minRatingsArray[maxYLabelIdx];
+
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "line",
@@ -233,7 +245,8 @@ const ProfileRatingChangeChart: FC<IProfileRatingChangeChartProps> = ({
     },
     yaxis: {
       min: 0, // Minimum value of the y-axis
-      max: Math.ceil((extraProfileData?.maxRating ?? 0 + 500) / 100) * 100, // Maximum value of the y-axis
+      max: maxYLabel, // Maximum value of the y-axis
+      tickAmount: Math.ceil(maxYLabel / 100),
       labels: {
         formatter: function (value: number) {
           return minRatingsSet.has(value) ? value.toString() : ""; // Format labels to show only specific values
