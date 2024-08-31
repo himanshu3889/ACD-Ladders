@@ -57,11 +57,11 @@ export default function UserDetails() {
     return (
       <span className="text-sm font-bold ">
         <span
-          className={userRating < 3000  ? rankColorStyle : ""}
+          className={(userRating < 3000 || userRating >=4000 )  ? rankColorStyle : ""}
         >
           {userID?.charAt(0)}
         </span>
-        <span className={rankColorStyle}>{displayName}</span>
+        <span className={userRating <4000 ? rankColorStyle : ""}>{displayName}</span>
         {country && (
           <span className="ml-2 font-normal italic text-gray-700">
             ({country})
