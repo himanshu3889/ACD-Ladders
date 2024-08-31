@@ -40,17 +40,23 @@ export const CF_RATING_RANK_RELATION = [
     rank: "International Master",
     color: "#FF4500",
   }, // Orange
-  {minRating: 2400, maxRating: 2599, rank: "Grandmaster", color: "#FF0000"}, // Red
+  {minRating: 2400, maxRating: 2599, rank: "Grandmaster", color: "#FF7777"}, // Light Red
   {
     minRating: 2600,
     maxRating: 2999,
     rank: "International Grandmaster",
-    color: "#DC143C",
-  }, // Red
+    color: "#FF3333",
+  }, // Medium Red
   {
     minRating: 3000,
-    maxRating: Infinity,
+    maxRating: 3999,
     rank: "Legendary Grandmaster",
-    color: "#AA0000",
-  }, // Black
+    color: "#CC0000",
+  }, // Dark Red
+  {
+    minRating: 4000,
+    maxRating: Infinity,
+    rank: "Tourist",
+    color: "#CC0000",
+  }, // Dark Red
 ];

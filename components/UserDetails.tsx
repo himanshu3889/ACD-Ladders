@@ -24,7 +24,8 @@ export const getUserRankColorStyle = (rank: string) => {
     ? "text-orange-500"
     : rankLowerCase === "grandmaster" ||
       rankLowerCase === "legendary grandmaster" ||
-      rankLowerCase === "international grandmaster"
+      rankLowerCase === "international grandmaster" ||
+      rankLowerCase === "tourist"
     ? "text-red-500"
     : "text-gray-500";
 };
@@ -34,6 +35,13 @@ export default function UserDetails() {
   const userProfile: IUser | null = useSelector(
     (state: IRootReducerState) => state.user.profile
   );
+
+  const userID: string = userProfile?.handle || "";
+  const rank: string = userProfile?.rank || "";
+  const country: string = userProfile?.country || "";
+  const displayName: string = userID?.substring(1);
+  const rankColorStyle: string = getUserRankColorStyle(rank);
+  const userRating: number = userProfile?.rating ?? 0
 
   // TODO: GO TO THE PAGE 1 if user problem status is not all
   const handleRemoveUser = () => {
@@ -46,15 +54,10 @@ export default function UserDetails() {
   };
 
   const UserIDColorStyleByRank: FC = () => {
-    const userID: string = userProfile?.handle || "";
-    const rank: string = userProfile?.rank || "";
-    const country: string = userProfile?.country || "";
-    const displayName: string = userID?.substring(1);
-    const rankColorStyle: string = getUserRankColorStyle(rank);
     return (
       <span className="text-sm font-bold ">
         <span
-          className={rank !== "legendary grandmaster" ? rankColorStyle : ""}
+          className={userRating < 3000  ? rankColorStyle : ""}
         >
           {userID?.charAt(0)}
         </span>
@@ -73,7 +76,7 @@ export default function UserDetails() {
       <div className="each flex rounded shadow w-max md:mr-2 ml-2 bg-gray-50 relative">
         <div className="sec self-center p-0.5 pr-1">
           <Link
-            href={`https://codeforces.com/profile/${userProfile?.handle}`}
+            href={`https://codeforces.com/profile/${userID}`}
             legacyBehavior
           >
             <a target="_blank">
@@ -97,7 +100,7 @@ export default function UserDetails() {
           </div>
           <div className="flex text-xs text-gray-600">
             <span>
-              Rating : {userProfile?.rating} (Max : {userProfile?.maxRating})
+              Rating : {userRating} (Max : {userProfile?.maxRating})
             </span>
           </div>
         </div>
