@@ -5,7 +5,7 @@ import AppLogo from "../../../public/app-logo.png";
 import Image from "next/image";
 import {useRouter} from "next/router";
 import Link from "next/link";
-import {BASE_URL, PLATFORMS} from "../../../configs/constants";
+import {PLATFORMS} from "../../../configs/constants";
 import {useSelector} from "react-redux";
 import {IRootReducerState} from "../../../app/store";
 import {IUserSlice} from "../../../features/user/userSlice";
@@ -25,14 +25,6 @@ const Navbar = () => {
   const platform: PLATFORMS = useSelector(
     (state: IRootReducerState) => state.problems.platform
   );
-
-  const handleChangePlatform = () => {
-    if (platform === PLATFORMS.ACD) {
-      router.push(`${BASE_URL}/cf_filter`);
-    } else {
-      router.push(`${BASE_URL}/`);
-    }
-  };
 
   const isProfileShow: boolean = userState.profile !== null;
   // &&

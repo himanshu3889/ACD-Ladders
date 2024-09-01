@@ -1,6 +1,6 @@
 import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import React, {FC} from "react";
-import {UserAnalyticsKeys} from "../../../../pages/analytics/cf";
+import {UserAnalyticsKeys} from "../../../../pages/v2/analytics/cf";
 import {titleCase} from "../../../../utils/stringAlgos";
 
 interface IAxisSelectDropdown {

@@ -1,22 +1,22 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {IContest, ISubmission} from "../../../types";
-import SubmissionAnalyticsChart from "../../../components/analytics/cf/submissionAnalyticsChart/SubmissionAnalyticsChart";
-import ProfileRatingChangeChart from "../../../components/analytics/cf/profileRatingChangeChart/ProfileRatingChangeChart";
-import ContestAnalytics from "../../../components/analytics/cf/contestAnalytics/ContestAnalytics";
-import SearchInput from "../../../components/globals/SearchInput";
+import {IContest, ISubmission} from "../../../../types";
+import SubmissionAnalyticsChart from "../../../../components/analytics/cf/submissionAnalyticsChart/SubmissionAnalyticsChart";
+import ProfileRatingChangeChart from "../../../../components/analytics/cf/profileRatingChangeChart/ProfileRatingChangeChart";
+import ContestAnalytics from "../../../../components/analytics/cf/contestAnalytics/ContestAnalytics";
+import SearchInput from "../../../../components/globals/SearchInput";
 import {
   fetchCFContestsApi,
   fetchCFUserSubmissionsApi,
-} from "../../../service/codeforces";
-import {removeSpaces} from "../../../utils/stringAlgos";
-import DissmissableLabel from "../../../components/globals/DissmissableLabel";
+} from "../../../../service/codeforces";
+import {removeSpaces} from "../../../../utils/stringAlgos";
+import DissmissableLabel from "../../../../components/globals/DissmissableLabel";
 import {Alert, AlertTitle, CircularProgress} from "@mui/material";
-import useSearchParamsCustom from "../../../hooks/useSearchParamsCustom";
+import useSearchParamsCustom from "../../../../hooks/useSearchParamsCustom";
 import {
   ERROR_NOTIFICATION,
   notifyService,
-} from "../../../service/notificationService/notifyService";
+} from "../../../../service/notificationService/notifyService";
 
 export enum UserAnalyticsKeys {
   RATING = "rating",

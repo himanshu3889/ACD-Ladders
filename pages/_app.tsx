@@ -14,9 +14,9 @@ import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 
 const defaultRouteTitle = "ACD";
 export const routeTitles: Record<string, string> = {
-  "/": "Ladders",
-  "/cf_filter": "CF Filter",
-  "/analytics/cf": "CF Analytics",
+  "/v2": "Ladders",
+  "/v2/cf_filter": "CF Filter",
+  "/v2/analytics/cf": "CF Analytics",
 };
 
 const MyApp = ({Component, pageProps}: AppProps) => {

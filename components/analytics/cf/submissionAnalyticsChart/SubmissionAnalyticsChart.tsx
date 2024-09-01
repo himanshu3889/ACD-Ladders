@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import {
   UserAnalyticsKeys,
   userAnalyticsKeysArray,
-} from "../../../../pages/analytics/cf";
+} from "../../../../pages/v2/analytics/cf";
 import {mixedSort, titleCase} from "../../../../utils/stringAlgos";
 import AxisSelectDropdown from "./AxisSelectDropdown";
 import FilterSelectGroup from "./FilterSelectGroup";

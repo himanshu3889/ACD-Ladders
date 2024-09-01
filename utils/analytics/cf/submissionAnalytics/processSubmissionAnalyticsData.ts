@@ -10,7 +10,7 @@ import {
 } from "../../../../features/evaluators/processUserSubmissions";
 import {StatusOptions} from "../../../../features/filters/filterConstants";
 import {IUserSolvedAttemptedProblems} from "../../../../features/user/userSlice";
-import {ANALYTICS_TOTAL, UserAnalyticsKeys} from "../../../../pages/analytics/cf";
+import {ANALYTICS_TOTAL, UserAnalyticsKeys} from "../../../../pages/v2/analytics/cf";
 import {IContest, ISubmission} from "../../../../types";
 import {IDateRangeFilter} from "../../../../components/analytics/cf/submissionAnalyticsChart/SubmissionAnalyticsChart";
 
