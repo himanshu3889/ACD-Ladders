@@ -21,6 +21,8 @@ export const fetchAllContests: AsyncThunk<
       if (platform === PLATFORMS.CF || platform === PLATFORMS.ACD) {
         response = await fetchCFContestsApi();
       }
+      console.log({platform})
+      console.log({response})
       const contests:IContest[] = response.result;
       const renewContests = await preProcessContestsHelper({
         platform: platform,

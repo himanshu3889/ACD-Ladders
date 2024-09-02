@@ -54,13 +54,6 @@ The following environment variables are required for configuring the project:
    - Description: Specifies the base URL for the project.
    - Example: `http://localhost:3000`
 
-2. **NEXT_PUBLIC_CODEFORCES_API**
-   - Description: Specifies the Codeforces API URL.
-   - Example: `https://codeforces.com/api`
-
-3. **NEXT_PUBLIC_ACD_LADDERS_API**
-   - Description: Specifies the ACD Ladders API URL.
-   - Example: `https://acodedaily.com/api/v2/`
 
 ### Setting up Environment Variables
 
@@ -74,8 +67,6 @@ To set up the required environment variables, follow these steps:
 
    ```
    NEXT_PUBLIC_BASE_URL=http://localhost:3000
-   NEXT_PUBLIC_CODEFORCES_API=https://codeforces.com/api
-   NEXT_PUBLIC_ACD_LADDERS_API = https://acodedaily.com/api/v2/
    ```
 
 
