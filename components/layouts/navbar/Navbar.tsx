@@ -10,6 +10,7 @@ import {useSelector} from "react-redux";
 import {IRootReducerState} from "../../../app/store";
 import {IUserSlice} from "../../../features/user/userSlice";
 import NavbarFeateuresDropdown from "./NavbarFeaturesDropdown";
+import {routeTitles} from "../../../pages/_app";
 
 const Navbar = () => {
   const router = useRouter();
@@ -19,7 +20,10 @@ const Navbar = () => {
   const isLoadingProblems: boolean = useSelector(
     (state: IRootReducerState) => state.problems.isLoading
   );
-  const allowedPaths = ["/", "/cf_filter"];
+  const allowedPaths: Array<keyof typeof routeTitles> = [
+    "/v2",
+    "/v2/cf_filter",
+  ];
   const path = router.pathname;
   const showUserSearch = allowedPaths.includes(path);
   const platform: PLATFORMS = useSelector(
