@@ -63,17 +63,12 @@ const UserSearch = () => {
     }
 
     try {
-      const response1 = await dispatch(
+      await dispatch(
         fetchUserSubmissions({platform, userId})
-      );
-      if (response1.meta.requestStatus === "rejected") {
-        throw new Error("User submissions not fetched");
-      }
-      const response2 = await dispatch(fetchUserProfile({platform, userId}));
-      if (response2.meta.requestStatus === "rejected") {
-        throw new Error("User profile not fetched");
-      }
-      console.log("user searched successfully");
+      ).unwrap();
+      await dispatch(
+        fetchUserProfile({platform, userId})
+      ).unwrap();
       userSearchNotify(true);
     } catch (error) {
       console.error(error);

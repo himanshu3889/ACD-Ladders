@@ -6,7 +6,7 @@ import {
   updateMultiOtherContestId,
   updateMultiProblemStatus,
 } from "../problems/problemSlice";
-import {IProblem} from "../../types";
+import {IProblem, IUser} from "../../types";
 import {IContestSlice} from "../contests/contestSlice";
 import {IFilterSlice, updateFilter} from "../filters/filterSlice";
 import {
@@ -15,15 +15,101 @@ import {
   StatusOptions,
   initialTagState,
 } from "../filters/filterConstants";
-import {IUserSlice} from "../user/userSlice";
+import {IUserSlice, IUserSolvedAttemptedProblems} from "../user/userSlice";
 import {ThunkDispatch} from "@reduxjs/toolkit";
 import {searchMatch} from "rolling-search";
 import {ISearchSlice, updateSearch} from "../search/searchSlice";
 import {IRootReducerState} from "../../app/store";
+import {ISimilarRoundDiv1Div2Contests} from "./processContests";
 
 interface IHandleSearchWithFilter {
   isNewSearch: boolean;
 }
+
+export const getSameProblemOtherContestId = (
+  problemContestRound: string,
+  problemContestID: number,
+  similarRoundDiv1Div2Contests: ISimilarRoundDiv1Div2Contests
+): number => {
+  const sameRoundContestIds: number[] =
+    similarRoundDiv1Div2Contests[problemContestRound];
+  let sameProblemOtherContestId: number = -1;
+  if (sameRoundContestIds) {
+    // Not using the loop here max length of the sameRoundContestIds is 2
+    if (
+      sameRoundContestIds.length > 0 &&
+      sameRoundContestIds[0] !== problemContestID
+    ) {
+      sameProblemOtherContestId = sameRoundContestIds[0];
+    }
+    if (
+      sameRoundContestIds.length > 1 &&
+      sameRoundContestIds[1] !== problemContestID
+    ) {
+      sameProblemOtherContestId = sameRoundContestIds[1];
+    }
+  }
+  return sameProblemOtherContestId;
+};
+
+export const getProblemStatus = ({
+  problemName,
+  problemContestID,
+  problemContestRound,
+  similarRoundDiv1Div2Contests,
+  userSolvedProblems,
+  userAttemptedProblems,
+}: {
+  problemName: string;
+  problemContestID: number;
+  problemContestRound: string;
+  similarRoundDiv1Div2Contests: ISimilarRoundDiv1Div2Contests;
+  userSolvedProblems: IUserSolvedAttemptedProblems;
+  userAttemptedProblems: IUserSolvedAttemptedProblems;
+}) => {
+  let isSolved: boolean = false;
+  let isAttempted: boolean = false;
+  let isDidThroughOtherContest: boolean = false;
+  let sameProblemOtherContestId: number = -1;
+
+  if (problemContestID === -1) {
+    return {
+      isSolved,
+      isAttempted,
+      isDidThroughOtherContest,
+      sameProblemOtherContestId,
+    };
+  }
+
+  // Find the problems solved in other contest id
+  sameProblemOtherContestId = getSameProblemOtherContestId(
+    problemContestRound,
+    problemContestID,
+    similarRoundDiv1Div2Contests
+  );
+
+  isSolved = !!userSolvedProblems[problemContestID]?.[problemName];
+
+  if (!isSolved && sameProblemOtherContestId !== -1) {
+    isSolved = !!userSolvedProblems[sameProblemOtherContestId]?.[problemName];
+    isDidThroughOtherContest ||= isSolved;
+  }
+
+  isAttempted = !!userAttemptedProblems[problemContestID]?.[problemName];
+
+  if (!isAttempted && sameProblemOtherContestId !== -1) {
+    isAttempted =
+      !!userAttemptedProblems[sameProblemOtherContestId]?.[problemName];
+    isDidThroughOtherContest ||= isAttempted;
+  }
+
+  return {
+    isSolved,
+    isAttempted,
+    isDidThroughOtherContest,
+    sameProblemOtherContestId,
+  };
+};
 
 export const problemsFilter = () => {
   const dispatch: ThunkDispatch<any, any, any> = useDispatch();
@@ -44,102 +130,9 @@ export const problemsFilter = () => {
     (state: IRootReducerState) => state.search
   );
 
-  function getSameProblemOtherContestId(
-    problemContestRound: string,
-    problemContestID: number
-  ): number {
-    const sameRoundContestIds: number[] =
-      contestState.similarRoundDiv1Div2Contests[problemContestRound];
-    let sameProblemOtherContestId: number = -1;
-    if (sameRoundContestIds) {
-      // Not using the loop here max length of the sameRoundContestIds is 2
-      if (
-        sameRoundContestIds.length > 0 &&
-        sameRoundContestIds[0] !== problemContestID
-      ) {
-        sameProblemOtherContestId = sameRoundContestIds[0];
-      }
-      if (
-        sameRoundContestIds.length > 1 &&
-        sameRoundContestIds[1] !== problemContestID
-      ) {
-        sameProblemOtherContestId = sameRoundContestIds[1];
-      }
-    }
-    return sameProblemOtherContestId;
-  }
-
   // Use to update the indices of the array in the redux at once instead update one by one for fast filtering
   const problemStatusPending: Map<number, string> = new Map();
   const otherContestIdPending: Map<number, number> = new Map();
-
-  function getProblemStatuses({
-    index,
-    problemName,
-    problemContestID,
-    problemContestRound,
-  }: {
-    index: number;
-    problemName: string;
-    problemContestID: number;
-    problemContestRound: string;
-  }) {
-    let isSolved: boolean = false;
-    let isAttempted: boolean = false;
-
-    // If there is no user profile no need the status will be unsolved
-    if (!userState.profile || problemContestID === -1) {
-      problemStatusPending.set(index, StatusOptions.Unsolved);
-      return {isSolved, isAttempted};
-    }
-
-    // Find the problems solved in other contest id
-    const sameProblemOtherContestId: number = getSameProblemOtherContestId(
-      problemContestRound,
-      problemContestID
-    );
-
-    let isDidThroughOtherContest: boolean = false;
-
-    isSolved = !!(
-      userState.userSolvedProblems[problemContestID] &&
-      userState.userSolvedProblems[problemContestID][problemName]
-    );
-
-    if (!isSolved && sameProblemOtherContestId !== -1) {
-      isSolved = !!(
-        userState.userSolvedProblems[sameProblemOtherContestId] &&
-        userState.userSolvedProblems[sameProblemOtherContestId][problemName]
-      );
-      isDidThroughOtherContest = isSolved;
-    }
-
-    isAttempted =
-      !isSolved &&
-      !!(
-        userState.userAttemptedProblems[problemContestID] &&
-        userState.userAttemptedProblems[problemContestID][problemName]
-      );
-
-    if (!isSolved && !isAttempted && sameProblemOtherContestId !== -1) {
-      isAttempted = !!(
-        userState.userAttemptedProblems[sameProblemOtherContestId] &&
-        userState.userAttemptedProblems[sameProblemOtherContestId][problemName]
-      );
-      isDidThroughOtherContest = isAttempted;
-    }
-    if (isDidThroughOtherContest) {
-      otherContestIdPending.set(index, sameProblemOtherContestId);
-    }
-    const problemStatus = isSolved
-      ? StatusOptions.Solved
-      : isAttempted
-      ? StatusOptions.Attempted
-      : StatusOptions.Unsolved;
-    problemStatusPending.set(index, problemStatus);
-
-    return {isSolved, isAttempted};
-  }
 
   async function updateProblemsStatus({
     startIndex,
@@ -162,12 +155,29 @@ export const problemsFilter = () => {
       const problemContestID: number = problem?.contestId || -1;
       const problemContestRound: string =
         contestState.allContests[problemContestID]?.round || "";
-      getProblemStatuses({
-        index: index,
+      // TODO:   // If there is no user profile no need the status will be unsolved
+      const {
+        isSolved,
+        isAttempted,
+        isDidThroughOtherContest,
+        sameProblemOtherContestId,
+      } = getProblemStatus({
         problemName: problem.name,
         problemContestID: problemContestID,
         problemContestRound: problemContestRound,
+        similarRoundDiv1Div2Contests: contestState.similarRoundDiv1Div2Contests,
+        userSolvedProblems: userState.userSolvedProblems,
+        userAttemptedProblems: userState.userAttemptedProblems,
       });
+      if (isDidThroughOtherContest) {
+        otherContestIdPending.set(index, sameProblemOtherContestId);
+      }
+      const problemStatus = isSolved
+        ? StatusOptions.Solved
+        : isAttempted
+        ? StatusOptions.Attempted
+        : StatusOptions.Unsolved;
+      problemStatusPending.set(index, problemStatus);
     }
 
     // Update the pending problems status

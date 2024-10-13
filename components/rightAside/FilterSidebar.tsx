@@ -223,7 +223,6 @@ const FilterSidebar: React.FC<IFilterSidebarProps> = ({
   };
 
   const handleApplyFilter = () => {
-    console.log(`Applying filter for ${platform}...`);
     dispatch(
       updateFilter({
         problemIndexRange: [

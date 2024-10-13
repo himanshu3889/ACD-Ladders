@@ -1,28 +1,41 @@
+import {IDateRangeFilter} from "../../components/analytics/cf/submissionAnalyticsChart/SubmissionAnalyticsChart";
 import {PLATFORMS} from "../../configs/constants";
 import {ISubmission} from "../../types";
+import {IUserSolvedAttemptedProblems} from "../user/userSlice";
 
 interface IPreProcessContests {
   platform: PLATFORMS;
   userSubmissions: ISubmission[];
+  dateRange?: IDateRangeFilter;
 }
 
-type IUserProblems = Record<number, Record<string, string>>;
+export interface IProcessedCFUserSubmissions {
+  userSolvedProblems: IUserSolvedAttemptedProblems;
+  userAttemptedProblems: IUserSolvedAttemptedProblems;
+}
 
 export const processCFUserSubmissions = async ({
   platform,
   userSubmissions,
-}: IPreProcessContests): Promise<{
-  userSolvedProblems: IUserProblems;
-  userAttemptedProblems: IUserProblems;
-}> => {
-  const userSolvedProblems: IUserProblems = {};
-  const userAttemptedProblems: IUserProblems = {};
+  dateRange,
+}: IPreProcessContests): Promise<IProcessedCFUserSubmissions> => {
+  const userSolvedProblems: IUserSolvedAttemptedProblems = {};
+  const userAttemptedProblems: IUserSolvedAttemptedProblems = {};
 
-  userSubmissions.forEach((item: ISubmission) => {
+  userSubmissions?.forEach((item: ISubmission) => {
     const contestId: number | undefined = item.problem.contestId;
     const problemIndex: string = item.problem.index;
     const problemName: string = item.problem.name;
     const verdict: string | undefined = item.verdict;
+    const submittedTime: number = item.creationTimeSeconds;
+    const startTime = dateRange?.[0] ?? null;
+    const endTime = dateRange?.[1] ?? null;
+    if (
+      (startTime && submittedTime < startTime) ||
+      (endTime && submittedTime > endTime)
+    ) {
+      return;
+    }
 
     if (contestId !== undefined) {
       if (verdict === "OK") {

@@ -39,7 +39,6 @@ const ProblemTableFooter: FC = () => {
 
   const filterProblemsOnPageChange = async () => {
     if (searchState.searchPattern) {
-      console.log("searching...", searchState.searchPattern);
       if (searchState.isSearchOnAllProblems) {
         // search the problems having pattern without filters
         await myProblemsFilter.handleSearchWtihoutFilters({

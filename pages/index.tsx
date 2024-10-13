@@ -1,18 +1,17 @@
-import {ThunkDispatch} from "@reduxjs/toolkit";
-import React, {useEffect} from "react";
-import {useDispatch} from "react-redux";
-import Sidebars from "../components/Sidebars";
-import {PLATFORMS} from "../configs/constants";
-import {setPlatform} from "../features/problems/problemSlice";
-export const ACD_LADDERS_API = process.env.NEXT_PUBLIC_ACD_LADDERS_API;
+// pages/home.tsx
+import { GetServerSideProps } from "next";
 
-const Home = () => {
-  const dispatch: ThunkDispatch<any, any, any> = useDispatch();
-  useEffect(() => {
-    // clear all the states and fetch the data again
-    dispatch(setPlatform(PLATFORMS.ACD));
-  }, []);
-  return <Sidebars />;
+const Home: React.FC = () => {
+  return null; // Render nothing as we are redirecting
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return {
+    redirect: {
+      destination: "/v2",
+      permanent: false, // Set to true if the redirect is permanent
+    },
+  };
 };
 
 export default Home;

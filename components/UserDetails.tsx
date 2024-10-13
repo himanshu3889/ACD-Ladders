@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from "react";
+import React, {FC} from "react";
 import Link from "next/link";
 import {
   INFO_NOTIFICATION,
@@ -8,30 +8,24 @@ import {ThunkDispatch} from "@reduxjs/toolkit";
 import {useDispatch, useSelector} from "react-redux";
 import {resetUser} from "../features/user/userSlice";
 import {IRootReducerState} from "../app/store";
-import {
-  IProblemsSlice,
-  resetProblemsStatus,
-} from "../features/problems/problemSlice";
 import {IUser} from "../types";
-import {IFilterSlice, updateFilter} from "../features/filters/filterSlice";
-import {StatusOptions} from "../features/filters/filterConstants";
-import {problemsFilter} from "../features/evaluators/problemFilter";
-import {ISearchSlice} from "../features/search/searchSlice";
 
-const getUserRankColorStyle = (rank: string) => {
-  return rank === "pupil"
+export const getUserRankColorStyle = (rank: string) => {
+  const rankLowerCase: string = rank.toLowerCase();
+  return rankLowerCase === "pupil"
     ? "text-green-500"
-    : rank === "specialist"
+    : rankLowerCase === "specialist"
     ? "text-cyan-500"
-    : rank === "expert"
+    : rankLowerCase === "expert"
     ? "text-blue-500"
-    : rank === "candidate master"
+    : rankLowerCase === "candidate master"
     ? "text-fuchsia-600"
-    : rank === "master" || rank === "international master"
+    : rankLowerCase === "master" || rankLowerCase === "international master"
     ? "text-orange-500"
-    : rank === "grandmaster" ||
-      rank === "legendary grandmaster" ||
-      rank === "international grandmaster"
+    : rankLowerCase === "grandmaster" ||
+      rankLowerCase === "legendary grandmaster" ||
+      rankLowerCase === "international grandmaster" ||
+      rankLowerCase === "tourist"
     ? "text-red-500"
     : "text-gray-500";
 };
@@ -41,6 +35,13 @@ export default function UserDetails() {
   const userProfile: IUser | null = useSelector(
     (state: IRootReducerState) => state.user.profile
   );
+
+  const userID: string = userProfile?.handle || "";
+  const rank: string = userProfile?.rank || "";
+  const country: string = userProfile?.country || "";
+  const displayName: string = userID?.substring(1);
+  const rankColorStyle: string = getUserRankColorStyle(rank);
+  const userRating: number = userProfile?.rating ?? 0
 
   // TODO: GO TO THE PAGE 1 if user problem status is not all
   const handleRemoveUser = () => {
@@ -53,19 +54,14 @@ export default function UserDetails() {
   };
 
   const UserIDColorStyleByRank: FC = () => {
-    const userID: string = userProfile?.handle || "";
-    const rank: string = userProfile?.rank || "";
-    const country: string = userProfile?.country || "";
-    const displayName: string = userID?.substring(1);
-    const rankColorStyle: string = getUserRankColorStyle(rank);
     return (
       <span className="text-sm font-bold ">
         <span
-          className={rank !== "legendary grandmaster" ? rankColorStyle : ""}
+          className={(userRating < 3000 || userRating >=4000 )  ? rankColorStyle : ""}
         >
           {userID?.charAt(0)}
         </span>
-        <span className={rankColorStyle}>{displayName}</span>
+        <span className={userRating <4000 ? rankColorStyle : ""}>{displayName}</span>
         {country && (
           <span className="ml-2 font-normal italic text-gray-700">
             ({country})
@@ -80,7 +76,7 @@ export default function UserDetails() {
       <div className="each flex rounded shadow w-max md:mr-2 ml-2 bg-gray-50 relative">
         <div className="sec self-center p-0.5 pr-1">
           <Link
-            href={`https://codeforces.com/profile/${userProfile?.handle}`}
+            href={`https://codeforces.com/profile/${userID}`}
             legacyBehavior
           >
             <a target="_blank">
@@ -104,7 +100,7 @@ export default function UserDetails() {
           </div>
           <div className="flex text-xs text-gray-600">
             <span>
-              Rating : {userProfile?.rating} (Max : {userProfile?.maxRating})
+              Rating : {userRating} (Max : {userProfile?.maxRating})
             </span>
           </div>
         </div>

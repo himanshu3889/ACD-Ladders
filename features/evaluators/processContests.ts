@@ -74,7 +74,7 @@ export const cFContestRenewal = async (
   return contest;
 };
 
-interface IPreprocessCFContests {
+export interface IPreprocessCFContests {
   contestData: IContestRenew;
   similarRoundDiv1Div2Contests: ISimilarRoundDiv1Div2Contests;
 }

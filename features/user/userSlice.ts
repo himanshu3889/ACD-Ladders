@@ -1,12 +1,17 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IUser} from "../../types";
+import {ISubmission, IUser} from "../../types";
 import {fetchUserSubmissions, fetchUserProfile} from "./userAction";
+
+export type IUserSolvedAttemptedProblems = Record<
+  number,
+  Record<string, string>
+>;
 
 export interface IUserSlice {
   searchedHandle: string;
   profile: IUser | null;
-  userSolvedProblems: Record<number, Record<string, string>>;
-  userAttemptedProblems: Record<number, Record<string, string>>;
+  userSolvedProblems: IUserSolvedAttemptedProblems;
+  userAttemptedProblems: IUserSolvedAttemptedProblems;
   isError: boolean;
   isLoadingSubmissions: boolean;
   isLoadingProfile: boolean;

@@ -81,7 +81,7 @@ const ProblemsSidebar = () => {
           ? problemsState.searched
           : problemsState.filtered
         )?.length
-      ); 
+      );
       currIndex++
     ) {
       const allProblemIndex = searchState.searchPattern
@@ -128,6 +128,8 @@ const ProblemsSidebar = () => {
     platform === PLATFORMS.ACD ? SortingParams.Score : SortingParams.SolvedBy,
     SortingParams.Difficulty,
   ];
+
+  console.log(filtersState.sortingParam, filtersState.sortingOrder);
 
   return (
     <div className="min-w-max min-h-screen bg-gray flex mx-2">
@@ -178,8 +180,9 @@ const ProblemsSidebar = () => {
                         <div className="font-bold ml-1">
                           <i
                             className={`cursor-pointer ${
-                              filtersState.sortingParam !== item
-                                ? "fa-solid fa-up-long md:opacity-0 opacity-30 md:group-hover:opacity-100 group-hover:text-gray-300"
+                              filtersState.sortingParam !== item ||
+                              !filtersState.sortingOrder
+                                ? "fa-solid fa-up-long opacity-30 md:group-hover:opacity-100 group-hover:text-gray-300"
                                 : filtersState.sortingOrder ===
                                   SortingOrders.ASC
                                 ? "text-yellow-200 fa-solid fa-up-long fa-beat"

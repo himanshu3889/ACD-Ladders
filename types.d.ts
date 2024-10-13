@@ -1,3 +1,4 @@
+// CODEFORCES objects: https://codeforces.com/apiHelp/objects#Submission
 export interface IProblem {
   contestId?: number;
   index: string;
@@ -68,13 +69,33 @@ export interface IUser {
   titlePhoto: string;
 }
 
+export interface IMember {
+  handle: string;
+}
+
+export interface IParty {
+  contestId?: number;
+  members: IMember[];
+  participantType:
+    | "CONTESTANT"
+    | "PRACTICE"
+    | "VIRTUAL"
+    | "MANAGER"
+    | "OUT_OF_COMPETITION";
+  teamId?: number;
+  teamName?: string;
+  ghost: boolean;
+  room?: number;
+  startTimeSeconds?: number;
+}
+
 export interface ISubmission {
   id: number;
   contestId?: number;
   creationTimeSeconds: number;
   relativeTimeSeconds: number;
   problem: IProblem;
-  author: any;
+  author: IParty;
   programmingLanguage: string;
   verdict?:
     | "FAILED"
@@ -113,4 +134,39 @@ export interface ISubmission {
   timeConsumedMillis: number;
   memoryConsumedBytes: number;
   points?: number;
+}
+
+export interface IContestResult {
+  contestId: number;
+  contestName: string;
+  handle: string;
+  rank: number;
+  ratingUpdateTimeSeconds: number;
+  oldRating: number;
+  newRating: number;
+}
+
+interface IProblemResult {
+  points: number;
+  penalty?: number;
+  rejectedAttemptCount: number;
+  type: "PRELIMINARY" | "FINAL";
+  bestSubmissionTimeSeconds?: number;
+}
+
+export interface IRankListRow {
+  party: IParty;
+  rank: number;
+  points: number;
+  penalty: number;
+  successfulHackCount: number;
+  unsuccessfulHackCount: number;
+  problemResults: IProblemResult[];
+  lastSubmissionTimeSeconds?: number;
+}
+
+export interface IContestStandings {
+  contest: IContest;
+  problems: IProblem[];
+  rows: IRankListRow[];
 }

@@ -1,14 +1,16 @@
 import React from "react";
-import UserSearch from "../UserSearch";
-import UserDetails from "../UserDetails";
-import AppLogo from "../../public/app-logo.png";
+import UserSearch from "../../UserSearch";
+import UserDetails from "../../UserDetails";
+import AppLogo from "../../../public/app-logo.png";
 import Image from "next/image";
 import {useRouter} from "next/router";
 import Link from "next/link";
-import {BASE_URL, PLATFORMS} from "../../configs/constants";
+import {PLATFORMS} from "../../../configs/constants";
 import {useSelector} from "react-redux";
-import {IRootReducerState} from "../../app/store";
-import {IUserSlice} from "../../features/user/userSlice";
+import {IRootReducerState} from "../../../app/store";
+import {IUserSlice} from "../../../features/user/userSlice";
+import NavbarFeateuresDropdown from "./NavbarFeaturesDropdown";
+import {routeTitles} from "../../../pages/_app";
 
 const Navbar = () => {
   const router = useRouter();
@@ -18,19 +20,15 @@ const Navbar = () => {
   const isLoadingProblems: boolean = useSelector(
     (state: IRootReducerState) => state.problems.isLoading
   );
-  const showUserSearch = !router.pathname.includes("/about");
+  const allowedPaths: Array<keyof typeof routeTitles> = [
+    "/v2",
+    "/v2/cf_filter",
+  ];
+  const path = router.pathname;
+  const showUserSearch = allowedPaths.includes(path);
   const platform: PLATFORMS = useSelector(
     (state: IRootReducerState) => state.problems.platform
   );
-
-  const handleChangePlatform = () => {
-    if (platform === PLATFORMS.ACD) {
-      router.push(`${BASE_URL}/cf_filter`);
-    } else {
-      router.push(`${BASE_URL}/`);
-    }
-  };
-  console.log("navbar rerender")
 
   const isProfileShow: boolean = userState.profile !== null;
   // &&
@@ -72,24 +70,7 @@ const Navbar = () => {
               A Code Daily!
             </span>
           </div>
-          <button
-            type="button"
-            onClick={handleChangePlatform}
-            className="bg-orange-500 flex items-center text-white text-xs font-bold rounded p-1 mr-4"
-          >
-            {platform === PLATFORMS.ACD ? (
-              <div className="flex flex-col items-center">
-                <div>CF</div>
-                <div>Filter</div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center">
-                <div>ACD</div>
-                <div>Ladders</div>
-              </div>
-            )}
-            <i className="fa-solid fa-chevron-right pl-1"></i>
-          </button>
+          <NavbarFeateuresDropdown />
         </div>
 
         {showUserSearch && (
